@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build"
+  command = "npm run generate"
   functions = "netlify/functions"
   publish = "dist"
 
@@ -12,7 +12,9 @@
   directory = "netlify/functions"
 
 [[headers]]
-  # Define which paths this specific [[headers]] block will cover.
-  for = "/*"
-    [headers.values]
+  for = "/api/*"
+  [headers.values]
     Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type"
+    Cache-Control = "no-cache"
