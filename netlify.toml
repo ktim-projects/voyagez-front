@@ -1,6 +1,6 @@
 [build]
   command = "npm run generate"
-  functions = "netlify/functions"
+  functions = ".output/server"
   publish = "dist"
 
 [dev]
@@ -10,6 +10,15 @@
 [functions]
   node_bundler = "esbuild"
   directory = "netlify/functions"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[build.environment]
+  NODE_VERSION = "18"
+  NITRO_PRESET = "netlify"
 
 [[headers]]
   for = "/api/*"
