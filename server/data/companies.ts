@@ -13,7 +13,7 @@ export const carCompanies: CarCompany[] = [
   {
     id: '2',
     name: 'UTB',
-    logo: 'https://voyagez.ci/sites/default/files/2024-01/utb.jpg',
+    logo: 'https://voyagez.ci/sites/default/files/2023-10/327445526_694574005455320_1425887416035583379_n.jpg',
     address: 'Gare Routière Yopougon',
     phone: '+225 27 20 25 30 35',
     email: 'contact@utb.ci',
@@ -21,11 +21,11 @@ export const carCompanies: CarCompany[] = [
   },
   {
     id: '3',
-    name: 'GTS',
-    logo: 'https://voyagez.ci/sites/default/files/2024-01/gts.jpg',
+    name: 'ART Luxury bus',
+    logo: 'https://voyagez.ci/sites/default/files/2023-11/382492942_190577917385965_2785413616857961412_n.jpg',
     address: 'Gare Routière Abobo',
     phone: '+225 27 20 35 45 55',
-    email: 'contact@gts.ci',
-    services: ['Climatisation', 'Snacks', 'TV']
+    email: 'contact@art-luxury.ci',
+    services: ['Climatisation', 'Snacks', 'TV', 'Petit déjeuner', 'Toilettes']
   }
 ];

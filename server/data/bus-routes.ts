@@ -39,5 +39,44 @@ export const busRoutes: BusRoute[] = [
         path: [[5.3419, -4.0698], [5.3456, -4.0334], [5.3499, -4.0199]]
       }
     ]
+  },
+  {
+    id: '2',
+    from: 'Abobo',
+    to: 'Cocody',
+    duration: '1h 10min',
+    distance: '18.5 km',
+    steps: [
+      {
+        type: 'walk',
+        duration: '10 min',
+        description: 'Marcher jusqu\'à l\'arrêt Abobo Terminus',
+        color: '#666',
+        path: [[5.3942, -4.0149], [5.3949, -4.0142]]
+      },
+      {
+        type: 'bus',
+        line: '1',
+        duration: '30 min',
+        description: 'Bus 1 direction Adjamé',
+        color: '#e11d48',
+        path: [[5.3949, -4.0142], [5.3949, -4.0142], [5.3949, -4.0142]]
+      },
+      {
+        type: 'walk',
+        duration: '5 min',
+        description: 'Marcher jusqu\'à l\'arrêt Adjamé Forum',
+        color: '#666',
+        path: [[5.3949, -4.0142], [5.3949, -4.0142]]
+      },
+      {
+        type: 'bus',
+        line: '28',
+        duration: '25 min',
+        description: 'Bus 28 direction Cocody',
+        color: '#2563eb',
+        path: [[5.3949, -4.0142], [5.3949, -4.0142], [5.3949, -4.0142]]
+      }
+    ]
   }
 ];

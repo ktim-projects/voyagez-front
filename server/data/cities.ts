@@ -1,9 +1,27 @@
 import type { City } from './types';
-
 export const cities: City[] = [
   { name: 'Abidjan', region: 'Lagunes', latitude: 5.3599517, longitude: -4.0082563 },
   { name: 'Bouaké', region: 'Vallée du Bandama', latitude: 7.6907799, longitude: -5.0303319 },
   { name: 'Yamoussoukro', region: 'Lacs', latitude: 6.8276228, longitude: -5.2893433 },
   { name: 'San Pedro', region: 'Bas-Sassandra', latitude: 4.7453841, longitude: -6.6375657 },
-  { name: 'Korhogo', region: 'Savanes', latitude: 9.4579388, longitude: -5.6294793 }
+  { name: 'Korhogo', region: 'Savanes', latitude: 9.4579388, longitude: -5.6294793 },
+  { name: 'Daloa', region: 'Haut-Sassandra', latitude: 6.8773517, longitude: -6.4501833 },
+  { name: 'Man', region: 'Montagnes', latitude: 7.4129448, longitude: -7.5535994 },
+  { name: 'Gagnoa', region: 'Gôh', latitude: 6.131939, longitude: -5.954558 },
+  { name: 'Sassandra', region: 'Bas-Sassandra', latitude: 4.950055, longitude: -6.086903 },
+  { name: 'Séguéla', region: 'Worodougou', latitude: 7.961111, longitude: -6.673889 },
+  { name: 'Bondoukou', region: 'Gontougo', latitude: 8.044792, longitude: -2.800962 },
+  { name: 'Odienné', region: 'Kabadougou', latitude: 9.509167, longitude: -7.564444 },
+  { name: 'Aboisso', region: 'Sud-Comoé', latitude: 5.467778, longitude: -3.207222 },
+  { name: 'Dimbokro', region: 'Nzi', latitude: 6.646805, longitude: -4.705444 },
+  { name: 'Tiassalé', region: 'Agneby-Tiassa', latitude: 5.898889, longitude: -4.822778 },
+  { name: 'Toumodi', region: 'Bélier', latitude: 6.556312, longitude: -5.017755 },
+  { name: 'Ferkessédougou', region: 'Tchologo', latitude: 9.593889, longitude: -5.197778 },
+  { name: 'Soubré', region: 'Nawa', latitude: 5.790448, longitude: -6.609962 },
+  { name: 'Issia', region: 'Haut-Sassandra', latitude: 6.492056, longitude: -6.585 },
+  { name: 'Abengourou', region: 'Indénié-Djuablin', latitude: 6.726492, longitude: -3.496497 },
+  { name: 'Touba', region: 'Bafing', latitude: 8.283333, longitude: -7.683333 },
+  { name: 'Guiglo', region: 'Cavally', latitude: 6.543333, longitude: -7.493333 },
+  { name: 'Bangolo', region: 'Montagnes', latitude: 7.012652, longitude: -7.487224 },
+  { name: 'Agboville', region: 'Agneby-Tiassa', latitude: 5.928611, longitude: -4.222778 }
 ];
