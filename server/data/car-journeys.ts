@@ -48,7 +48,7 @@ export const carJourneys: CarJourney[] = [
   },
   {
     id: '103',
-    operator: carCompanies[3],
+    operator: carCompanies[2],
     origin: 'Abidjan',
     destination: 'Bouaké',
     departureTime: '18:00',
@@ -247,8 +247,8 @@ export const carJourneys: CarJourney[] = [
   // Abidjan vers Bouaké
   { id: '101', operator: carCompanies[0], origin: 'Abidjan', destination: 'Bouaké', departureTime: '06:00', arrivalTime: '10:30', duration: '4h 30min', price: 6000, date: '2024-12-01' },
   { id: '102', operator: carCompanies[0], origin: 'Abidjan', destination: 'Bouaké', departureTime: '08:00', arrivalTime: '12:30', duration: '4h 30min', price: 6000, date: '2024-12-01' },
-  { id: '103', operator: carCompanies[3], origin: 'Abidjan', destination: 'Bouaké', departureTime: '10:00', arrivalTime: '14:30', duration: '4h 30min', price: 6000, date: '2024-12-01' },
-  { id: '104', operator: carCompanies[3], origin: 'Abidjan', destination: 'Bouaké', departureTime: '12:00', arrivalTime: '16:30', duration: '4h 30min', price: 6000, date: '2024-12-01' },
+  { id: '103', operator: carCompanies[0], origin: 'Abidjan', destination: 'Bouaké', departureTime: '10:00', arrivalTime: '14:30', duration: '4h 30min', price: 6000, date: '2024-12-01' },
+  { id: '104', operator: carCompanies[2], origin: 'Abidjan', destination: 'Bouaké', departureTime: '12:00', arrivalTime: '16:30', duration: '4h 30min', price: 6000, date: '2024-12-01' },
   { id: '105', operator: carCompanies[1], origin: 'Abidjan', destination: 'Bouaké', departureTime: '14:00', arrivalTime: '18:30', duration: '4h 30min', price: 6000, date: '2024-12-01' },
   { id: '106', operator: carCompanies[1], origin: 'Abidjan', destination: 'Bouaké', departureTime: '16:00', arrivalTime: '20:30', duration: '4h 30min', price: 6000, date: '2024-12-01' },
   { id: '107', operator: carCompanies[1], origin: 'Abidjan', destination: 'Bouaké', departureTime: '18:00', arrivalTime: '22:30', duration: '4h 30min', price: 6000, date: '2024-12-01' },
@@ -259,9 +259,9 @@ export const carJourneys: CarJourney[] = [
   // Bouaké vers Abidjan
   { id: '201', operator: carCompanies[0], origin: 'Bouaké', destination: 'Abidjan', departureTime: '06:30', arrivalTime: '11:00', duration: '4h 30min', price: 6000, date: '2024-12-02' },
   { id: '202', operator: carCompanies[0], origin: 'Bouaké', destination: 'Abidjan', departureTime: '08:30', arrivalTime: '13:00', duration: '4h 30min', price: 6000, date: '2024-12-02' },
-  { id: '203', operator: carCompanies[3], origin: 'Bouaké', destination: 'Abidjan', departureTime: '10:30', arrivalTime: '15:00', duration: '4h 30min', price: 6000, date: '2024-12-02' },
-  { id: '204', operator: carCompanies[3], origin: 'Bouaké', destination: 'Abidjan', departureTime: '12:30', arrivalTime: '17:00', duration: '4h 30min', price: 6000, date: '2024-12-02' },
-  { id: '205', operator: carCompanies[3], origin: 'Bouaké', destination: 'Abidjan', departureTime: '14:30', arrivalTime: '19:00', duration: '4h 30min', price: 6000, date: '2024-12-02' },
+  { id: '203', operator: carCompanies[0], origin: 'Bouaké', destination: 'Abidjan', departureTime: '10:30', arrivalTime: '15:00', duration: '4h 30min', price: 6000, date: '2024-12-02' },
+  { id: '204', operator: carCompanies[0], origin: 'Bouaké', destination: 'Abidjan', departureTime: '12:30', arrivalTime: '17:00', duration: '4h 30min', price: 6000, date: '2024-12-02' },
+  { id: '205', operator: carCompanies[2], origin: 'Bouaké', destination: 'Abidjan', departureTime: '14:30', arrivalTime: '19:00', duration: '4h 30min', price: 6000, date: '2024-12-02' },
   { id: '206', operator: carCompanies[1], origin: 'Bouaké', destination: 'Abidjan', departureTime: '16:30', arrivalTime: '21:00', duration: '4h 30min', price: 6000, date: '2024-12-02' },
   { id: '207', operator: carCompanies[1], origin: 'Bouaké', destination: 'Abidjan', departureTime: '18:30', arrivalTime: '23:00', duration: '4h 30min', price: 6000, date: '2024-12-02' },
   { id: '208', operator: carCompanies[1], origin: 'Bouaké', destination: 'Abidjan', departureTime: '20:30', arrivalTime: '01:00', duration: '4h 30min', price: 6000, date: '2024-12-02' },

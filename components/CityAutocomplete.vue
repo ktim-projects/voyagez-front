@@ -34,7 +34,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useVModel, onClickOutside } from '@vueuse/core';
-import { cities } from '~/server/data/mockData';
+import { cities } from '~/server/data';
 
 const props = defineProps<{
   modelValue: string;
