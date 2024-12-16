@@ -1,14 +1,18 @@
 export default defineNuxtConfig({
   ssr: false,
+
   modules: [
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
     '@nuxtjs/color-mode'
   ],
+
   css: ['~/assets/css/main.css'],
+
   colorMode: {
     classSuffix: ''
   },
+
   app: {
     head: {
       title: 'VoyageCompare - Trouvez le meilleur itinéraire',
@@ -22,12 +26,16 @@ export default defineNuxtConfig({
       ]
     }
   },
+
   nitro: {
     preset: 'node-server'
   },
+
   typescript: {
     strict: true,
     shim: false
   },
-  devtools: { enabled: false }
+
+  devtools: { enabled: false },
+  compatibilityDate: '2024-12-16'
 });

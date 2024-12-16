@@ -64,7 +64,7 @@
                 </div>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
                   <input
@@ -84,7 +84,7 @@
                     <option v-for="n in 9" :key="n" :value="n">{{ n }} {{ n === 1 ? 'passager' : 'passagers' }}</option>
                   </select>
                 </div>
-              </div>
+              </div> -->
 
               <button 
                 type="submit" 
@@ -196,6 +196,7 @@
 </template>
 
 <script setup lang="ts">
+
 const activeTab = ref('car');
 
 const carSearch = ref({
@@ -234,7 +235,7 @@ const popularDestinations = ref([
 ]);
 
 const isCarSearchValid = computed(() => {
-  return carSearch.value.from && carSearch.value.to && carSearch.value.date;
+  return carSearch.value.from && carSearch.value.to
 });
 
 const isBusSearchValid = computed(() => {

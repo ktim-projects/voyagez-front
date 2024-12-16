@@ -1,100 +1,192 @@
 <template>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Search Form -->
-    <div class="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-8">
-      <form @submit.prevent="handleSearch" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+  <div class="container mx-auto px-4 py-8">
+    <!-- Minimalist Search Section -->
+    <div class="bg-white rounded-xl shadow-light p-6 mb-8">
+      <form @submit.prevent="handleSearch" class="grid gap-4 md:grid-cols-3">
         <div>
-          <label class="block text-sm font-medium text-gray-700">Départ</label>
+          <label class="block text-sm font-medium text-gray-600 mb-2">Départ</label>
           <CityAutocomplete
             v-model="searchParams.from"
             type="origin"
             placeholder="Ville de départ"
+            class="w-full"
             @update:modelValue="handleSearch"
           />
         </div>
+        
         <div>
-          <label class="block text-sm font-medium text-gray-700">Arrivée</label>
+          <label class="block text-sm font-medium text-gray-600 mb-2">Arrivée</label>
           <CityAutocomplete
             v-model="searchParams.to"
             type="destination"
             placeholder="Ville d'arrivée"
+            class="w-full"
             @update:modelValue="handleSearch"
           />
         </div>
+        
         <div>
-          <label class="block text-sm font-medium text-gray-700">Date</label>
-          <input
-            v-model="searchParams.date"
-            type="date"
-            class="input-field"
-            @change="handleSearch"
-          />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Passagers</label>
-          <select
-            v-model="searchParams.passengers"
-            class="input-field"
-            @change="handleSearch"
-          >
-            <option v-for="n in 9" :key="n" :value="n">{{ n }} {{ n === 1 ? 'passager' : 'passagers' }}</option>
-          </select>
+          <label class="block text-sm font-medium text-gray-600 mb-2">Disponibilité</label>
+          <div class="w-full p-3 bg-green-50 border border-green-200 rounded-md text-sm text-green-700 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Départs disponibles tous les jours
+          </div>
         </div>
       </form>
     </div>
 
-    <!-- Results Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-      <!-- Filters Sidebar -->
-      <div class="lg:col-span-1">
-        <div class="bg-white p-4 rounded-lg shadow-sm">
-          <h3 class="text-lg font-medium mb-4">Filtres</h3>
-          
-          <!-- Prix Maximum -->
-          <div class="mb-4">
-            <h4 class="font-medium mb-2 text-sm text-gray-600">Prix Maximum</h4>
-            <div class="space-y-2">
-              <input 
-                type="range" 
-                v-model="filters.maxPrice" 
-                min="0" 
-                max="50000" 
-                step="1000"
-                class="w-full"
-              >
-              <div class="text-sm text-gray-600">
-                Max: {{ filters.maxPrice.toLocaleString() }} FCFA
-              </div>
+    <!-- Mobile Filter Button -->
+    <div class="md:hidden mb-4">
+      <button 
+        @click="showFiltersModal = true"
+        class="w-full bg-primary-600 text-white py-3 rounded-lg flex items-center justify-center"
+      >
+        <FilterIcon class="w-5 h-5 mr-2" />
+        Filtres
+      </button>
+    </div>
+
+    <!-- Mobile Filters Modal -->
+    <div 
+      v-if="showFiltersModal" 
+      class="fixed inset-0 z-50 overflow-y-auto bg-black/50 md:hidden"
+      @click.self="showFiltersModal = false"
+    >
+      <div 
+        class="bg-white w-full rounded-t-xl absolute bottom-0 max-h-[90vh] overflow-y-auto"
+        @click.stop
+      >
+        <div class="p-6">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-semibold text-gray-800">Filtres</h3>
+            <button 
+              @click="showFiltersModal = false"
+              class="text-gray-600 hover:text-gray-800"
+            >
+              <XIcon class="w-6 h-6" />
+            </button>
+          </div>
+
+          <!-- Price Filter -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-600 mb-2">
+              Prix Maximum (FCFA)
+            </label>
+            <input 
+              type="range" 
+              v-model="filters.maxPrice" 
+              min="0" 
+              max="50000" 
+              step="1000"
+              class="w-full"
+            >
+            <div class="text-sm text-gray-600 mt-2 text-center">
+              {{ filters.maxPrice.toLocaleString() }} FCFA
             </div>
           </div>
 
-          <!-- Compagnies -->
-          <div class="mb-4">
-            <h4 class="font-medium mb-2 text-sm text-gray-600">Compagnies</h4>
-            <div class="space-y-2">
+          <!-- Companies Filter -->
+          <div class="mb-6">
+            <h4 class="text-sm font-medium text-gray-600 mb-3">Compagnies</h4>
+            <div class="grid grid-cols-2 gap-2">
               <label 
                 v-for="company in companies" 
                 :key="company.id"
-                class="flex items-start"
+                class="flex items-center"
               >
                 <input
                   type="checkbox"
                   v-model="filters.selectedCompanies"
                   :value="company.id"
-                  class="h-4 w-4 mt-1 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                  class="rounded text-primary-600 focus:ring-primary-500"
                 >
-                <div class="ml-3">
-                  <span class="text-sm text-gray-600">{{ company.name }}</span>
-                  <p class="text-xs text-gray-500">{{ company.services.length }} services disponibles</p>
-                </div>
+                <span class="ml-2 text-sm text-gray-700">{{ company.name }}</span>
               </label>
             </div>
           </div>
 
-          <!-- Heure de Départ -->
-          <div class="mb-4">
-            <h4 class="font-medium mb-2 text-sm text-gray-600">Heure de Départ</h4>
-            <select v-model="filters.departureTime" class="input-field text-sm">
+          <!-- Departure Time Filter -->
+          <div>
+            <label class="block text-sm font-medium text-gray-600 mb-2">
+              Heure de Départ
+            </label>
+            <select 
+              v-model="filters.departureTime" 
+              class="w-full rounded-md border-gray-300 shadow-sm focus:ring-primary-500"
+            >
+              <option value="">Toute heure</option>
+              <option value="morning">Matin (6h - 12h)</option>
+              <option value="afternoon">Après-midi (12h - 18h)</option>
+              <option value="evening">Soir (18h - 00h)</option>
+            </select>
+          </div>
+
+          <button 
+            @click="showFiltersModal = false"
+            class="w-full mt-6 bg-primary-600 text-white py-3 rounded-lg"
+          >
+            Appliquer les filtres
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Container -->
+    <div class="grid md:grid-cols-4 gap-6">
+      <!-- Desktop Filters -->
+      <div class="md:col-span-1 hidden md:block">
+        <div class="bg-white rounded-xl shadow-light p-6">
+          <h3 class="text-lg font-semibold mb-4 text-gray-800">Filtres</h3>
+          
+          <!-- Price Filter -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-600 mb-2">
+              Prix Maximum (FCFA)
+            </label>
+            <input 
+              type="range" 
+              v-model="filters.maxPrice" 
+              min="0" 
+              max="50000" 
+              step="1000"
+              class="w-full"
+            >
+            <div class="text-sm text-gray-600 mt-2 text-center">
+              {{ filters.maxPrice.toLocaleString() }} FCFA
+            </div>
+          </div>
+
+          <!-- Companies Filter -->
+          <div class="mb-6">
+            <h4 class="text-sm font-medium text-gray-600 mb-3">Compagnies</h4>
+            <div class="space-y-2">
+              <label 
+                v-for="company in companies" 
+                :key="company.id"
+                class="flex items-center"
+              >
+                <input
+                  type="checkbox"
+                  v-model="filters.selectedCompanies"
+                  :value="company.id"
+                  class="rounded text-primary-600 focus:ring-primary-500"
+                >
+                <span class="ml-2 text-sm text-gray-700">{{ company.name }}</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Departure Time Filter -->
+          <div>
+            <label class="block text-sm font-medium text-gray-600 mb-2">
+              Heure de Départ
+            </label>
+            <select 
+              v-model="filters.departureTime" 
+              class="w-full rounded-md border-gray-300 shadow-sm focus:ring-primary-500"
+            >
               <option value="">Toute heure</option>
               <option value="morning">Matin (6h - 12h)</option>
               <option value="afternoon">Après-midi (12h - 18h)</option>
@@ -105,131 +197,227 @@
       </div>
 
       <!-- Results List -->
-      <div class="lg:col-span-3">
+      <div class="md:col-span-3 col-span-full">
+        <!-- Loading State -->
         <div v-if="loading" class="text-center py-12">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
-          <p class="mt-4 text-sm text-gray-600">Recherche des meilleurs trajets...</p>
+          <div class="animate-pulse">
+            <div class="h-10 bg-gray-200 rounded w-48 mx-auto mb-4"></div>
+            <div class="h-6 bg-gray-200 rounded w-64 mx-auto"></div>
+          </div>
         </div>
 
+        <!-- Results -->
         <div v-else-if="filteredJourneys.length > 0" class="space-y-4">
-          <div v-for="journey in filteredJourneys" :key="journey.id" 
-               class="bg-white rounded-lg p-4 hover:shadow-sm transition-shadow">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-              <div class="flex-1">
-                <div class="flex items-center space-x-4 mb-4">
-                  <div class="flex-shrink-0">
-                    <img :src="journey.operator.logo" :alt="journey.operator.name" class="h-8">
-                  </div>
-                  <div>
-                    <h3 class="text-lg font-medium">{{ journey.operator.name }}</h3>
-                  </div>
+          <div 
+            v-for="journey in filteredJourneys" 
+            :key="journey.id" 
+            class="bg-white rounded-xl shadow-light p-6 hover:shadow-md transition-all duration-200 hover:scale-[1.02] cursor-pointer relative group"
+            @click="selectedJourney = journey"
+          >
+            <div class="flex flex-col sm:flex-row justify-between items-start">
+              <div class="flex-1 w-full">
+                <div class="flex items-center mb-4">
+                  <img 
+                    :src="journey.operator.logo" 
+                    :alt="journey.operator.name" 
+                    class="h-8 w-8 mr-3 object-contain"
+                  />
+                  <h3 class="text-lg font-semibold text-gray-800">
+                    {{ journey.operator.name }}
+                  </h3>
                 </div>
-                
+
                 <div class="grid grid-cols-3 gap-4">
                   <div>
                     <p class="text-xs text-gray-500">Départ</p>
                     <p class="font-medium">{{ journey.departureTime }}</p>
-                    <p class="text-sm">{{ journey.origin }}</p>
+                    <p class="text-sm text-gray-600">{{ journey.origin }}</p>
                   </div>
                   <div class="text-center">
-                    <p class="text-xs text-gray-500">Durée</p>
+                    <p class="text-xs text-gray-500">Durée (estimée)</p>
                     <p class="font-medium">{{ journey.duration }}</p>
-                    <div class="relative">
-                      <div class="border-t border-gray-200 absolute w-full top-1/2"></div>
-                    </div>
+                    <div class="border-t border-gray-200 my-1"></div>
+                    <p class="text-xs text-gray-400">* Temps approximatif</p>
                   </div>
                   <div class="text-right">
                     <p class="text-xs text-gray-500">Arrivée</p>
                     <p class="font-medium">{{ journey.arrivalTime }}</p>
-                    <p class="text-sm">{{ journey.destination }}</p>
+                    <p class="text-sm text-gray-600">{{ journey.destination }}</p>
                   </div>
                 </div>
               </div>
-              
-              <div class="mt-4 sm:mt-0 sm:ml-4 flex flex-col items-end">
-                <p class="text-lg font-medium text-primary-600">{{ journey.price.toLocaleString() }} FCFA</p>
-                <button 
-                  @click="expandedJourney = expandedJourney === journey.id ? null : journey.id"
-                  class="text-primary-600 hover:text-primary-700 text-sm mt-2 flex items-center"
-                >
-                  {{ expandedJourney === journey.id ? 'Masquer' : 'Détails' }}
-                  <svg 
-                    class="w-4 h-4 ml-1 transform transition-transform"
-                    :class="{ 'rotate-180': expandedJourney === journey.id }"
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-              </div>
-            </div>
 
-            <!-- Company Details -->
-            <div 
-              v-if="expandedJourney === journey.id"
-              class="mt-4 pt-4 border-t border-gray-100"
-            >
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h4 class="font-medium mb-2">Informations de la compagnie</h4>
-                  <ul class="space-y-2 text-sm">
-                    <li class="flex items-start">
-                      <span class="text-gray-600 mr-2">Adresse:</span>
-                      <span>{{ journey.operator.address }}</span>
-                    </li>
-                    <li class="flex items-start">
-                      <span class="text-gray-600 mr-2">Téléphone:</span>
-                      <span>{{ journey.operator.phone }}</span>
-                    </li>
-                    <li class="flex items-start">
-                      <span class="text-gray-600 mr-2">Email:</span>
-                      <span>{{ journey.operator.email }}</span>
-                    </li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 class="font-medium mb-2">Services à bord</h4>
-                  <ul class="grid grid-cols-2 gap-2 text-sm">
-                    <li v-for="service in journey.operator.services" :key="service" 
-                        class="flex items-center text-gray-600">
-                      <svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                      </svg>
-                      {{ service }}
-                    </li>
-                  </ul>
-                </div>
+              <div class="w-full sm:w-auto sm:ml-4 mt-4 sm:mt-0 text-center sm:text-right">
+                <p class="text-lg font-bold text-primary-600">
+                  {{ journey.price.toLocaleString() }} FCFA
+                </p>
               </div>
             </div>
           </div>
         </div>
 
-        <EmptyState
-          v-else
-          title="Aucun trajet trouvé"
-          description="Essayez de modifier vos critères de recherche pour trouver un trajet."
-          image="/images/empty-search.svg"
-        />
+        <!-- Empty State -->
+        <div v-else class="text-center py-12">
+          <svg 
+            class="mx-auto h-16 w-16 text-gray-300" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path 
+              stroke-linecap="round" 
+              stroke-linejoin="round" 
+              stroke-width="1" 
+              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" 
+            />
+          </svg>
+          <h3 class="mt-4 text-lg font-semibold text-gray-600">
+            Aucun trajet trouvé
+          </h3>
+          <p class="mt-2 text-sm text-gray-500">
+            Ajustez vos critères de recherche pour trouver un trajet.
+          </p>
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- Journey Details Modal/Sidebar -->
+  <Transition
+    enter-active-class="transition ease-out duration-300"
+    enter-from-class="opacity-0"
+    enter-to-class="opacity-100"
+    leave-active-class="transition ease-in duration-200"
+    leave-from-class="opacity-100"
+    leave-to-class="opacity-0"
+  >
+    <div
+      v-if="selectedJourney"
+      class="fixed inset-0 bg-black bg-opacity-25 z-40"
+      @click="selectedJourney = null"
+    >
+      <Transition
+        enter-active-class="transform transition ease-out duration-300"
+        enter-from-class="translate-x-full"
+        enter-to-class="translate-x-0"
+        leave-active-class="transform transition ease-in duration-200"
+        leave-from-class="translate-x-0"
+        leave-to-class="translate-x-full"
+      >
+        <div
+          class="fixed inset-y-0 right-0 w-full md:w-96 bg-white shadow-xl z-50 overflow-y-auto"
+          @click.stop
+        >
+          <!-- Modal Header -->
+          <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-gray-800">Détails du trajet</h3>
+            <button
+              @click="selectedJourney = null"
+              class="text-gray-500 hover:text-gray-700"
+            >
+              <XIcon class="w-6 h-6" />
+            </button>
+          </div>
+
+          <!-- Modal Content -->
+          <div class="p-6">
+            <div v-if="selectedJourney" class="space-y-6">
+              <!-- Operator Info -->
+              <div class="flex items-center">
+                <img
+                  :src="selectedJourney.operator.logo"
+                  :alt="selectedJourney.operator.name"
+                  class="h-12 w-12 mr-4 object-contain"
+                />
+                <div>
+                  <h4 class="font-semibold text-gray-800">{{ selectedJourney.operator.name }}</h4>
+                  <p class="text-primary-600 font-bold">{{ selectedJourney.price.toLocaleString() }} FCFA</p>
+                </div>
+              </div>
+
+              <!-- Journey Times -->
+              <div class="bg-gray-50 rounded-lg p-4">
+                <div class="grid grid-cols-3 gap-4">
+                  <div>
+                    <p class="text-xs text-gray-500">Départ</p>
+                    <p class="font-medium">{{ selectedJourney.departureTime }}</p>
+                    <p class="text-sm text-gray-600">{{ selectedJourney.origin }}</p>
+                  </div>
+                  <div class="text-center">
+                    <p class="text-xs text-gray-500">Durée</p>
+                    <p class="font-medium">{{ selectedJourney.duration }}</p>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-xs text-gray-500">Arrivée</p>
+                    <p class="font-medium">{{ selectedJourney.arrivalTime }}</p>
+                    <p class="text-sm text-gray-600">{{ selectedJourney.destination }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Contact Information -->
+              <div>
+                <h4 class="font-semibold mb-3 text-gray-700">Informations de contact</h4>
+                <ul class="space-y-2 text-sm text-gray-600">
+                  <li class="flex items-center">
+                    <MapPinIcon class="w-5 h-5 mr-2 text-gray-400" />
+                    {{ selectedJourney.operator.address }}
+                  </li>
+                  <li class="flex items-center">
+                    <PhoneIcon class="w-5 h-5 mr-2 text-gray-400" />
+                    {{ selectedJourney.operator.phone }}
+                  </li>
+                  <li class="flex items-center">
+                    <Megaphone class="w-5 h-5 mr-2 text-gray-400" />
+                    {{ selectedJourney.operator.email }}
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Services -->
+              <div>
+                <h4 class="font-semibold mb-3 text-gray-700">Services</h4>
+                <ul class="grid grid-cols-2 gap-3">
+                  <li
+                    v-for="service in selectedJourney.operator.services"
+                    :key="service"
+                    class="flex items-center text-sm text-gray-600"
+                  >
+                    <CheckCircleIcon class="w-5 h-5 mr-2 text-green-500" />
+                    {{ service }}
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Book Button -->
+              <button
+                class="w-full bg-primary-600 text-white py-3 px-4 rounded-lg hover:bg-primary-700 transition-colors"
+              >
+                Réserver ce trajet
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </div>
+  </Transition>
 </template>
 
 <script setup lang="ts">
 import { carCompanies } from '~/server/data';
 import type { CarJourney } from '~/server/data';
+import { ChevronDownIcon, FilterIcon, XIcon, CheckIcon, ChevronRightIcon, MapPinIcon, PhoneIcon, Megaphone, CheckCircleIcon } from 'lucide-vue-next';
 
 const route = useRoute();
 const loading = ref(false);
 const journeys = ref<CarJourney[]>([]);
 const expandedJourney = ref<string | null>(null);
+const showFiltersModal = ref(false);
+const selectedJourney = ref<CarJourney | null>(null);
 
 const searchParams = ref({
   from: route.query.from as string || '',
   to: route.query.to as string || '',
-  date: route.query.date as string || '',
   passengers: Number(route.query.passengers) || 1
 });
 
@@ -242,17 +430,18 @@ const filters = ref({
 const companies = computed(() => carCompanies);
 
 const filteredJourneys = computed(() => {
+  // Existing filtering logic remains the same
   return journeys.value.filter(journey => {
-    // Filter by price
+    // Price filter
     if (journey.price > filters.value.maxPrice) return false;
     
-    // Filter by company
+    // Company filter
     if (filters.value.selectedCompanies.length > 0 && 
         !filters.value.selectedCompanies.includes(journey.operator.id)) {
       return false;
     }
     
-    // Filter by departure time
+    // Departure time filter
     if (filters.value.departureTime) {
       const hour = parseInt(journey.departureTime.split(':')[0]);
       if (filters.value.departureTime === 'morning' && (hour < 6 || hour >= 12)) return false;
@@ -263,6 +452,10 @@ const filteredJourneys = computed(() => {
     return true;
   });
 });
+
+const toggleJourneyDetails = (journeyId: string) => {
+  expandedJourney.value = expandedJourney.value === journeyId ? null : journeyId;
+};
 
 const handleSearch = async () => {
   loading.value = true;
@@ -297,3 +490,10 @@ useHead({
   ]
 });
 </script>
+
+<style scoped>
+/* Existing styles plus smooth modal transition */
+.shadow-light {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+</style>

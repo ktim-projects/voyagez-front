@@ -33,18 +33,20 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useVModel, onClickOutside } from '@vueuse/core';
+import {  onClickOutside } from '@vueuse/core';
 import { cities } from '~/server/data';
 
 const props = defineProps<{
-  modelValue: string;
+  // modelValue: string;
   placeholder?: string;
   type: 'origin' | 'destination';
 }>();
 
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: string): void;
-}>();
+const modelValue = defineModel<string>();
+
+// const emit = defineEmits<{
+//   (e: 'update:modelValue', value: string): void;
+// }>();
 
 const suggestions = ref(cities);
 const showSuggestions = ref(false);
@@ -52,7 +54,8 @@ const suggestionsRef = ref<HTMLElement | null>(null);
 
 const handleInput = (event: Event) => {
   const value = (event.target as HTMLInputElement).value;
-  emit('update:modelValue', value);
+  // emit('update:modelValue', value);
+  modelValue.value = value;
   
   if (!value.trim()) {
     suggestions.value = cities;
@@ -71,7 +74,8 @@ const showAllSuggestions = () => {
 };
 
 const selectSuggestion = (suggestion: { name: string; region: string }) => {
-  emit('update:modelValue', suggestion.name);
+  // emit('update:modelValue', suggestion.name);
+  modelValue.value = suggestion.name;
   showSuggestions.value = false;
 };
 
