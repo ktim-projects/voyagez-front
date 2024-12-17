@@ -211,7 +211,12 @@
           <div 
             v-for="journey in filteredJourneys" 
             :key="journey.id" 
-            class="bg-white rounded-xl shadow-light p-6 hover:shadow-md transition-all duration-200 hover:scale-[1.02] cursor-pointer relative group"
+            :class="[
+              'bg-white rounded-xl p-6 transition-all duration-200 cursor-pointer relative',
+              selectedJourney?.id === journey.id 
+                ? 'ring-2 ring-primary-500 shadow-lg bg-primary-50'
+                : 'shadow-light hover:shadow-md hover:scale-[1.02]'
+            ]"
             @click="selectedJourney = journey"
           >
             <div class="flex flex-col sm:flex-row justify-between items-start">
