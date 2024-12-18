@@ -41,10 +41,17 @@
     <div class="md:hidden mb-4">
       <button 
         @click="showFiltersModal = true"
-        class="w-full bg-primary-600 text-white py-3 rounded-lg flex items-center justify-center"
+        class="w-full bg-white border border-gray-300 text-gray-700 py-2.5 px-4 rounded-lg flex items-center justify-between shadow-sm hover:bg-gray-50"
       >
-        <FilterIcon class="w-5 h-5 mr-2" />
-        Filtres
+        <div class="flex items-center">
+          <FilterIcon class="w-4 h-4 mr-2 text-gray-500" />
+          <span>Filtres</span>
+        </div>
+        <div class="flex items-center">
+          <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary-100 text-primary-700 text-sm font-medium">
+            {{ activeFiltersCount }}
+          </span>
+        </div>
       </button>
     </div>
 
@@ -61,12 +68,22 @@
         <div class="p-6">
           <div class="flex justify-between items-center mb-6">
             <h3 class="text-lg font-semibold text-gray-800">Filtres</h3>
-            <button 
-              @click="showFiltersModal = false"
-              class="text-gray-600 hover:text-gray-800"
-            >
-              <XIcon class="w-6 h-6" />
-            </button>
+            <div class="flex items-center gap-4">
+              <button 
+                v-if="hasActiveFilters"
+                @click="resetFilters"
+                class="text-sm text-gray-600 hover:text-gray-800 flex items-center"
+              >
+                <RefreshCcwIcon class="w-4 h-4 mr-1" />
+                Réinitialiser
+              </button>
+              <button 
+                @click="showFiltersModal = false"
+                class="text-gray-600 hover:text-gray-800"
+              >
+                <XIcon class="w-6 h-6" />
+              </button>
+            </div>
           </div>
 
           <!-- Price Filter -->
@@ -82,7 +99,7 @@
               step="1000"
               class="w-full"
             >
-            <div class="text-sm text-gray-600 mt-2 text-center">
+            <div class="text-sm text-gray-600 mt-2 text-left">
               {{ filters.maxPrice.toLocaleString() }} FCFA
             </div>
           </div>
@@ -134,11 +151,21 @@
     </div>
 
     <!-- Results Container -->
-    <div class="grid md:grid-cols-4 gap-6">
+    <div class="grid md:grid-cols-12 gap-6">
       <!-- Desktop Filters -->
-      <div class="md:col-span-1 hidden md:block">
+      <div class="md:col-span-4 hidden md:block">
         <div class="bg-white rounded-xl shadow-light p-6">
-          <h3 class="text-lg font-semibold mb-4 text-gray-800">Filtres</h3>
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-gray-800">Filtres</h3>
+            <button 
+              v-if="hasActiveFilters"
+              @click="resetFilters"
+              class="text-sm text-gray-600 hover:text-gray-800 flex items-center"
+            >
+              <RefreshCcwIcon class="w-4 h-4 mr-1" />
+              Réinitialiser
+            </button>
+          </div>
           
           <!-- Price Filter -->
           <div class="mb-6">
@@ -153,7 +180,7 @@
               step="1000"
               class="w-full"
             >
-            <div class="text-sm text-gray-600 mt-2 text-center">
+            <div class="text-sm text-gray-600 mt-2 text-left">
               {{ filters.maxPrice.toLocaleString() }} FCFA
             </div>
           </div>
@@ -197,13 +224,11 @@
       </div>
 
       <!-- Results List -->
-      <div class="md:col-span-3 col-span-full">
+      <div class="md:col-span-8 col-span-full">
         <!-- Loading State -->
-        <div v-if="loading" class="text-center py-12">
-          <div class="animate-pulse">
-            <div class="h-10 bg-gray-200 rounded w-48 mx-auto mb-4"></div>
-            <div class="h-6 bg-gray-200 rounded w-64 mx-auto"></div>
-          </div>
+        <div v-if="loading" class="text-center py-8">
+          <CarLoader />
+          <p class="text-gray-500">Recherche des voyages disponibles...</p>
         </div>
 
         <!-- Results -->
@@ -219,9 +244,10 @@
             ]"
             @click="selectedJourney = journey"
           >
-            <div class="flex flex-col sm:flex-row justify-between items-start">
-              <div class="flex-1 w-full">
-                <div class="flex items-center mb-4">
+            <div class="flex flex-col">
+              <!-- En-tête avec opérateur et prix -->
+              <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center">
                   <img 
                     :src="journey.operator.logo" 
                     :alt="journey.operator.name" 
@@ -231,29 +257,34 @@
                     {{ journey.operator.name }}
                   </h3>
                 </div>
-
-                <div class="grid grid-cols-3 gap-4">
-                  <div>
-                    <p class="text-xs text-gray-500">Départ</p>
-                    <p class="font-medium">{{ journey.departureTime }}</p>
-                    <p class="text-sm text-gray-600">{{ journey.origin }}</p>
-                  </div>
-                  <div class="text-center">
-                    <p class="text-xs text-gray-500">Durée (estimée)</p>
-                    <p class="font-medium">{{ journey.duration }}</p>
-                    <div class="border-t border-gray-200 my-1"></div>
-                    <p class="text-xs text-gray-400">* Temps approximatif</p>
-                  </div>
-                  <div class="text-right">
-                    <p class="text-xs text-gray-500">Arrivée</p>
-                    <p class="font-medium">{{ journey.arrivalTime }}</p>
-                    <p class="text-sm text-gray-600">{{ journey.destination }}</p>
-                  </div>
+                <div class="hidden sm:block">
+                  <p class="text-lg font-bold text-primary-600">
+                    {{ journey.price.toLocaleString() }} FCFA
+                  </p>
                 </div>
               </div>
 
-              <div class="w-full sm:w-auto sm:ml-4 mt-4 sm:mt-0 text-center sm:text-right">
-                <p class="text-lg font-bold text-primary-600">
+              <div class="grid grid-cols-3 gap-4 mb-4">
+                <div>
+                  <p class="text-xs text-gray-500">Départ</p>
+                  <p class="font-medium">{{ journey.departureTime }}</p>
+                  <p class="text-sm text-gray-600">{{ journey.origin }}</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-xs text-gray-500">Durée (estimée)</p>
+                  <p class="font-medium">{{ journey.duration }}</p>
+                  <div class="border-t border-gray-200 my-1"></div>
+                  <p class="text-xs text-gray-400">* Temps approximatif</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-xs text-gray-500">Arrivée</p>
+                  <p class="font-medium">{{ journey.arrivalTime }}</p>
+                  <p class="text-sm text-gray-600">{{ journey.destination }}</p>
+                </div>
+              </div>
+
+              <div class="block sm:hidden">
+                <p class="text-lg font-bold text-primary-600 text-center">
                   {{ journey.price.toLocaleString() }} FCFA
                 </p>
               </div>
@@ -411,7 +442,8 @@
 <script setup lang="ts">
 import { carCompanies } from '~/server/data';
 import type { CarJourney } from '~/server/data';
-import { ChevronDownIcon, FilterIcon, XIcon, CheckIcon, ChevronRightIcon, MapPinIcon, PhoneIcon, Megaphone, CheckCircleIcon } from 'lucide-vue-next';
+import { ChevronDownIcon, FilterIcon, XIcon, CheckIcon, ChevronRightIcon, MapPinIcon, PhoneIcon, Megaphone, CheckCircleIcon, RefreshCcwIcon } from 'lucide-vue-next';
+import CarLoader from './CarLoader.vue';
 
 const route = useRoute();
 const loading = ref(false);
@@ -458,6 +490,20 @@ const filteredJourneys = computed(() => {
   });
 });
 
+const hasActiveFilters = computed(() => {
+  return filters.value.maxPrice !== 50000 || 
+         filters.value.selectedCompanies.length > 0 || 
+         filters.value.departureTime !== '';
+});
+
+const activeFiltersCount = computed(() => {
+  let count = 0;
+  if (filters.value.maxPrice !== 50000) count++;
+  if (filters.value.selectedCompanies.length > 0) count++;
+  if (filters.value.departureTime !== '') count++;
+  return count;
+});
+
 const toggleJourneyDetails = (journeyId: string) => {
   expandedJourney.value = expandedJourney.value === journeyId ? null : journeyId;
 };
@@ -475,6 +521,12 @@ const handleSearch = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+const resetFilters = () => {
+  filters.value.maxPrice = 50000;
+  filters.value.selectedCompanies = [];
+  filters.value.departureTime = '';
 };
 
 // Initial search
