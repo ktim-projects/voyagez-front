@@ -63,6 +63,34 @@ export const busLines: BusLine[] = [
         latitude: 5.3499,
         longitude: -4.0199,
         description: 'Tour F'
+      },
+      {
+        id: '1',
+        name: 'Yopougon Siporex',
+        latitude: 5.3365,
+        longitude: -4.0888,
+        description: 'Station Siporex'
+      },
+      {
+        id: '2',
+        name: 'Yopougon Attié',
+        latitude: 5.3399,
+        longitude: -4.0799,
+        description: 'Quartier Attié'
+      },
+      {
+        id: '3',
+        name: 'Banco 2',
+        latitude: 5.3412,
+        longitude: -4.0701,
+        description: 'Arrêt Banco 2'
+      },
+      {
+        id: '4',
+        name: 'Adjamé Centre',
+        latitude: 5.3419,
+        longitude: -4.0698,
+        description: 'Centre commercial Adjamé'
       }
     ]
   },

@@ -140,14 +140,14 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label for="busFrom" class="block text-sm font-medium text-gray-700">Point de départ</label>
-                    <AddressAutocomplete
+                    <BusStopSelect
                       v-model="busSearch.from"
                       placeholder="Arrêt de départ"
                     />
                   </div>
                   <div>
                     <label for="busTo" class="block text-sm font-medium text-gray-700">Point d'arrivée</label>
-                    <AddressAutocomplete
+                    <BusStopSelect
                       v-model="busSearch.to"
                       placeholder="Arrêt d'arrivée"
                     />
