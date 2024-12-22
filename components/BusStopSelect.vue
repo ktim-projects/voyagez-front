@@ -3,7 +3,7 @@
     <div class="relative">
       <input
         type="text"
-        :value="modelValue"
+        :value="searchText"
         @input="onInput"
         :placeholder="placeholder"
         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -26,8 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-import { busLines } from '@/server/data/bus-lines'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 
 interface BusStop {
   id: string
@@ -40,6 +39,7 @@ interface BusStop {
 const props = defineProps<{
   modelValue: string
   placeholder?: string
+  stops: BusStop[]
 }>()
 
 const emit = defineEmits<{
@@ -47,32 +47,23 @@ const emit = defineEmits<{
   (e: 'select', stop: BusStop): void
 }>()
 
-const searchText = ref('')
+const searchText = ref(props.modelValue || '')
 const showDropdown = ref(false)
 
-// Extraire tous les arrêts uniques de toutes les lignes de bus
-const allStops = computed(() => {
-  const stopsMap = new Map<string, BusStop>()
-  
-  busLines.forEach(line => {
-    line.stops.forEach(stop => {
-      // Utiliser le nom comme clé pour éviter les doublons
-      if (!stopsMap.has(stop.name)) {
-        stopsMap.set(stop.name, stop)
-      }
-    })
-  })
-  
-  return Array.from(stopsMap.values())
+// Surveiller les changements de modelValue
+watch(() => props.modelValue, (newValue) => {
+  if (newValue !== searchText.value) {
+    searchText.value = newValue || ''
+  }
 })
 
 const filteredStops = computed(() => {
-  const search = searchText.value.toLowerCase()
-  if (!search) return allStops.value
+  const search = searchText.value.toLowerCase().trim()
+  if (!search) return props.stops
   
-  return allStops.value.filter(stop => 
+  return props.stops.filter(stop => 
     stop.name.toLowerCase().includes(search) || 
-    stop.description.toLowerCase().includes(search)
+    stop.description?.toLowerCase().includes(search)
   )
 })
 
