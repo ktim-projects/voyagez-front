@@ -791,6 +791,10 @@ const getRouteTitle = (route: BusRoute, index: number): string => {
   return `Option ${index + 1}`;
 };
 
+const formatNumber = (busLine: string) => {
+  return Number(busLine) < 10 ? `0${busLine}` : `${busLine}`;
+};
+
 const searchRoute = async () => {
   loading.value = true;
   busLine.value = null;
@@ -799,7 +803,10 @@ const searchRoute = async () => {
   
   try {
     if (searchType.value === 'number') {
-      const foundLine = await $fetch(`/api/bus/line/${search.value.busNumber}`);
+      const line = formatNumber(search.value.busNumber);
+      console.log('line', line);
+      
+      const foundLine = await $fetch(`/api/bus/line/${line}`);
       if (foundLine) {
         busLine.value = foundLine;
         drawBusLine(foundLine);

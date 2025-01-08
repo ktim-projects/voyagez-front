@@ -1,8 +1,15 @@
-import { carJourneys } from '../../data';
+import { serverSupabaseClient } from '#supabase/server'
+import { createError } from 'h3'
 
-export default defineEventHandler((event) => {
+// defineCachedEventHandler
+export default defineEventHandler(async (event) => {
   const query = getQuery(event);
-  const { from, to, date } = query;
+  const { from, to, page = 1, limit = 3, } = query; 
+  
+
+  // const limit = 3; // Nombre d'éléments par page
+  // const page = parseInt(page as string) || 1;
+  const offset: number = (Number(page) - 1) * Number(limit);
 
   if (!from || !to) {
     throw createError({
@@ -11,13 +18,50 @@ export default defineEventHandler((event) => {
     });
   }
 
-  const filteredJourneys = carJourneys.filter(journey => {
-    const matchesOrigin = journey.origin.toLowerCase() === (from as string).toLowerCase();
-    const matchesDestination = journey.destination.toLowerCase() === (to as string).toLowerCase();
-    const matchesDate = !date || journey.date === date;
+  console.log('fetching car journeys...');
 
-    return matchesOrigin && matchesDestination && matchesDate;
-  });
+  // Implement pagination and filtering
+  
 
-  return filteredJourneys;
+  const client = await serverSupabaseClient(event)
+  
+
+  const { data: departures, error, count } = await client
+    .from('departure')
+    .select(`
+      *,
+      company (
+        id,
+        name,
+        logo_url,
+        contact,
+        email,
+        services
+      )
+    `, { count: 'exact' })
+    .eq('origin', from)
+    .eq('destination', to)
+    .range(offset, offset + Number(limit) - 1) // Définit l'offset et la limite
+    .order('departure_time', { ascending: true }) 
+
+
+  if (error) {
+    throw createError({ statusMessage: error.message })
+  }
+
+  console.log('departures--', departures.length);
+  console.log('Total des résultats :', count);
+  
+  // return departures
+  return {
+    departures,
+    total: count,
+    totalPages: Math.ceil(count / limit),
+  };
+
+  // _meta: {
+  //   total: count,
+  //   limit: Number(limit), 
+  //   offset
+  // }
 });

@@ -1,0 +1,1 @@
+INSERT INTO "public"."departure" ("operator", "origin", "destination", "departure_time", "arrival_time", "duration", "price", "date", "created_at", "updated_at") VALUES ('f3b2ea84-4b57-4c6d-b874-ba8d1bf36117', 'Abidjan', 'Bouake', '10:30:00', '14:00:00', '4h 30min', '7500', '2024-01-01', '2024-12-31 16:02:40.245436', '2024-12-31 16:02:40.245436');

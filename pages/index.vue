@@ -196,6 +196,8 @@
 </template>
 
 <script setup lang="ts">
+import type { CarCompany } from '~/server/data';
+
 
 const activeTab = ref('car');
 
@@ -252,8 +254,6 @@ const handleCarSearch = () => {
       type: 'car',
       from: carSearch.value.from,
       to: carSearch.value.to,
-      date: carSearch.value.date,
-      passengers: carSearch.value.passengers
     }
   });
 };
@@ -278,6 +278,23 @@ const searchDestination = (destination: any) => {
   carSearch.value.to = destination.name;
   handleCarSearch();
 };
+
+// const companies =ref<CarCompany[]>([]);
+
+// const getCompanies = async () => {
+//   // loading.value = true;
+//   try {
+//     const response = await $fetch('/api/car/companies');
+//     companies.value = response as CarCompany[];
+//   } catch (error) {
+//     console.error('Error fetching companies:', error);
+//     companies.value = [];
+//   }
+// };
+
+// onMounted(() => {
+//   getCompanies();
+// });
 
 // SEO
 useHead({

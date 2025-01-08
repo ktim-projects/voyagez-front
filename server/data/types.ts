@@ -40,23 +40,24 @@ export interface BusRoute {
 export interface CarCompany {
   id: string;
   name: string;
-  logo: string;
-  address: string;
-  phone: string;
-  email: string;
-  services: string[];
+  logo_url?: string;
+  address?: string;
+  contact: string;
+  email?: string;
+  services?: string[];
 }
 
 export interface CarJourney {
   id: string;
-  operator: CarCompany;
+  operator: string;
   origin: string;
   destination: string;
-  departureTime: string;
-  arrivalTime: string;
+  departure_time: string;
+  arrival_time: string;
   duration: string;
   price: number;
   date: string;
+  company: CarCompany
 }
 
 export interface BlogPost {

@@ -1,5 +1,5 @@
--- Création de la table 'departures'
-CREATE TABLE departures (
+-- Création de la table 'departure'
+CREATE TABLE departure (
     id uuid DEFAULT gen_random_uuid() PRIMARY KEY, -- Clé primaire auto-générée
     operator uuid NOT NULL,                       -- Identifiant de la compagnie (UUID fourni manuellement)
     origin text NOT NULL,                         -- Ville de départ
@@ -16,18 +16,18 @@ CREATE TABLE departures (
 
 
 -- Index sur la colonne 'origin' pour améliorer les filtres par ville de départ
-CREATE INDEX departures_origin_idx ON departures (origin);
+CREATE INDEX departure_origin_idx ON departure (origin);
 
 -- Index sur la colonne 'destination' pour améliorer les filtres par destination
-CREATE INDEX departures_destination_idx ON departures (destination);
+CREATE INDEX departure_destination_idx ON departure (destination);
 
 -- Index sur la colonne 'date' pour améliorer les recherches par date
-CREATE INDEX departures_date_idx ON departures (date);
+CREATE INDEX departure_date_idx ON departure (date);
 
 
 -- Autoriser l'accès en lecture pour tout le monde
 CREATE POLICY "Allow read access to all"
-ON departures
+ON departure
 FOR SELECT
 USING (true);
 
@@ -42,6 +42,6 @@ $$ LANGUAGE plpgsql;
 
 -- Créer un trigger pour mettre à jour updated_at
 CREATE TRIGGER set_updated_at
-BEFORE UPDATE ON departures
+BEFORE UPDATE ON departure
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();

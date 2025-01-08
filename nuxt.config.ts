@@ -4,7 +4,8 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
-    '@nuxtjs/color-mode'
+    '@nuxtjs/color-mode',
+    '@nuxtjs/supabase'
   ],
 
   css: ['~/assets/css/main.css'],
@@ -34,6 +35,12 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
     shim: false
+  },
+
+  supabase: {
+    redirect: false,
+    url: 'https://xgzetswtddvvgedpxzbx.supabase.co',
+    key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhnemV0c3d0ZGR2dmdlZHB4emJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzUwNjYyMDUsImV4cCI6MjA1MDY0MjIwNX0.Y59zSkr369-5-8dv11pKveMuG0aVQrYVvHY8_Yo16cM'
   },
 
   devtools: { enabled: false },
