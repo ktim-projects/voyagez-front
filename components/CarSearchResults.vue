@@ -244,7 +244,6 @@
             ]"
             @click="departureSelected = departure"
           >
-          <pre>{{ totalPages }} / {{ filteredDepartures.length }} / {{ page }}</pre>
             <div class="flex flex-col">
               <!-- En-tête avec opérateur et prix -->
               <div class="flex justify-between items-center mb-6">
