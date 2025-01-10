@@ -244,6 +244,7 @@
             ]"
             @click="departureSelected = departure"
           >
+          test log 
             <div class="flex flex-col">
               <!-- En-tête avec opérateur et prix -->
               <div class="flex justify-between items-center mb-6">
