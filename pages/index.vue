@@ -252,8 +252,8 @@ const handleCarSearch = () => {
     path: '/search',
     query: {
       type: 'car',
-      from: carSearch.value.from,
-      to: carSearch.value.to,
+      from: removeAccents(carSearch.value.from),
+      to: removeAccents(carSearch.value.to),
     }
   });
 };

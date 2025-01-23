@@ -47,17 +47,18 @@ export interface CarCompany {
   services?: string[];
 }
 
-export interface CarJourney {
+export interface Departure {
   id: string;
   operator: string;
   origin: string;
   destination: string;
   departure_time: string;
   arrival_time: string;
-  duration: string;
+  duration: number;
   price: number;
   date: string;
   company: CarCompany
+  departure_station: string
 }
 
 export interface BlogPost {

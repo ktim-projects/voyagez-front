@@ -23,7 +23,7 @@ export const carCompanies = [
      ]
   },
   {
-     "id":"86307912-35a1-4dbc-aba9-31b22bf23c71",
+     "id":"5d1273a0-5251-4f62-9980-d4f80ebfb372",
      "name":"ART",
      "logo":"https:\/\/test.voyagez.ci\/sites\/default\/files\/2023-11\/382492942_190577917385965_2785413616857961412_n.jpg",
      "phone":"+225 2731606615",
@@ -36,7 +36,7 @@ export const carCompanies = [
      ]
   },
   {
-     "id":"61e594b0-a80a-4f06-a64a-2347b741a392",
+     "id":"ed2f48ee-8465-452b-8a23-452bf2771c32",
      "name":"SIDO",
      "logo":"https:\/\/test.voyagez.ci\/sites\/default\/files\/2024-01\/319392087_146385934825398_5230852105866240533_n.jpg",
      "phone":"0768101045, 0160608806",
@@ -46,7 +46,7 @@ export const carCompanies = [
      ]
   },
   {
-     "id":"3911305c-4aa0-4e05-9b0a-bcd8f473b116",
+     "id":"5d798c0e-a82c-46dd-ac56-94efdb7a3876",
      "name":"RAHIMO",
      "logo":"https:\/\/test.voyagez.ci\/sites\/default\/files\/2024-01\/318537318_553335223469485_8507882222487654130_n.jpg",
      "phone":"0759663866",
@@ -58,7 +58,7 @@ export const carCompanies = [
      ]
   },
   {
-     "id":"a7238c62-946d-4622-93ee-4228b8a58996",
+     "id":"facd4421-b67b-4b2d-976e-c16592180dd2",
      "name":"SHT",
      "logo":"https:\/\/test.voyagez.ci\/sites\/default\/files\/2024-02\/2022-04-21.jpg",
      "phone":"+225 0707624171, +225 0707291439, +225 0768200104",
@@ -66,27 +66,27 @@ export const carCompanies = [
         
      ]
   },
-  {
-     "id":"9de74fef-625d-487a-964f-f544016af661",
-     "name":"SDS",
-     "logo":"https:\/\/test.voyagez.ci\/sites\/default\/files\/2024-03\/345043878_2183620021838840_1440848700807907071_n.jpg",
-     "phone":"+225 0768698502",
-     "services":[
-        "climatisation",
-        "reservation"
-     ]
-  },
-  {
-     "id":"b3338307-5f5a-4cda-b5d2-d4f6bb762565",
-     "name":"GTI",
-     "logo":"https:\/\/test.voyagez.ci\/sites\/default\/files\/2024-04\/347407091_146192395105481_6438545626486456310_n.jpg",
-     "phone":"+225 0545206204",
-     "services":[
+//   {
+//      "id":"9de74fef-625d-487a-964f-f544016af661",
+//      "name":"SDS",
+//      "logo":"https:\/\/test.voyagez.ci\/sites\/default\/files\/2024-03\/345043878_2183620021838840_1440848700807907071_n.jpg",
+//      "phone":"+225 0768698502",
+//      "services":[
+//         "climatisation",
+//         "reservation"
+//      ]
+//   },
+//   {
+//      "id":"b3338307-5f5a-4cda-b5d2-d4f6bb762565",
+//      "name":"GTI",
+//      "logo":"https:\/\/test.voyagez.ci\/sites\/default\/files\/2024-04\/347407091_146192395105481_6438545626486456310_n.jpg",
+//      "phone":"+225 0545206204",
+//      "services":[
         
-     ]
-  },
+//      ]
+//   },
   {
-     "id":"55a75fd5-b5e1-4935-8436-37ed40231a10",
+     "id":"aa017432-df8b-47d8-9948-4e2cd7bf6c7d",
      "name":"TSR",
      "logo":"https:\/\/test.voyagez.ci\/sites\/default\/files\/2024-05\/269790694_111175784758171_8154147180663391024_n.jpg",
      "phone":"0747370802",
@@ -97,7 +97,7 @@ export const carCompanies = [
      ]
   },
   {
-     "id":"6714ccbf-d884-4c6c-81a7-0c6d75c59f5e",
+     "id":"6f64d9ba-c562-4daf-8869-4dba4d103d77",
      "name":"JET Express",
      "logo":"https:\/\/test.voyagez.ci\/sites\/default\/files\/2024-06\/409699541_122109026930139383_6430975916808101774_n.jpg",
      "phone":"+225 07 05 35 08 08",
@@ -106,34 +106,34 @@ export const carCompanies = [
         "reservation"
      ]
   },
-  {
-     "id":"bb35f2f5-16ba-4278-8fb3-23fdacc7a902",
-     "name":"ETV",
-     "logo":"https:\/\/test.voyagez.ci\/sites\/default\/files\/2024-07\/esif%20transport.jpg",
-     "phone":"+2250777657448, +2250707445152",
-     "services":[
+//   {
+//      "id":"bb35f2f5-16ba-4278-8fb3-23fdacc7a902",
+//      "name":"ETV",
+//      "logo":"https:\/\/test.voyagez.ci\/sites\/default\/files\/2024-07\/esif%20transport.jpg",
+//      "phone":"+2250777657448, +2250707445152",
+//      "services":[
         
-     ]
-  },
-  {
-     "id":"93e39ba9-29dc-4fa0-bb2a-e7d301ff7f6d",
-     "name":"STB",
-     "logo":"https:\/\/test.voyagez.ci\/sites\/default\/files\/2024-08\/456093183_122106341624468202_2342923621173754692_n.jpg",
-     "phone":"0759665968",
-     "services":[
+//      ]
+//   },
+//   {
+//      "id":"93e39ba9-29dc-4fa0-bb2a-e7d301ff7f6d",
+//      "name":"STB",
+//      "logo":"https:\/\/test.voyagez.ci\/sites\/default\/files\/2024-08\/456093183_122106341624468202_2342923621173754692_n.jpg",
+//      "phone":"0759665968",
+//      "services":[
         
-     ]
-  },
-  {
-     "id":"3b2bfd33-668e-41d1-9770-24c203f44e49",
-     "name":"OT-CI",
-     "logo":"https:\/\/test.voyagez.ci\/sites\/default\/files\/2024-11\/ot-ci.JPG",
-     "phone":"+225  2736881296",
-     "services":[
-        "climatisation",
-        "reservation"
-     ]
-  }
+//      ]
+//   },
+//   {
+//      "id":"3b2bfd33-668e-41d1-9770-24c203f44e49",
+//      "name":"OT-CI",
+//      "logo":"https:\/\/test.voyagez.ci\/sites\/default\/files\/2024-11\/ot-ci.JPG",
+//      "phone":"+225  2736881296",
+//      "services":[
+//         "climatisation",
+//         "reservation"
+//      ]
+//   }
 ]
 
 // export const carCompanies: CarCompany[] = [

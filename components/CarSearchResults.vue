@@ -115,7 +115,7 @@
               >
                 <input
                   type="checkbox"
-                  v-model="filters.selectedCompanies"
+                  v-model="filters.companies"
                   :value="company.id"
                   class="rounded text-primary-600 focus:ring-primary-500"
                 >
@@ -129,15 +129,21 @@
             <label class="block text-sm font-medium text-gray-600 mb-2">
               Heure de Départ
             </label>
-            <select 
-              v-model="filters.departureTime" 
-              class="w-full rounded-md border-gray-300 shadow-sm focus:ring-primary-500"
-            >
-              <option value="">Toute heure</option>
-              <option value="morning">Matin (6h - 12h)</option>
-              <option value="afternoon">Après-midi (12h - 18h)</option>
-              <option value="evening">Soir (18h - 00h)</option>
-            </select>
+            <div class="relative">
+              <select 
+                v-model="filters.departurePeriod" 
+                @change="debouncedSearch"
+                class="appearance-none w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 pr-10"
+              >
+                <option value="">Toute heure</option>
+                <option value="morning">Matin (5h - 12h)</option>
+                <option value="afternoon">Après-midi (12h - 18h)</option>
+                <option value="evening">Soir (18h - 00h)</option>
+              </select>
+              <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                <ChevronDownIcon class="h-5 w-5 text-gray-400" />
+              </div>
+            </div>
           </div>
 
           <button 
@@ -196,7 +202,7 @@
               >
                 <input
                   type="checkbox"
-                  v-model="filters.selectedCompanies"
+                  v-model="filters.companies"
                   :value="company.id"
                   class="rounded text-primary-600 focus:ring-primary-500"
                 >
@@ -210,15 +216,21 @@
             <label class="block text-sm font-medium text-gray-600 mb-2">
               Heure de Départ
             </label>
-            <select 
-              v-model="filters.departureTime" 
-              class="w-full rounded-md border-gray-300 shadow-sm focus:ring-primary-500"
-            >
-              <option value="">Toute heure</option>
-              <option value="morning">Matin (6h - 12h)</option>
-              <option value="afternoon">Après-midi (12h - 18h)</option>
-              <option value="evening">Soir (18h - 00h)</option>
-            </select>
+            <div class="relative">
+              <select 
+                v-model="filters.departurePeriod" 
+                @change="debouncedSearch"
+                class="appearance-none w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 pr-10"
+              >
+                <option value="">Toute heure</option>
+                <option value="morning">Matin (5h - 12h)</option>
+                <option value="afternoon">Après-midi (12h - 18h)</option>
+                <option value="evening">Soir (18h - 00h)</option>
+              </select>
+              <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                <ChevronDownIcon class="h-5 w-5 text-gray-400" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -232,80 +244,82 @@
         </div>
 
         <!-- Results -->
-        <div v-else-if="filteredDepartures.length > 0" class="space-y-4">
-          <div 
-            v-for="departure in filteredDepartures" 
-            :key="departure.id" 
-            :class="[
-              'bg-white rounded-xl p-6 transition-all duration-200 cursor-pointer relative',
-              departureSelected?.id === departure.id 
-                ? 'ring-2 ring-primary-500 shadow-lg bg-primary-50'
-                : 'shadow-light hover:shadow-md hover:scale-[1.02]'
-            ]"
-            @click="departureSelected = departure"
-          >
-            <div class="flex flex-col">
-              <!-- En-tête avec opérateur et prix -->
-              <div class="flex justify-between items-center mb-6">
-                <div class="flex items-center">
-                  <img 
-                    :src="departure.company.logo_url" 
-                    :alt="departure.company.name" 
-                    class="h-8 w-8 mr-3 object-contain"
-                  />
-                  <h3 class="text-lg font-semibold text-gray-800">
-                    {{ departure.company.name }}
-                  </h3>
+        <template v-if="departures.length > 0">
+          <!-- Results Count -->
+          <div class="mb-6 bg-white rounded-lg p-4 ">
+            <p class="text-lg text-gray-700">
+              <span class="font-semibold">{{ totalResults }}</span> 
+              {{ totalResults > 1 ? 'départs disponibles' : 'départ disponible' }}
+            </p>
+          </div>
+
+          <!-- Departures List -->
+          <div class="space-y-4">
+            <div 
+              v-for="departure in departures" 
+              :key="departure.id"
+              class="bg-white rounded-xl shadow-light p-6 transition-opacity duration-200"
+            >
+              <div class="flex flex-col">
+                <!-- En-tête avec opérateur et prix -->
+                <div class="flex justify-between items-center mb-6">
+                  <div class="flex items-center">
+                    <img 
+                      :src="departure.company.logo_url" 
+                      :alt="departure.company.name" 
+                      class="h-8 w-8 mr-3 object-contain"
+                    />
+                    <h3 class="text-lg font-semibold text-gray-800">
+                      {{ departure.company.name }}
+                    </h3>
+                  </div>
+                  <div class="hidden sm:block">
+                    <p class="text-lg font-bold text-primary-600">
+                      {{ departure.price.toLocaleString() }} FCFA
+                    </p>
+                  </div>
                 </div>
-                <div class="hidden sm:block">
-                  <p class="text-lg font-bold text-primary-600">
+
+                <div class="grid grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <p class="text-xs text-gray-500">Départ</p>
+                    <p class="font-medium">{{ formatTime(departure.departure_time) }}</p>
+                    <p class="text-sm text-gray-600">{{ departure.origin }} - <span class="text-xs text-gray-400">{{ departure.departure_station }}</span> </p>
+                  </div>
+                  <div class="text-center">
+                    <p class="text-xs text-gray-500">Durée (estimée)</p>
+                    <p class="font-medium">{{ formatDuration(departure.duration) }}</p>
+                    <div class="border-t border-gray-200 my-1"></div>
+                    <p class="text-xs text-gray-400">* Temps approximatif</p>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-xs text-gray-500">Arrivée</p>
+                    <p class="font-medium">{{ formatTime(departure.arrival_time) }}</p>
+                    <p class="text-sm text-gray-600">{{ departure.destination }}</p>
+                  </div>
+                </div>
+
+                <div class="block sm:hidden">
+                  <p class="text-lg font-bold text-primary-600 text-center">
                     {{ departure.price.toLocaleString() }} FCFA
                   </p>
                 </div>
               </div>
+            </div>
 
-              <div class="grid grid-cols-3 gap-4 mb-4">
-                <div>
-                  <p class="text-xs text-gray-500">Départ</p>
-                  <p class="font-medium">{{ formatTime(departure.departure_time) }}</p>
-                  <p class="text-sm text-gray-600">{{ departure.origin }}</p>
-                </div>
-                <div class="text-center">
-                  <p class="text-xs text-gray-500">Durée (estimée)</p>
-                  <p class="font-medium">{{ departure.duration }}</p>
-                  <div class="border-t border-gray-200 my-1"></div>
-                  <p class="text-xs text-gray-400">* Temps approximatif</p>
-                </div>
-                <div class="text-right">
-                  <p class="text-xs text-gray-500">Arrivée</p>
-                  <p class="font-medium">{{ formatTime(departure.arrival_time) }}</p>
-                  <p class="text-sm text-gray-600">{{ departure.destination }}</p>
-                </div>
-              </div>
-
-              <div class="block sm:hidden">
-                <p class="text-lg font-bold text-primary-600 text-center">
-                  {{ departure.price.toLocaleString() }} FCFA
-                </p>
-              </div>
+            <!-- Load More Button -->
+            <div v-if="hasMoreResults" class="flex justify-center mt-8 mb-4">
+              <button 
+                @click="loadMoreResults"
+                :disabled="loadingMore"
+                class="px-6 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all duration-200"
+              >
+                <Loader2Icon v-if="loadingMore" class="w-4 h-4 animate-spin" />
+                <span>{{ loadingMore ? 'Chargement...' : 'Voir plus' }}</span>
+              </button>
             </div>
           </div>
-
-          <!-- Infinite Scroll Trigger -->
-        <div 
-          ref="loadMoreTrigger"
-          v-if="hasMoreResults"
-          class="py-4 text-center"
-        >
-
-        <div v-if="loadingMore" class="text-center py-8">
-          <CarLoader />
-          <p class="text-gray-500">Recherche des voyages disponibles...</p>
-        </div>
-          <!-- <CarLoader v-if="loadingMore" />
-          <p v-else class="text-gray-500 text-sm">Chargement de plus de résultats...</p> -->
-        </div>
-        </div>
+        </template>
 
         <!-- Empty State -->
         <div v-else class="text-center py-12">
@@ -396,7 +410,7 @@
                   </div>
                   <div class="text-center">
                     <p class="text-xs text-gray-500">Durée</p>
-                    <p class="font-medium">{{ departureSelected.duration }}</p>
+                    <p class="font-medium">{{ formatDuration(departureSelected.duration) }}</p>
                   </div>
                   <div class="text-right">
                     <p class="text-xs text-gray-500">Arrivée</p>
@@ -456,19 +470,19 @@
 
 <script setup lang="ts">
 import { carCompanies } from '~/server/data';
-import type { CarJourney } from '~/server/data';
+import type { Departure } from '~/server/data';
 import { ChevronDownIcon, FilterIcon, XIcon, CheckIcon, ChevronRightIcon, MapPinIcon, PhoneIcon, Megaphone, CheckCircleIcon, RefreshCcwIcon } from 'lucide-vue-next';
 import CarLoader from './CarLoader.vue';
-import { useIntersectionObserver } from '@vueuse/core';
+import { useIntersectionObserver , useDebounceFn } from '@vueuse/core';
 
 const ITEMS_PER_PAGE = 6;
 
 const route = useRoute();
 const loading = ref(false);
-const departures = ref<CarJourney[]>([]);
+const departures = ref<Departure[]>([]);
 const expandedJourney = ref<string | null>(null);
 const showFiltersModal = ref(false);
-const departureSelected = ref<CarJourney | null>(null);
+const departureSelected = ref<Departure | null>(null);
 
 const totalPages = ref(0);
 const page = ref(1);
@@ -487,124 +501,134 @@ const searchParams = ref({
 
 const filters = ref({
   maxPrice: 10000,
-  selectedCompanies: [] as string[],
-  departureTime: ''
+  companies: [] as string[],
+  departurePeriod: ''
 });
 
 const companies = computed(() => carCompanies);
 
-const filteredDepartures = computed(() => {
-  // Existing filtering logic remains the same
-  return departures.value.filter(departure => {
-    // Price filter
-    if (departure.price > filters.value.maxPrice) return false;
-    
-    // Company filter
-    if (filters.value.selectedCompanies.length > 0 && 
-        !filters.value.selectedCompanies.includes(departure.company.id)) {
-      return false;
-    }
-    
-    // Departure time filter
-    if (filters.value.departureTime) {
-      const hour = parseInt(departure.departure_time.split(':')[0]);
-      if (filters.value.departureTime === 'morning' && (hour < 6 || hour >= 12)) return false;
-      if (filters.value.departureTime === 'afternoon' && (hour < 12 || hour >= 18)) return false;
-      if (filters.value.departureTime === 'evening' && (hour < 18)) return false;
-    }
-    
-    return true;
-  });
-});
-
 const hasActiveFilters = computed(() => {
   return filters.value.maxPrice !== 10000 || 
-         filters.value.selectedCompanies.length > 0 || 
-         filters.value.departureTime !== '';
+         filters.value.companies.length > 0 || 
+         filters.value.departurePeriod !== '';
 });
 
 const activeFiltersCount = computed(() => {
   let count = 0;
-  if (filters.value.maxPrice !== 50000) count++;
-  if (filters.value.selectedCompanies.length > 0) count++;
-  if (filters.value.departureTime !== '') count++;
+  if (filters.value.maxPrice !== 10000) count++;
+  if (filters.value.companies.length > 0) count++;
+  if (filters.value.departurePeriod !== '') count++;
   return count;
 });
+
+const totalResults = ref(0);
 
 const toggleJourneyDetails = (journeyId: string) => {
   expandedJourney.value = expandedJourney.value === journeyId ? null : journeyId;
 };
 
 // Intersection observer for infinite scroll
-const loadMoreTrigger = ref(null);
+// const loadMoreTrigger = ref(null);
 
 
-useIntersectionObserver(loadMoreTrigger, ([{ isIntersecting }]) => {
-  console.log('loadMoreTrigger', loadMoreTrigger.value);
-  console.log('isIntersecting', isIntersecting);
+// useIntersectionObserver(loadMoreTrigger, ([{ isIntersecting }]) => {
+//   console.log('loadMoreTrigger', loadMoreTrigger.value);
+//   console.log('isIntersecting', isIntersecting);
   
-  if (isIntersecting) {
-    loadMoreResults();
-  }
-});
+//   if (isIntersecting) {
+//     loadMoreResults();
+//   }
+// });
 
 const loadMoreResults = async () => {
   if (loadingMore.value || !hasMoreResults.value) return;
-
-  if (page.value < totalPages.value) {
+  
+  loadingMore.value = true;
+  try {
     page.value++;
-    loadingMore.value = true;
-    try {
-      await handleSearch();
-    } finally {
-      loadingMore.value = false;
-    }
+    const response = await $fetch('/api/car/search', {
+      params: {
+        ...searchParams.value,
+        ...filters.value,
+        page: page.value,
+        limit: ITEMS_PER_PAGE
+      }
+    });
+    
+    // Ajouter les nouveaux résultats sans modifier le scroll
+    departures.value = [...departures.value, ...response.departures];
+    totalPages.value = response.totalPages;
+  } catch (error) {
+    console.error('Error loading more results:', error);
+  } finally {
+    loadingMore.value = false;
   }
 };
+
+const debouncedSearch = useDebounceFn(async () => {
+  page.value = 1;
+  departures.value = []; // Reset departures before new search
+  await handleSearch();
+}, 500); // 500ms delay
 
 const handleSearch = async () => {
   loading.value = true;
   try {
+    const params = {
+      ...searchParams.value,
+      ...filters.value,
+      page: page.value,
+      limit: ITEMS_PER_PAGE
+    }
+    console.log('params', params);
+    
     const response = await $fetch('/api/car/search', {
       params: {
         ...searchParams.value,
+        ...filters.value,
         page: page.value,
-        limit
+        limit: ITEMS_PER_PAGE
       }
     });
 
-    console.log('departures', departures.value);
-
-    departures.value = [...departures.value, ...response.departures as CarJourney[]];
-    totalPages.value = response.totalPages;
-    // totalPages.value = Math.ceil(response.total / limit);
+    if (page.value === 1) {
+      departures.value = response.departures;
+    } else {
+      departures.value = [...departures.value, ...response.departures];
+    }
     
+    totalResults.value = response.total || 0;
+    totalPages.value = response.totalPages;
   } catch (error) {
     console.error('Error fetching departures:', error);
     departures.value = [];
+    totalResults.value = 0;
     totalPages.value = 0;
   } finally {
     loading.value = false;
   }
 };
 
-const formatTime = (time: string) => {
-  const [hour, minute] = time.split(':');
-  return `${hour}:${minute}`;
-};
-
 const resetFilters = () => {
-  filters.value.maxPrice = 10000;
-  filters.value.selectedCompanies = [];
-  filters.value.departureTime = '';
+  filters.value = {
+    maxPrice: 10000,
+    companies: [],
+    departurePeriod: ''
+  };
+  debouncedSearch();
 };
 
 // TO DO
 // mise à jour du formulaire de recherche
-watch(searchParams, async ( newValue, oldValue) => {
-  page.value = 1;
-  await handleSearch();
-})
+// watch([searchParams, filters], async () => {
+//   console.log('watch----', typeof filters.value.maxPrice);
+  
+//   page.value = 1;
+//   await handleSearch();
+// }, { deep: true });
+watch([searchParams, filters], () => {
+  debouncedSearch();
+}, { deep: true });
 
 // Initial search
 onMounted(async () => {
