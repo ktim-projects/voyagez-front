@@ -11,6 +11,7 @@
             class="w-full"
             @select="city => {
               fromCity = city.name;
+              searchStore.from = city;
               handleSearch();
             }"
           />
@@ -24,6 +25,7 @@
             class="w-full"
             @select="city => {
               toCity = city.name;
+              searchStore.to = city;
               handleSearch();
             }"
           />
@@ -488,6 +490,13 @@
       </Transition>
     </div>
   </Transition>
+
+  <!-- Session Expired Modal -->
+  <SessionExpiredModal
+    v-model="showSessionExpiredModal"
+    @refresh="refreshSearch"
+    @new-search="newSearch"
+  />
 </template>
 
 <script setup lang="ts">
@@ -495,10 +504,15 @@ import { carCompanies } from '~/server/data';
 import type { Departure } from '~/server/data';
 import { ChevronDownIcon, FilterIcon, XIcon, CheckIcon, ChevronRightIcon, MapPinIcon, PhoneIcon, Megaphone, CheckCircleIcon, RefreshCcwIcon } from 'lucide-vue-next';
 import CarLoader from './CarLoader.vue';
+import SessionExpiredModal from './SessionExpiredModal.vue';
 import { useIntersectionObserver, useDebounceFn } from '@vueuse/core';
 import { useSearchStore } from '~/stores/search';
+import { useRouter } from 'vue-router';
 
-const ITEMS_PER_PAGE = 25;
+const router = useRouter();
+const sessionTimeout = 1 * 60 * 1000; // 2 minutes en millisecondes
+let sessionTimer: NodeJS.Timeout | null = null;
+const showSessionExpiredModal = ref(false);
 
 const route = useRoute();
 const searchStore = useSearchStore();
@@ -511,7 +525,7 @@ const totalResults = ref(0);
 
 const totalPages = ref(0);
 const page = ref(1);
-const limit = ITEMS_PER_PAGE;
+const limit = 25;
 
 const hasMoreResults = computed(() => {
   return page.value < totalPages.value;
@@ -623,11 +637,60 @@ async function loadMoreResults() {
 }
 
 // Déclencher la recherche au montage du composant
-onMounted(() => {
+ onMounted(() => {
   if (fromCity.value && toCity.value) {
     handleSearch();
   }
-});
+  
+  // Initialiser le timer
+  resetSessionTimer();
+  
+  // Ajouter les écouteurs d'événements
+  window.addEventListener('mousemove', handleUserActivity);
+  window.addEventListener('keypress', handleUserActivity);
+  window.addEventListener('click', handleUserActivity);
+  window.addEventListener('scroll', handleUserActivity);
+})
+
+onUnmounted(() => {
+  // Nettoyer le timer et les écouteurs
+  if (sessionTimer) {
+    clearTimeout(sessionTimer);
+  }
+  window.removeEventListener('mousemove', handleUserActivity);
+  window.removeEventListener('keypress', handleUserActivity);
+  window.removeEventListener('click', handleUserActivity);
+  window.removeEventListener('scroll', handleUserActivity);
+})
+
+// Fonction pour réinitialiser le timer
+const resetSessionTimer = () => {
+  if (sessionTimer) {
+    clearTimeout(sessionTimer);
+  }
+  sessionTimer = setTimeout(() => {
+    showSessionExpiredModal.value = true;
+  }, sessionTimeout);
+}
+
+// Fonction pour rafraîchir la recherche
+const refreshSearch = () => {
+  showSessionExpiredModal.value = false;
+  handleSearch();
+  resetSessionTimer();
+}
+
+// Fonction pour nouvelle recherche
+const newSearch = () => {
+  showSessionExpiredModal.value = false;
+  searchStore.$reset();
+  // router.push('/results');
+}
+
+// Écouter les interactions utilisateur pour réinitialiser le timer
+function handleUserActivity() {
+  resetSessionTimer();
+}
 
 // Surveiller les changements dans le store
 watch(() => [searchStore.from, searchStore.to], () => {
