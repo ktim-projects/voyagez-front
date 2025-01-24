@@ -477,17 +477,10 @@
                     class="flex items-center text-sm text-gray-600"
                   >
                     <CheckCircleIcon class="w-5 h-5 mr-2 text-green-500" />
-                    {{ service }}
+                    {{ capitalizeWords(service) }}
                   </li>
                 </ul>
               </div>
-
-              <!-- Book Button -->
-              <button
-                class="w-full bg-primary-600 text-white py-3 px-4 rounded-lg hover:bg-primary-700 transition-colors"
-              >
-                Réserver ce trajet
-              </button>
             </div>
           </div>
         </div>
@@ -514,9 +507,10 @@ import SortMenu from './SortMenu.vue';
 import { useIntersectionObserver, useDebounceFn } from '@vueuse/core';
 import { useSearchStore } from '~/stores/search';
 import { useRouter } from 'vue-router';
+import { capitalizeWords } from '~/utils/string';
 
 const router = useRouter();
-const sessionTimeout = 1 * 60 * 1000; // 2 minutes en millisecondes
+const sessionTimeout = 2 * 60 * 1000; // 2 minutes en millisecondes
 let sessionTimer: NodeJS.Timeout | null = null;
 const showSessionExpiredModal = ref(false);
 
@@ -589,8 +583,8 @@ const handleSearch = async () => {
   try {
     const response = await $fetch('/api/car/search', {
       params: {
-        from: fromCity.value,
-        to: toCity.value,
+        from: normalizeCity(fromCity.value),
+        to: normalizeCity(toCity.value),
         page: page.value,
         limit,
         maxPrice: filters.value.maxPrice,
@@ -623,12 +617,12 @@ async function loadMoreResults() {
   try {
     const response = await $fetch('/api/car/search', {
       params: {
-        from: fromCity.value,
-        to: toCity.value,
+        from: normalizeCity(fromCity.value),
+        to: normalizeCity(toCity.value),
         page: page.value,
         limit,
         maxPrice: filters.value.maxPrice,
-        companies: filters.value.companies.join(','),
+        companies: [...filters.value.companies],
         departurePeriod: filters.value.departurePeriod,
         sort: currentSort.value
       }

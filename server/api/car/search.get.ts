@@ -25,8 +25,6 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  console.log('fetching car journeys...', normalizeCity(from), normalizeCity(to));
-
   const client = await serverSupabaseClient(event)
   
   let query = client
@@ -42,8 +40,8 @@ export default defineEventHandler(async (event) => {
         services
       )
     `, { count: 'exact' })
-    .eq('origin', normalizeCity(from))
-    .eq('destination', normalizeCity(to))
+    .eq('origin', from)
+    .eq('destination', to)
     
   // Apply price filter if maxPrice is provided
   if (maxPrice) {
@@ -73,12 +71,6 @@ export default defineEventHandler(async (event) => {
         .lte('departure_time', range.end);
     }
   }
-
-  // // Apply range only
-  // if (offset) {
-  //   query = query.range(offset, offset + Number(limit) - 1);
-  // }
-
   query = query
     .range(offset, offset + Number(limit) - 1);
 
