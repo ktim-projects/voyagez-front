@@ -5,7 +5,16 @@ import { normalizeCity } from '~/utils/string';
 // defineCachedEventHandler
 export default defineEventHandler(async (event) => {
   const queryFromApp = getQuery(event);
-  const { from, to, page = 1, limit = 3, maxPrice, companies, departurePeriod} = queryFromApp; 
+  const { 
+    from, 
+    to, 
+    page = 1,
+    limit = 3,
+    maxPrice,
+    companies,
+    departurePeriod,
+    sort = 'departure_time'
+  } = queryFromApp; 
   
   const offset: number = (Number(page) - 1) * Number(limit);
 
@@ -65,10 +74,26 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // Apply range and ordering
+  // // Apply range only
+  // if (offset) {
+  //   query = query.range(offset, offset + Number(limit) - 1);
+  // }
+
   query = query
-    .range(offset, offset + Number(limit) - 1)
-    .order('departure_time', { ascending: true })
+    .range(offset, offset + Number(limit) - 1);
+
+  // ordering
+  switch (sort) {
+    case 'price_asc':
+      query = query.order('price', { ascending: true }).order('departure_time', { ascending: true });
+      break;
+    case 'price_desc':
+      query = query.order('price', { ascending: false }).order('departure_time', { ascending: true });
+      break;
+    default:
+      query = query.order('departure_time', { ascending: true });
+  }
+  
 
   const { data: departures, error, count } = await query
 
