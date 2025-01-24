@@ -12,7 +12,6 @@
             @select="city => {
               fromCity = city.name;
               searchStore.from = city;
-              handleSearch();
             }"
           />
         </div>
@@ -26,7 +25,6 @@
             @select="city => {
               toCity = city.name;
               searchStore.to = city;
-              handleSearch();
             }"
           />
         </div>
@@ -256,11 +254,17 @@
         <!-- Results -->
         <template v-if="departures.length > 0">
           <!-- Results Count -->
-          <div class="mb-6 bg-white rounded-lg p-4 ">
+          <div class="mb-6 bg-white rounded-lg p-4 flex justify-between items-center ">
             <p class="text-lg text-gray-700">
               <span class="font-semibold">{{ totalResults }}</span> 
               {{ totalResults > 1 ? 'départs disponibles' : 'départ disponible' }}
             </p>
+            <SortMenu v-model="currentSort" />
+            <!-- <div class="w-full px-4 sm:px-0 lg:px-0">
+          <div class="flex justify-end mb-4">
+            <SortMenu v-model="currentSort" @update:modelValue="handleSort" />
+          </div>
+        </div> -->
           </div>
 
           <!-- Departures List -->
@@ -505,6 +509,8 @@ import type { Departure } from '~/server/data';
 import { ChevronDownIcon, FilterIcon, XIcon, CheckIcon, ChevronRightIcon, MapPinIcon, PhoneIcon, Megaphone, CheckCircleIcon, RefreshCcwIcon } from 'lucide-vue-next';
 import CarLoader from './CarLoader.vue';
 import SessionExpiredModal from './SessionExpiredModal.vue';
+import SortMenu from './SortMenu.vue';
+// import { ref, computed, onMounted, watch } from 'vue';
 import { useIntersectionObserver, useDebounceFn } from '@vueuse/core';
 import { useSearchStore } from '~/stores/search';
 import { useRouter } from 'vue-router';
@@ -522,6 +528,7 @@ const expandedJourney = ref<string | null>(null);
 const showFiltersModal = ref(false);
 const departureSelected = ref<Departure | null>(null);
 const totalResults = ref(0);
+const currentSort = ref('');
 
 const totalPages = ref(0);
 const page = ref(1);
@@ -558,7 +565,7 @@ const activeFiltersCount = computed(() => {
   return count;
 });
 
-function resetFilters() {
+const resetFilters = () => {
   filters.value = {
     maxPrice: 10000,
     companies: [],
@@ -569,10 +576,11 @@ function resetFilters() {
 
 const debouncedFilterSearch = useDebounceFn(() => {
   page.value = 1;
+  // currentSort.value = 'price_asc';
   handleSearch();
 }, 300);
 
-async function handleSearch() {
+const handleSearch = async () => {
   if (!fromCity.value || !toCity.value) return;
   
   loading.value = true;
@@ -587,7 +595,8 @@ async function handleSearch() {
         limit,
         maxPrice: filters.value.maxPrice,
         companies: [...filters.value.companies],
-        departurePeriod: filters.value.departurePeriod
+        departurePeriod: filters.value.departurePeriod,
+        sort: currentSort.value
       }
     });
     
@@ -620,7 +629,8 @@ async function loadMoreResults() {
         limit,
         maxPrice: filters.value.maxPrice,
         companies: filters.value.companies.join(','),
-        departurePeriod: filters.value.departurePeriod
+        departurePeriod: filters.value.departurePeriod,
+        sort: currentSort.value
       }
     });
     
@@ -635,6 +645,33 @@ async function loadMoreResults() {
     loadingMore.value = false;
   }
 }
+
+
+// async function handleSort(sortOrder: string) {
+//   page.value = 1;
+  
+//   try {
+//     const response = await $fetch('/api/car/search', {
+//       params: {
+//         from: fromCity.value,
+//         to: toCity.value,
+//         page: page.value,
+//         limit,
+//         maxPrice: filters.value.maxPrice,
+//         companies: filters.value.companies,
+//         departurePeriod: filters.value.departurePeriod,
+//         sort: sortOrder
+//       }
+//     });
+    
+//     departures.value = response.departures || [];
+//     totalResults.value = response.total || 0;
+//     totalPages.value = Math.ceil((response.total || 0) / limit);
+    
+//   } catch (error) {
+//     console.error('Error sorting departures:', error);
+//   }
+// }
 
 // Déclencher la recherche au montage du composant
  onMounted(() => {
@@ -693,18 +730,23 @@ function handleUserActivity() {
 }
 
 // Surveiller les changements dans le store
-watch(() => [searchStore.from, searchStore.to], () => {
-  fromCity.value = typeof searchStore.from === 'object' ? searchStore.from.name : searchStore.from;
-  toCity.value = typeof searchStore.to === 'object' ? searchStore.to.name : searchStore.to;
+watch(() => [searchStore.from, searchStore.to], ([newFrom, newTo]) => {
+  fromCity.value = typeof newFrom === 'object' ? newFrom.name : newFrom;
+  toCity.value = typeof newTo === 'object' ? newTo.name : newTo;
   if (fromCity.value && toCity.value) {
-    handleSearch();
+    debouncedFilterSearch();
   }
-}, { deep: true });
+});
 
 // Surveiller les changements dans les filtres
 watch(() => filters.value, () => {
   debouncedFilterSearch();
 }, { deep: true });
+
+// surveiller le sort
+watch(() => currentSort.value, () => {
+  debouncedFilterSearch();
+});
 
 // SEO
 useHead({
