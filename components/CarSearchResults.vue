@@ -6,22 +6,26 @@
         <div>
           <label class="block text-sm font-medium text-gray-600 mb-2">Départ</label>
           <CityAutocomplete
-            v-model="searchParams.from"
-            type="origin"
+            v-model="fromCity"
             placeholder="Ville de départ"
             class="w-full"
-            @update:modelValue="handleSearch"
+            @select="city => {
+              fromCity = city.name;
+              handleSearch();
+            }"
           />
         </div>
         
         <div>
           <label class="block text-sm font-medium text-gray-600 mb-2">Arrivée</label>
           <CityAutocomplete
-            v-model="searchParams.to"
-            type="destination"
+            v-model="toCity"
             placeholder="Ville d'arrivée"
             class="w-full"
-            @update:modelValue="handleSearch"
+            @select="city => {
+              toCity = city.name;
+              handleSearch();
+            }"
           />
         </div>
         
@@ -98,6 +102,7 @@
               max="50000" 
               step="1000"
               class="w-full"
+              @input="debouncedFilterSearch"
             >
             <div class="text-sm text-gray-600 mt-2 text-left">
               {{ filters.maxPrice.toLocaleString() }} FCFA
@@ -118,6 +123,7 @@
                   v-model="filters.companies"
                   :value="company.id"
                   class="rounded text-primary-600 focus:ring-primary-500"
+                  @change="debouncedFilterSearch"
                 >
                 <span class="ml-2 text-sm text-gray-700">{{ company.name }}</span>
               </label>
@@ -132,7 +138,7 @@
             <div class="relative">
               <select 
                 v-model="filters.departurePeriod" 
-                @change="debouncedSearch"
+                @change="debouncedFilterSearch"
                 class="appearance-none w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 pr-10"
               >
                 <option value="">Toute heure</option>
@@ -185,6 +191,7 @@
               max="50000" 
               step="1000"
               class="w-full"
+              @input="debouncedFilterSearch"
             >
             <div class="text-sm text-gray-600 mt-2 text-left">
               {{ filters.maxPrice.toLocaleString() }} FCFA
@@ -205,6 +212,7 @@
                   v-model="filters.companies"
                   :value="company.id"
                   class="rounded text-primary-600 focus:ring-primary-500"
+                  @change="debouncedFilterSearch"
                 >
                 <span class="ml-2 text-sm text-gray-700">{{ company.name }}</span>
               </label>
@@ -219,7 +227,7 @@
             <div class="relative">
               <select 
                 v-model="filters.departurePeriod" 
-                @change="debouncedSearch"
+                @change="debouncedFilterSearch"
                 class="appearance-none w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 pr-10"
               >
                 <option value="">Toute heure</option>
@@ -258,19 +266,21 @@
             <div 
               v-for="departure in departures" 
               :key="departure.id"
-              class="bg-white rounded-xl shadow-light p-6 transition-opacity duration-200"
+              @click="departureSelected = departure"
+              class="bg-white rounded-xl shadow-light p-6 transition-opacity duration-200 cursor-pointer hover:shadow-md"
             >
               <div class="flex flex-col">
                 <!-- En-tête avec opérateur et prix -->
                 <div class="flex justify-between items-center mb-6">
                   <div class="flex items-center">
                     <img 
+                      v-if="departure.company?.logo_url"
                       :src="departure.company.logo_url" 
                       :alt="departure.company.name" 
                       class="h-8 w-8 mr-3 object-contain"
                     />
                     <h3 class="text-lg font-semibold text-gray-800">
-                      {{ departure.company.name }}
+                      {{ departure.company?.name }}
                     </h3>
                   </div>
                   <div class="hidden sm:block">
@@ -284,7 +294,7 @@
                   <div>
                     <p class="text-xs text-gray-500">Départ</p>
                     <p class="font-medium">{{ formatTime(departure.departure_time) }}</p>
-                    <p class="text-sm text-gray-600">{{ departure.origin }} - <span class="text-xs text-gray-400">{{ departure.departure_station }}</span> </p>
+                    <p class="text-sm text-gray-600">{{ departure.origin }} - <span class="text-xs text-gray-400">{{ departure.departure_station }}</span></p>
                   </div>
                   <div class="text-center">
                     <p class="text-xs text-gray-500">Durée (estimée)</p>
@@ -319,6 +329,18 @@
               </button>
             </div>
           </div>
+
+          <!-- Load More Button -->
+          <!-- <div v-if="hasMoreResults" class="flex justify-center mt-8 mb-4">
+            <button 
+              @click="loadMoreResults"
+              :disabled="loadingMore"
+              class="px-6 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all duration-200"
+            >
+              <Loader2Icon v-if="loadingMore" class="w-4 h-4 animate-spin" />
+              <span>{{ loadingMore ? 'Chargement...' : 'Voir plus' }}</span>
+            </button>
+          </div> -->
         </template>
 
         <!-- Empty State -->
@@ -473,20 +495,23 @@ import { carCompanies } from '~/server/data';
 import type { Departure } from '~/server/data';
 import { ChevronDownIcon, FilterIcon, XIcon, CheckIcon, ChevronRightIcon, MapPinIcon, PhoneIcon, Megaphone, CheckCircleIcon, RefreshCcwIcon } from 'lucide-vue-next';
 import CarLoader from './CarLoader.vue';
-import { useIntersectionObserver , useDebounceFn } from '@vueuse/core';
+import { useIntersectionObserver, useDebounceFn } from '@vueuse/core';
+import { useSearchStore } from '~/stores/search';
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 25;
 
 const route = useRoute();
+const searchStore = useSearchStore();
 const loading = ref(false);
 const departures = ref<Departure[]>([]);
 const expandedJourney = ref<string | null>(null);
 const showFiltersModal = ref(false);
 const departureSelected = ref<Departure | null>(null);
+const totalResults = ref(0);
 
 const totalPages = ref(0);
 const page = ref(1);
-const limit = ITEMS_PER_PAGE; // Nombre d'éléments par page
+const limit = ITEMS_PER_PAGE;
 
 const hasMoreResults = computed(() => {
   return page.value < totalPages.value;
@@ -494,10 +519,8 @@ const hasMoreResults = computed(() => {
 
 const loadingMore = ref(false);
 
-const searchParams = ref({
-  from: route.query.from as string || '',
-  to: route.query.to as string || '',
-});
+const fromCity = ref(typeof searchStore.from === 'object' ? searchStore.from.name : searchStore.from);
+const toCity = ref(typeof searchStore.to === 'object' ? searchStore.to.name : searchStore.to);
 
 const filters = ref({
   maxPrice: 10000,
@@ -521,121 +544,104 @@ const activeFiltersCount = computed(() => {
   return count;
 });
 
-const totalResults = ref(0);
+function resetFilters() {
+  filters.value = {
+    maxPrice: 10000,
+    companies: [],
+    departurePeriod: ''
+  };
+  // handleSearch();
+}
 
-const toggleJourneyDetails = (journeyId: string) => {
-  expandedJourney.value = expandedJourney.value === journeyId ? null : journeyId;
-};
-
-// Intersection observer for infinite scroll
-// const loadMoreTrigger = ref(null);
-
-
-// useIntersectionObserver(loadMoreTrigger, ([{ isIntersecting }]) => {
-//   console.log('loadMoreTrigger', loadMoreTrigger.value);
-//   console.log('isIntersecting', isIntersecting);
-  
-//   if (isIntersecting) {
-//     loadMoreResults();
-//   }
-// });
-
-const loadMoreResults = async () => {
-  if (loadingMore.value || !hasMoreResults.value) return;
-  
-  loadingMore.value = true;
-  try {
-    page.value++;
-    const response = await $fetch('/api/car/search', {
-      params: {
-        ...searchParams.value,
-        ...filters.value,
-        page: page.value,
-        limit: ITEMS_PER_PAGE
-      }
-    });
-    
-    // Ajouter les nouveaux résultats sans modifier le scroll
-    departures.value = [...departures.value, ...response.departures];
-    totalPages.value = response.totalPages;
-  } catch (error) {
-    console.error('Error loading more results:', error);
-  } finally {
-    loadingMore.value = false;
-  }
-};
-
-const debouncedSearch = useDebounceFn(async () => {
+const debouncedFilterSearch = useDebounceFn(() => {
   page.value = 1;
-  departures.value = []; // Reset departures before new search
-  await handleSearch();
-}, 500); // 500ms delay
+  handleSearch();
+}, 300);
 
-const handleSearch = async () => {
+async function handleSearch() {
+  if (!fromCity.value || !toCity.value) return;
+  
   loading.value = true;
+  departures.value = [];
+  
   try {
-    const params = {
-      ...searchParams.value,
-      ...filters.value,
-      page: page.value,
-      limit: ITEMS_PER_PAGE
-    }
-    console.log('params', params);
-    
     const response = await $fetch('/api/car/search', {
       params: {
-        ...searchParams.value,
-        ...filters.value,
+        from: fromCity.value,
+        to: toCity.value,
         page: page.value,
-        limit: ITEMS_PER_PAGE
+        limit,
+        maxPrice: filters.value.maxPrice,
+        companies: [...filters.value.companies],
+        departurePeriod: filters.value.departurePeriod
       }
     });
-
-    if (page.value === 1) {
-      departures.value = response.departures;
-    } else {
-      departures.value = [...departures.value, ...response.departures];
-    }
     
+    departures.value = response.departures || [];
     totalResults.value = response.total || 0;
-    totalPages.value = response.totalPages;
+    totalPages.value = Math.ceil((response.total || 0) / limit);
+    
   } catch (error) {
-    console.error('Error fetching departures:', error);
+    console.error('Error searching departures:', error);
     departures.value = [];
     totalResults.value = 0;
     totalPages.value = 0;
   } finally {
     loading.value = false;
   }
-};
+}
 
-const resetFilters = () => {
-  filters.value = {
-    maxPrice: 10000,
-    companies: [],
-    departurePeriod: ''
-  };
-  debouncedSearch();
-};
-
-// TO DO
-// mise à jour du formulaire de recherche
-// watch([searchParams, filters], async () => {
-//   console.log('watch----', typeof filters.value.maxPrice);
+async function loadMoreResults() {
+  if (loadingMore.value || !hasMoreResults.value) return;
   
-//   page.value = 1;
-//   await handleSearch();
-// }, { deep: true });
-watch([searchParams, filters], () => {
-  debouncedSearch();
-}, { deep: true });
+  loadingMore.value = true;
+  page.value++;
+  
+  try {
+    const response = await $fetch('/api/car/search', {
+      params: {
+        from: fromCity.value,
+        to: toCity.value,
+        page: page.value,
+        limit,
+        maxPrice: filters.value.maxPrice,
+        companies: filters.value.companies.join(','),
+        departurePeriod: filters.value.departurePeriod
+      }
+    });
+    
+    departures.value = [...departures.value, ...(response.departures || [])];
+    totalResults.value = response.total || 0;
+    totalPages.value = Math.ceil((response.total || 0) / limit);
+    
+  } catch (error) {
+    console.error('Error loading more results:', error);
+    page.value--; // Revert page increment on error
+  } finally {
+    loadingMore.value = false;
+  }
+}
 
-// Initial search
-onMounted(async () => {
-  if (searchParams.value.from && searchParams.value.to) {
-    await handleSearch();
+// Déclencher la recherche au montage du composant
+onMounted(() => {
+  if (fromCity.value && toCity.value) {
+    handleSearch();
   }
 });
+
+// Surveiller les changements dans le store
+watch(() => [searchStore.from, searchStore.to], () => {
+  fromCity.value = typeof searchStore.from === 'object' ? searchStore.from.name : searchStore.from;
+  toCity.value = typeof searchStore.to === 'object' ? searchStore.to.name : searchStore.to;
+  if (fromCity.value && toCity.value) {
+    handleSearch();
+  }
+}, { deep: true });
+
+// Surveiller les changements dans les filtres
+watch(() => filters.value, () => {
+  debouncedFilterSearch();
+}, { deep: true });
 
 // SEO
 useHead({
@@ -643,7 +649,7 @@ useHead({
   meta: [
     {
       name: 'description',
-      content: 'Trouvez et comparez les meilleurs trajets en car en Côte d\'Ivoire'
+      content: 'Résultats de recherche pour les trajets en car'
     }
   ]
 });

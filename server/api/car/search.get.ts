@@ -1,5 +1,6 @@
 import { serverSupabaseClient } from '#supabase/server'
 import { createError } from 'h3'
+import { normalizeCity } from '~/utils/string';
 
 // defineCachedEventHandler
 export default defineEventHandler(async (event) => {
@@ -15,7 +16,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  console.log('fetching car journeys...');
+  console.log('fetching car journeys...', normalizeCity(from), normalizeCity(to));
 
   const client = await serverSupabaseClient(event)
   
@@ -32,8 +33,8 @@ export default defineEventHandler(async (event) => {
         services
       )
     `, { count: 'exact' })
-    .eq('origin', from)
-    .eq('destination', to)
+    .eq('origin', normalizeCity(from))
+    .eq('destination', normalizeCity(to))
     
   // Apply price filter if maxPrice is provided
   if (maxPrice) {

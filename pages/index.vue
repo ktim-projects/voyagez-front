@@ -49,16 +49,16 @@
                 <div>
                   <label for="from" class="block text-sm font-medium text-gray-700">Départ</label>
                   <CityAutocomplete
-                    v-model="carSearch.from"
-                    type="origin"
+                    v-model="from"
+                    @select="city => selectedFrom = city"
                     placeholder="Ville de départ"
                   />
                 </div>
                 <div>
                   <label for="to" class="block text-sm font-medium text-gray-700">Arrivée</label>
                   <CityAutocomplete
-                    v-model="carSearch.to"
-                    type="destination"
+                    v-model="to"
+                    @select="city => selectedTo = city"
                     placeholder="Ville d'arrivée"
                   />
                 </div>
@@ -69,7 +69,7 @@
                   <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
                   <input
                     id="date"
-                    v-model="carSearch.date"
+                    v-model="date"
                     type="date"
                     class="input-field"
                   />
@@ -78,7 +78,7 @@
                   <label for="passengers" class="block text-sm font-medium text-gray-700">Passagers</label>
                   <select
                     id="passengers"
-                    v-model="carSearch.passengers"
+                    v-model="passengers"
                     class="input-field"
                   >
                     <option v-for="n in 9" :key="n" :value="n">{{ n }} {{ n === 1 ? 'passager' : 'passagers' }}</option>
@@ -88,8 +88,8 @@
 
               <button 
                 type="submit" 
+                :disabled="!(selectedFrom && selectedTo)"
                 class="w-full btn-primary py-3"
-                :disabled="!isCarSearchValid"
               >
                 Rechercher un car
               </button>
@@ -105,7 +105,7 @@
                   <label class="flex items-center">
                     <input 
                       type="radio" 
-                      v-model="busSearch.searchType" 
+                      v-model="searchStore.searchParams.searchType" 
                       value="number" 
                       class="form-radio"
                     >
@@ -114,7 +114,7 @@
                   <label class="flex items-center">
                     <input 
                       type="radio" 
-                      v-model="busSearch.searchType" 
+                      v-model="searchStore.searchParams.searchType" 
                       value="route" 
                       class="form-radio"
                     >
@@ -123,12 +123,12 @@
                 </div>
               </div>
 
-              <template v-if="busSearch.searchType === 'number'">
+              <template v-if="searchStore.searchParams.searchType === 'number'">
                 <div>
                   <label for="busNumber" class="block text-sm font-medium text-gray-700">Numéro de bus</label>
                   <input
                     id="busNumber"
-                    v-model="busSearch.busNumber"
+                    v-model="searchStore.searchParams.busNumber"
                     type="text"
                     class="input-field"
                     placeholder="Ex: 32"
@@ -141,14 +141,14 @@
                   <div>
                     <label for="busFrom" class="block text-sm font-medium text-gray-700">Point de départ</label>
                     <BusStopSelect
-                      v-model="busSearch.from"
+                      v-model="searchStore.searchParams.from"
                       placeholder="Arrêt de départ"
                     />
                   </div>
                   <div>
                     <label for="busTo" class="block text-sm font-medium text-gray-700">Point d'arrivée</label>
                     <BusStopSelect
-                      v-model="busSearch.to"
+                      v-model="searchStore.searchParams.to"
                       placeholder="Arrêt d'arrivée"
                     />
                   </div>
@@ -157,8 +157,8 @@
 
               <button 
                 type="submit" 
+                :disabled="!isValid"
                 class="w-full btn-primary py-3"
-                :disabled="!isBusSearchValid"
               >
                 Rechercher un bus
               </button>
@@ -196,116 +196,80 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed } from 'vue';
 import type { CarCompany } from '~/server/data';
+import { useSearchStore } from '~/stores/search';
+import { useRouter } from 'vue-router';
 
-
+const router = useRouter();
+const searchStore = useSearchStore();
 const activeTab = ref('car');
+const date = ref('');
+const passengers = ref(1);
+const from = ref('');
+const to = ref('');
+const selectedFrom = ref<City | null>(null);
+const selectedTo = ref<City | null>(null);
 
-const carSearch = ref({
-  from: '',
-  to: '',
-  date: '',
-  passengers: 1
+const isValid = computed(() => {
+  if (activeTab.value === 'car') {
+    return selectedFrom.value && selectedTo.value;
+  }
+  return false;
 });
 
-const busSearch = ref({
-  searchType: 'number',
-  busNumber: '',
-  from: '',
-  to: ''
-});
+async function handleCarSearch() {
+  if (!selectedFrom.value || !selectedTo.value) return;
+  
+  searchStore.setSearchParams({
+    type: 'car',
+    from: selectedFrom.value,
+    to: selectedTo.value,
+    date: date.value,
+    passengers: passengers.value
+  });
+  
+  await router.push('/results');
+}
+
+async function handleBusSearch() {
+  searchStore.setSearchParams({
+    type: 'bus',
+    from: from.value,
+    to: to.value,
+    date: date.value,
+    passengers: passengers.value
+  });
+  
+  await router.push('/results');
+}
+
+function searchDestination(destination: any) {
+  to.value = destination.name;
+  searchStore.setSearchParams({
+    type: 'car',
+    to: destination
+  });
+  router.push('/results');
+}
 
 const popularDestinations = ref([
   {
-    id: 1,
     name: 'Yamoussoukro',
-    description: 'Découvrez la capitale politique',
-    image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=500&q=80'
+    description: 'La capitale politique',
+    image: 'https://images.unsplash.com/photo-1623165106852-0dd7ece4c372?w=500&q=80'
   },
   {
-    id: 2,
     name: 'Bouaké',
-    description: 'La deuxième plus grande ville',
-    image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=500&q=80'
+    description: 'La ville du commerce',
+    image: 'https://images.unsplash.com/photo-1623165106852-0dd7ece4c372?w=500&q=80'
   },
   {
-    id: 3,
     name: 'San Pedro',
-    description: 'Le plus grand port de la région',
+    description: 'La ville portuaire',
     image: 'https://images.unsplash.com/photo-1576924542622-772281dba3d6?w=500&q=80'
   }
 ]);
-
-const isCarSearchValid = computed(() => {
-  return carSearch.value.from && carSearch.value.to
-});
-
-const isBusSearchValid = computed(() => {
-  if (busSearch.value.searchType === 'number') {
-    return !!busSearch.value.busNumber;
-  }
-  return !!busSearch.value.from && !!busSearch.value.to;
-});
-
-const handleCarSearch = () => {
-  navigateTo({
-    path: '/search',
-    query: {
-      type: 'car',
-      from: removeAccents(carSearch.value.from),
-      to: removeAccents(carSearch.value.to),
-    }
-  });
-};
-
-const handleBusSearch = () => {
-  const query: any = { type: 'bus' };
-  
-  if (busSearch.value.searchType === 'number') {
-    query.number = busSearch.value.busNumber;
-  } else {
-    query.from = busSearch.value.from;
-    query.to = busSearch.value.to;
-  }
-  
-  navigateTo({
-    path: '/search',
-    query
-  });
-};
-
-const searchDestination = (destination: any) => {
-  carSearch.value.to = destination.name;
-  handleCarSearch();
-};
-
-// const companies =ref<CarCompany[]>([]);
-
-// const getCompanies = async () => {
-//   // loading.value = true;
-//   try {
-//     const response = await $fetch('/api/car/companies');
-//     companies.value = response as CarCompany[];
-//   } catch (error) {
-//     console.error('Error fetching companies:', error);
-//     companies.value = [];
-//   }
-// };
-
-// onMounted(() => {
-//   getCompanies();
-// });
-
-// SEO
-useHead({
-  title: 'VoyagezCi - Trouvez le meilleur itinéraire',
-  meta: [
-    {
-      name: 'description',
-      content: 'Comparez et trouvez les meilleurs itinéraires de bus et cars en Côte d\'Ivoire'
-    }
-  ]
-});
 </script>
 
 <style>
