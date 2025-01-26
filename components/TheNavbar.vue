@@ -34,9 +34,9 @@
             >
               Rechercher
             </NuxtLink> -->
-            <NuxtLink to="/blog"
+            <NuxtLink to="/news"
               class="inline-flex items-center px-1 pt-1 text-sm font-medium transition-colors duration-200"
-              :class="route.path.includes('/blog') ? 'text-primary-600' : 'text-gray-500 hover:text-primary-600'"
+              :class="route.path.includes('/news') ? 'text-primary-600' : 'text-gray-500 hover:text-primary-600'"
             >
               Actualités
             </NuxtLink>
@@ -147,7 +147,7 @@ const menuItems = [
   // },
   {
     name: 'Actualités',
-    href: '/blog',
+    href: '/news',
     icon: Newspaper,
   },
   {
