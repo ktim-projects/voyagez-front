@@ -7,12 +7,8 @@
           <label class="block text-sm font-medium text-gray-600 mb-2">Départ</label>
           <CityAutocomplete
             v-model="fromCity"
+            @select="handleFromSelect"
             placeholder="Ville de départ"
-            class="w-full"
-            @select="city => {
-              fromCity = city.name;
-              searchStore.from = city;
-            }"
           />
         </div>
         
@@ -20,12 +16,8 @@
           <label class="block text-sm font-medium text-gray-600 mb-2">Arrivée</label>
           <CityAutocomplete
             v-model="toCity"
+            @select="handleToSelect"
             placeholder="Ville d'arrivée"
-            class="w-full"
-            @select="city => {
-              toCity = city.name;
-              searchStore.to = city;
-            }"
           />
         </div>
         
@@ -534,8 +526,10 @@ const hasMoreResults = computed(() => {
 
 const loadingMore = ref(false);
 
-const fromCity = ref(typeof searchStore.from === 'object' ? searchStore.from.name : searchStore.from);
-const toCity = ref(typeof searchStore.to === 'object' ? searchStore.to.name : searchStore.to);
+const fromCity = ref(searchStore.from || '');
+const toCity = ref(searchStore.to || '');
+// const fromCity = ref(typeof searchStore.from === 'object' ? searchStore.from.name : searchStore.from);
+// const toCity = ref(typeof searchStore.to === 'object' ? searchStore.to.name : searchStore.to);
 
 const filters = ref({
   maxPrice: 10000,
@@ -640,33 +634,6 @@ async function loadMoreResults() {
   }
 }
 
-
-// async function handleSort(sortOrder: string) {
-//   page.value = 1;
-  
-//   try {
-//     const response = await $fetch('/api/car/search', {
-//       params: {
-//         from: fromCity.value,
-//         to: toCity.value,
-//         page: page.value,
-//         limit,
-//         maxPrice: filters.value.maxPrice,
-//         companies: filters.value.companies,
-//         departurePeriod: filters.value.departurePeriod,
-//         sort: sortOrder
-//       }
-//     });
-    
-//     departures.value = response.departures || [];
-//     totalResults.value = response.total || 0;
-//     totalPages.value = Math.ceil((response.total || 0) / limit);
-    
-//   } catch (error) {
-//     console.error('Error sorting departures:', error);
-//   }
-// }
-
 // Déclencher la recherche au montage du composant
  onMounted(() => {
   if (fromCity.value && toCity.value) {
@@ -723,10 +690,22 @@ function handleUserActivity() {
   resetSessionTimer();
 }
 
+const handleFromSelect = (city: any) => {
+  searchStore.setSearchParams({
+    from: city.name
+  });
+}
+
+const handleToSelect = (city: any) => {
+  searchStore.setSearchParams({
+    to: city.name
+  });
+}
+
 // Surveiller les changements dans le store
 watch(() => [searchStore.from, searchStore.to], ([newFrom, newTo]) => {
-  fromCity.value = typeof newFrom === 'object' ? newFrom.name : newFrom;
-  toCity.value = typeof newTo === 'object' ? newTo.name : newTo;
+  fromCity.value =  newFrom || '';
+  toCity.value =  newTo || '';
   if (fromCity.value && toCity.value) {
     debouncedFilterSearch();
   }

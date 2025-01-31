@@ -20,9 +20,9 @@
         <div>
           <h4 class="text-lg font-semibold mb-4">Mentions Légales</h4>
           <ul class="space-y-2">
-            <li><NuxtLink to="/privacy" class="text-gray-400 hover:text-white">Politique de Confidentialité</NuxtLink></li>
-            <li><NuxtLink to="/terms" class="text-gray-400 hover:text-white">Conditions d'Utilisation</NuxtLink></li>
-            <li><NuxtLink to="/cookies" class="text-gray-400 hover:text-white">Politique des Cookies</NuxtLink></li>
+            <li><NuxtLink to="/privacy-policy" class="text-gray-400 hover:text-white">Politique de Confidentialité</NuxtLink></li>
+            <li><NuxtLink to="/terms-of-service" class="text-gray-400 hover:text-white">Conditions d'Utilisation</NuxtLink></li>
+            <li><NuxtLink to="/cookie-policy" class="text-gray-400 hover:text-white">Politique des Cookies</NuxtLink></li>
           </ul>
         </div>
 

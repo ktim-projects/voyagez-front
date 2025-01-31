@@ -2,8 +2,8 @@ import { defineStore } from 'pinia'
 
 interface SearchState {
   type: 'car' | 'bus' | null
-  from: any | null
-  to: any | null
+  from: string | null
+  to: string | null
   date: string | null
   passengers: number
   searchResults: any[]
@@ -28,7 +28,7 @@ export const useSearchStore = defineStore('search', {
       this.searchResults = results
     },
 
-    clearSearch() {
+    reset() {
       this.type = null
       this.from = null
       this.to = null
