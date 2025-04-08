@@ -1,8 +1,8 @@
 <template>
   <div class="min-h-screen">
-    <TheNavbar />
+    <Header />
     <NuxtPage />
-    <TheFooter />
+    <Footer />
   </div>
 </template>
 

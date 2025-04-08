@@ -1,3 +1,5 @@
+// import Aura from '@primeuix/themes/aura';
+
 export default defineNuxtConfig({
   ssr: false,
 
@@ -5,13 +7,19 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
     '@nuxtjs/color-mode',
-    '@nuxtjs/supabase'
+    '@nuxtjs/supabase',
   ],
-
-  css: ['~/assets/css/main.css'],
+  css: [
+    '~/assets/css/main.css',
+    '~/assets/styles/main.scss'
+  ],
 
   colorMode: {
     classSuffix: ''
+  },
+
+  build: {
+    transpile: ['primevue']
   },
 
   app: {

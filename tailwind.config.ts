@@ -11,6 +11,18 @@ export default {
   theme: {
     extend: {
       colors: {
+        primary: {
+          50:  '#fef2f2',
+          100: '#fee2e2',
+          200: '#fecaca',
+          300: '#fca5a5',
+          400: '#f87171',
+          500: '#ef4444', // plus clair que #dc2626, souvent utilisé comme base
+          600: '#dc2626', // ta couleur de base
+          700: '#b91c1c',
+          800: '#991b1b',
+          900: '#7f1d1d',
+        },
         primary33: {
           50: '#ffe2eb',  // Très clair
           100: '#ffb3c8', // Clair
@@ -23,7 +35,7 @@ export default {
           800: '#3a0419', // Noirâtre
           900: '#1b010b'  // Presque noir
         },
-        primary: {
+        primaryOld: {
           50: '#f0f9ff',
           100: '#e0f2fe',
           200: '#bae6fd',
