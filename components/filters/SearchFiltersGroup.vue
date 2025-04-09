@@ -17,7 +17,6 @@
           max="50000" 
           step="1000"
           class="w-full"
-          @change="emitUpdate"
         >
         <div class="text-sm text-gray-600 mt-2 text-center">
           {{ filters.maxPrice.toLocaleString() }} FCFA
