@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto px-4 py-24">
+  <div class="container mx-auto px-4 py-16">
     <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">Destinations Populaires</h2>
     
     <!-- Desktop View -->
