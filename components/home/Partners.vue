@@ -11,9 +11,7 @@
             <p class="text-gray-600 mb-8 text-lg">
               Plus de 1000 partenaires de transport pour vos trajets en train, bus, avion, ferry et vos transferts aéroportuaires pour profiter pleinement du voyage.
             </p>
-            <AppButton type="primary" class="px-8 py-3">
-              J'en profite
-            </AppButton>
+            <AppButton variant="coral" label="J'en profite" />
           </div>
 
           <!-- Partenaires à droite -->

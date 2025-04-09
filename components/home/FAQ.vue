@@ -9,16 +9,16 @@
       >
         <button
           @click="toggle(index)"
-          class="w-full flex justify-between items-center px-5 py-5 text-left text-gray-700 font-medium transition-all hover:text-primary-600 hover:bg-red-50"
+          class="w-full flex justify-between items-center px-5 py-5 text-left text-gray-700 font-medium transition-all hover:text-coral-600 hover:bg-coral-50"
         >
           <span class="flex items-center">
-            <component :is="item.icon" class="w-5 h-5 mr-3 text-red-600" />
+            <component :is="item.icon" class="w-5 h-5 mr-3 text-coral-600" />
             {{ item.title }}
           </span>
           <ChevronDown
             :class="[
               'w-5 h-5 transform transition-transform duration-300',
-              openIndex === index ? 'rotate-180 text-red-600' : 'rotate-0'
+              openIndex === index ? 'rotate-180 text-coral-600' : 'rotate-0'
             ]"
           />
         </button>

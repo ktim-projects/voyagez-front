@@ -1,154 +1,190 @@
 <template>
-  <!-- Sticky Search Form -->
-  <div class="sticky top-0 z-40 bg-white border-b border-gray-200">
-    <div class="container mx-auto px-4 py-4">
-      <form @submit.prevent="handleSearch" class="grid gap-4 md:grid-cols-3">
-        <div>
-          <label class="block text-sm font-medium text-gray-600 mb-2">Départ</label>
-          <CityAutocomplete
-            v-model="fromCity"
-            @select="handleFromSelect"
-            placeholder="Ville de départ"
-          />
-        </div>
-        
-        <div>
-          <label class="block text-sm font-medium text-gray-600 mb-2">Arrivée</label>
-          <CityAutocomplete
-            v-model="toCity"
-            @select="handleToSelect"
-            placeholder="Ville d'arrivée"
-          />
-        </div>
-        
-        <div>
-          <label class="block text-sm font-medium text-gray-600 mb-2">Disponibilité</label>
-          <div class="w-full p-3 bg-green-50 border border-green-200 rounded-md text-sm text-green-700 flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            Départs disponibles tous les jours
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <div class="container mx-auto px-4 py-6">
-    <!-- Mobile Filter Button -->
-    <!-- <div class="lg:hidden mb-4">
-      <button 
-        @click="showFiltersModal = true"
-        class="w-full bg-white border border-gray-300 text-gray-700 py-2.5 px-4 rounded-lg flex items-center justify-between shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 focus:border-primary-500"
-      >
-        <div class="flex items-center">
-          <FilterIcon class="w-4 h-4 mr-2 text-gray-500" />
-          <span>Filtres</span>
-        </div>
-        <div class="flex items-center">
-          <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary-100 text-primary-700 text-sm font-medium">
-            {{ activeFiltersCount }}
-          </span>
-        </div>
-      </button>
-    </div> -->
-
-    <!-- Mobile Filters Modal -->
-    <div class="lg:hidden">
-      <SearchFiltersGroupMobile
-        v-model:show-modal="showFiltersModal"
-        v-model="filters"
-        :companies="carCompanies"
-        @update:modelValue="debouncedFilterSearch"
-      />
-    </div>
-
-    <!-- Main Content Grid -->
-    <div class="grid grid-cols-12 gap-6">
-      <!-- Results and Filters Section -->
-      <div class="col-span-12 lg:col-span-7">
-        <!-- Desktop Filters Section -->
-        <SearchFiltersGroup
-          v-model="filters"
-          :companies="carCompanies"
-          @update:modelValue="debouncedFilterSearch"
-        />
-
-        <!-- Results List -->
-        <div>
-          <!-- Loading State -->
-          <div v-if="loading" class="text-center py-8">
-            <CarLoader />
-            <p class="text-gray-500">Recherche des voyages disponibles...</p>
-          </div>
-
-          <!-- Results List -->
-          <div v-else-if="departures.length > 0" class="space-y-4">
-            <DepartureCard
-              v-for="departure in departures" 
-              :key="departure.id"
-              :departure="departure"
-              @click="departureSelected = departure"
-            />
-
-            <!-- Load More Button -->
-            <div v-if="hasMoreResults" class="flex justify-center mt-8 mb-4">
-              <button 
-                @click="loadMoreResults"
-                :disabled="loadingMore"
-                class="px-6 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all duration-200"
-              >
-                <RefreshCcwIcon v-if="loadingMore" class="w-4 h-4 animate-spin" />
-                <span>{{ loadingMore ? 'Chargement...' : 'Voir plus' }}</span>
-              </button>
+  <div class="min-h-screen flex flex-col">
+    <!-- Fixed Search Form -->
+    <div class="bg-white md:bg-white sticky top-0 md:top-16 z-40">
+      
+      <!-- Mobile Header -->
+      <div class="bg-primary-600 md:hidden">
+        <div class="container mx-auto px-4 py-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <NuxtLink to="/" class="text-white">
+                <ChevronLeft class="w-5 h-5" />
+              </NuxtLink>
+              <div class="text-white font-medium">
+                {{ fromCity }} → {{ toCity }}
+              </div>
             </div>
-          </div>
-
-          <!-- Empty State -->
-          <div v-else>
-            <SearchEmptyState
-              title="Aucun départ trouvé"
-              description="Essayez de modifier vos critères de recherche pour trouver plus de résultats."
+            <AppButton 
+              variant="outline" 
+              size="small"
+              label="Modifier"
+              :fullWidth="false"
+              class="!text-white !border-white hover:!bg-white/10"
+              @click="showSearchModal = true"
             />
           </div>
         </div>
       </div>
 
-      <!-- Map Section - Hidden on Mobile -->
-      <div class="hidden lg:block col-span-12 lg:col-span-5">
-        <div class="bg-white rounded-xl shadow-light p-4 sticky top-[120px]">
-          <div class="aspect-[3/4] bg-gray-100 rounded-lg">
-            <!-- Ici viendra la carte -->
-            <div class="w-full h-full flex items-center justify-center text-gray-400">
-              <div class="text-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+      <!-- Desktop Search Form -->
+      <div class="hidden md:block">
+        <div class="container mx-auto px-4 py-4">
+          <form @submit.prevent="handleSearch" class="grid gap-4 md:grid-cols-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-2">Départ</label>
+              <CityAutocomplete
+                v-model="fromCity"
+                @select="handleFromSelect"
+                placeholder="Ville de départ"
+              />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-2">Arrivée</label>
+              <CityAutocomplete
+                v-model="toCity"
+                @select="handleToSelect"
+                placeholder="Ville d'arrivée"
+              />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-2">Disponibilité</label>
+              <div class="w-full p-3 bg-green-50 border border-green-200 rounded-md text-sm text-green-700 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <p>Carte du trajet</p>
+                Départs tous les jours
+              </div>
+            </div>
+
+            <div class="flex items-end">
+              <AppButton 
+                variant="coral" 
+                label="Rechercher"
+                type="submit"
+                icon="Search"
+              />
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="border-b border-gray-200 hidden md:block"></div>
+    </div>
+
+    <!-- Search Form Modal -->
+    <SearchFormModal
+      v-model:show="showSearchModal"
+      v-model:fromCity="fromCity"
+      v-model:toCity="toCity"
+      @from-select="handleFromSelect"
+      @to-select="handleToSelect"
+      @submit="handleSearch"
+    />
+
+    <!-- Main Content -->
+    <div class="flex-1">
+      <div class="container mx-auto px-4 py-6">
+        <!-- Mobile Filters Modal -->
+        <div class="lg:hidden">
+          <SearchFiltersGroupMobile
+            v-model:show-modal="showFiltersModal"
+            v-model="filters"
+            :companies="carCompanies"
+            @update:modelValue="debouncedFilterSearch"
+          />
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-12 gap-6">
+          <!-- Results and Filters Section -->
+          <div class="col-span-12 lg:col-span-7">
+            <!-- Desktop Filters Section -->
+            <SearchFiltersGroup
+              v-model="filters"
+              :companies="carCompanies"
+              @update:modelValue="debouncedFilterSearch"
+            />
+
+            <!-- Results List -->
+            <div>
+              <!-- Loading State -->
+              <div v-if="loading" class="text-center py-8">
+                <CarLoader />
+                <p class="text-gray-500">Recherche des voyages disponibles...</p>
+              </div>
+
+              <!-- Results List -->
+              <div v-else-if="departures.length > 0" class="space-y-4">
+                <DepartureCard
+                  v-for="departure in departures" 
+                  :key="departure.id"
+                  :departure="departure"
+                  @click="departureSelected = departure"
+                />
+
+                <!-- Load More Button -->
+                <div v-if="hasMoreResults" class="flex justify-center mt-8 mb-4">
+                  <button 
+                    @click="loadMoreResults"
+                    :disabled="loadingMore"
+                    class="px-6 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all duration-200"
+                  >
+                    <RefreshCcwIcon v-if="loadingMore" class="w-4 h-4 animate-spin" />
+                    <span>{{ loadingMore ? 'Chargement...' : 'Voir plus' }}</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Empty State -->
+              <div v-else>
+                <SearchEmptyState
+                  title="Aucun départ trouvé"
+                  description="Essayez de modifier vos critères de recherche pour trouver plus de résultats."
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Map Section - Hidden on Mobile -->
+          <div class="hidden lg:block col-span-12 lg:col-span-5">
+            <div class="bg-white rounded-xl shadow-light p-4 sticky" style="top: calc(var(--header-height, 64px) + var(--form-height, 88px) + 1.5rem);">
+              <div class="aspect-[3/4] bg-gray-100 rounded-lg">
+                <!-- Ici viendra la carte -->
+                <div class="w-full h-full flex items-center justify-center text-gray-400">
+                  <div class="text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                    </svg>
+                    <p>Carte du trajet</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Journey Details Sidebar -->
+    <DepartureDetailSidebar
+      v-model="departureSelected"
+    />
+
+    <!-- Session Expired Modal -->
+    <SessionExpiredModal
+      v-model="showSessionExpiredModal"
+      @refresh="refreshSearch"
+      @new-search="newSearch"
+    />
   </div>
-
-  <!-- Journey Details Sidebar -->
-  <DepartureDetailSidebar
-    v-model="departureSelected"
-  />
-
-  <!-- Session Expired Modal -->
-  <SessionExpiredModal
-    v-model="showSessionExpiredModal"
-    @refresh="refreshSearch"
-    @new-search="newSearch"
-  />
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { FilterIcon, RefreshCcw as RefreshCcwIcon, X as XIcon } from 'lucide-vue-next';
+import { FilterIcon, RefreshCcw as RefreshCcwIcon, X as XIcon, ChevronLeft } from 'lucide-vue-next';
 import SearchFiltersGroup from './filters/SearchFiltersGroup.vue';
 import SearchFiltersGroupMobile from './filters/SearchFiltersGroupMobile.vue';
 import CityAutocomplete from './CityAutocomplete.vue';
@@ -165,6 +201,7 @@ import { useIntersectionObserver, useDebounceFn } from '@vueuse/core';
 import { useSearchStore } from '~/stores/search';
 import { useRouter } from 'vue-router';
 import { capitalizeWords } from '~/utils/string';
+import SearchFormModal from './SearchFormModal.vue'; // Import du nouveau composant
 
 const router = useRouter();
 const sessionTimeout = 2 * 60 * 1000; // 2 minutes en millisecondes
@@ -368,13 +405,13 @@ const handleToSelect = (city: any) => {
 }
 
 // Surveiller les changements dans le store
-watch(() => [searchStore.from, searchStore.to], ([newFrom, newTo]) => {
-  fromCity.value =  newFrom || '';
-  toCity.value =  newTo || '';
-  if (fromCity.value && toCity.value) {
-    debouncedFilterSearch();
-  }
-});
+// watch(() => [searchStore.from, searchStore.to], ([newFrom, newTo]) => {
+//   fromCity.value =  newFrom || '';
+//   toCity.value =  newTo || '';
+//   if (fromCity.value && toCity.value) {
+//     debouncedFilterSearch();
+//   }
+// });
 
 // Surveiller les changements dans les filtres
 // watch(() => filters.value, () => {
@@ -407,32 +444,26 @@ const departurePeriods = {
   'evening': 'Soir (18h - 00h)'
 } as const;
 
-type DeparturePeriodKeys = keyof typeof departurePeriods;
+const showSearchModal = ref(false);
 
-// Fonctions de réinitialisation des filtres
-const resetPriceFilter = () => {
-  filters.value.maxPrice = 50000;
-  debouncedFilterSearch();
-};
-
-const resetCompaniesFilter = () => {
-  filters.value.companies = [];
-  debouncedFilterSearch();
-};
-
-const resetDepartureTimeFilter = () => {
-  filters.value.departurePeriod = '';
-  debouncedFilterSearch();
-};
-
-const resetDurationFilter = () => {
-  filters.value.departurePeriod = '';
-  debouncedFilterSearch();
-};
+const handleMobileSearch = () => {
+  handleSearch();
+  showSearchModal.value = false;
+}
 </script>
 
-<style scoped>
-/* Existing styles plus smooth modal transition */
+<style>
+:root {
+  --header-height: 64px;
+  --form-height: 88px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --header-height: 0px;
+  }
+}
+
 .shadow-light {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
 }

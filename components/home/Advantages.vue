@@ -8,10 +8,12 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div v-for="(advantage, index) in advantages" :key="index" 
              class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300">
-          <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center mb-6">
-            <AppIcon :name="advantage.icon" color="#dc2626" class="h-6 w-6" />
+          <div class="flex items-center gap-4 mb-6">
+            <div class="w-12 h-12 bg-coral-100 rounded-xl flex items-center justify-center">
+              <AppIcon :name="advantage.icon" class="h-6 w-6 text-coral-600" />
+            </div>
+            <h3 class="text-xl font-semibold text-primary-900">{{ advantage.title }}</h3>
           </div>
-          <h3 class="text-xl font-semibold text-gray-900 mb-4">{{ advantage.title }}</h3>
           <p class="text-gray-600">{{ advantage.description }}</p>
         </div>
       </div>

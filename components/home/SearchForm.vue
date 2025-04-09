@@ -20,7 +20,7 @@
             />
           </div>
           <div class="flex flex-col justify-end">
-           <AppButton label="Rechercher" :disabled="!isSearchEnabled" />
+           <AppButton type="submit" variant="coral" label="Rechercher" :disabled="!isSearchEnabled" />
           </div>
         </form>
       </div>

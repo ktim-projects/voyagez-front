@@ -2,8 +2,8 @@
   <main class="min-h-screen">
     <HomeHeroSection />
     <HomeSearchForm />
-    <HomePopularDestinations />
     <HomeAdvantages />
+    <HomePopularDestinations />
     <HomePartners />
     <HomeFAQ />
     <HomeNewsletter />

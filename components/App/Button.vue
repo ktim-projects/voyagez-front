@@ -1,24 +1,64 @@
 <template>
     <button 
-      type="submit" 
+      :type="type"
       :disabled="disabled"
       :class="[
-        'w-full bg-gray-200 py-3 px-6 rounded-xl font-medium transition-all duration-200',
-        !disabled
-          ? 'bg-primary-600 text-white hover:bg-primary-700'
-          : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+        'rounded-xl font-medium transition-all duration-200',
+        // Tailles
+        size === 'small' && 'px-4 py-2 text-sm',
+        size === 'medium' && 'px-6 py-3',
+        // Variantes
+        variant === 'primary' && [
+          'bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800',
+          disabled && 'bg-primary-200 opacity-60'
+        ],
+        variant === 'coral' && [
+          'bg-coral-500 text-white hover:bg-coral-600 active:bg-coral-700',
+          disabled && 'bg-coral-200 opacity-60'
+        ],
+        variant === 'outline' && [
+          'bg-transparent border-2 border-gray-300 text-gray-700 hover:bg-gray-50 active:bg-gray-100',
+          disabled && 'bg-gray-50 border-gray-200 text-gray-400 opacity-60'
+        ],
+        // Largeur
+        fullWidth ? 'w-full' : 'inline-flex',
+        className
       ]"
     >
-      <slot>
-        <span>{{ label }}</span>
-      </slot>
+      <div class="flex items-center justify-center gap-2">
+        <AppIcon 
+          v-if="icon" 
+          :name="icon" 
+          :class="[
+            size === 'small' ? 'w-4 h-4' : 'w-5 h-5',
+            (variant === 'primary' || variant === 'coral') ? 'text-white' : 'text-current'
+          ]" 
+        />
+        <slot>
+          <span>{{ label }}</span>
+        </slot>
+      </div>
     </button>
 </template>
 
 <script setup lang="ts">
-
-defineProps<{
+interface Props {
+  label?: string
   disabled?: boolean
-  label: string
-}>()
+  variant?: 'primary' | 'coral' | 'outline'
+  type?: 'button' | 'submit' | 'reset'
+  icon?: string
+  fullWidth?: boolean
+  size?: 'small' | 'medium'
+  className?: string
+}
+
+withDefaults(defineProps<Props>(), {
+  disabled: false,
+  variant: 'primary',
+  type: 'button',
+  fullWidth: true,
+  size: 'medium',
+  className: ''
+})
 </script>

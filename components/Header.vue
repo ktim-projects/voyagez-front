@@ -1,16 +1,18 @@
 <template>
-  <header class="bg-white shadow-sm sticky top-0 z-50">
+  <header class="bg-white shadow-sm sticky top-0 z-50" :class="{ 'md:block hidden': isSearchResults }">
     <nav class="container mx-auto px-4 h-16 flex items-center justify-between">
       <div class="flex items-center">
-        <h1 class="text-2xl font-bold text-red-600">Transport CI</h1>
+        <NuxtLink to="/" class="text-2xl font-bold text-coral-600 hover:text-coral-700 transition-colors">
+          Transport CI
+        </NuxtLink>
       </div>
       
       <!-- Desktop Menu -->
       <div class="hidden md:flex space-x-8">
-        <NuxtLink to="/" class="text-gray-700 hover:text-red-600">Accueil</NuxtLink>
-        <NuxtLink to="/destinations" class="text-gray-700 hover:text-red-600">Destinations</NuxtLink>
-        <NuxtLink to="/about" class="text-gray-700 hover:text-red-600">À propos</NuxtLink>
-        <NuxtLink to="/contact" class="text-gray-700 hover:text-red-600">Contact</NuxtLink>
+        <NuxtLink to="/" class="text-gray-700 hover:text-coral-600">Accueil</NuxtLink>
+        <NuxtLink to="/destinations" class="text-gray-700 hover:text-coral-600">Destinations</NuxtLink>
+        <NuxtLink to="/about" class="text-gray-700 hover:text-coral-600">À propos</NuxtLink>
+        <NuxtLink to="/contact" class="text-gray-700 hover:text-coral-600">Contact</NuxtLink>
       </div>
 
       <!-- Mobile Menu Button -->
@@ -40,4 +42,6 @@
 
 <script setup>
 const isMenuOpen = ref(false)
+const route = useRoute()
+const isSearchResults = computed(() => route.name === 'results')
 </script>
