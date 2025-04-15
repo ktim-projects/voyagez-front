@@ -178,13 +178,17 @@ const lines = ref<BusLine[]>([]);
 const busNumber = ref('');
 const modalBusNumber = ref('');
 const loading = ref(false);
-const isFormValid = computed(() => busNumber.value.trim() !== '');
+const lastSearchedBusNumber = ref(''); // Pour suivre le dernier numéro de bus recherché
+const isFormValid = computed(() => busNumber.value.trim() !== '' && busNumber.value !== lastSearchedBusNumber.value);
 const routes = ref<any[]>([]);
 const selectedRouteId = ref<number | null>(null);
 const mapContainer = ref<HTMLDivElement | null>(null);
 const map = ref<L.Map | null>(null);
 const lineTags = ref<Record<string, string>>({});
 const showSearchModal = ref(false);
+
+// Centre d'Abidjan
+const ABIDJAN_CENTER: [number, number] = [5.3599, -4.0083];
 
 // Fonction pour rechercher une ligne de bus
 const searchRoute = async () => {
@@ -242,6 +246,8 @@ const searchRoute = async () => {
       console.error('Données incomplètes dans la réponse');
     }
     
+    lastSearchedBusNumber.value = busNumber.value; // Mettre à jour le dernier numéro recherché
+    
   } catch (error) {
     console.error('Erreur lors de la recherche:', error);
   } finally {
@@ -292,47 +298,78 @@ const formatDuration = (minutes: number): string => {
 
 // Mettre à jour la carte avec l'itinéraire sélectionné
 const updateMap = () => {
-  if (!mapContainer.value || !selectedRoute.value) return;
+  if (!mapContainer.value) return;
   
   // Supprimer la carte existante si elle existe
   if (map.value) {
     map.value.remove();
   }
   
-  // Afficher la nouvelle carte avec l'itinéraire sélectionné
-  const route = selectedRoute.value;
-  map.value = displayRouteMap(
-    mapContainer.value,
-    route.shape,
-    route.stops.map((stop: Stop) => {
-      // Convertir les arrêts en format GeoJSON pour la carte
-      if (stop.coordinates) {
-        return {
-          id: stop.id,
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: stop.coordinates
-          },
-          properties: {
-            name: stop.name
-          }
-        };
-      }
-      return null;
-    }).filter(Boolean),
-    route.color
-  );
+  if (selectedRoute.value) {
+    // Afficher la nouvelle carte avec l'itinéraire sélectionné
+    const route = selectedRoute.value;
+    map.value = displayRouteMap(
+      mapContainer.value,
+      route.shape,
+      route.stops.map((stop: Stop) => {
+        // Convertir les arrêts en format GeoJSON pour la carte
+        if (stop.coordinates) {
+          return {
+            id: stop.id,
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: stop.coordinates
+            },
+            properties: {
+              name: stop.name
+            }
+          };
+        }
+        return null;
+      }).filter(Boolean),
+      route.color
+    );
+  }
+}
+
+// Initialiser la carte par défaut
+const initDefaultMap = () => {
+  if (!mapContainer.value || map.value) return;
+  
+  // Initialiser la carte centrée sur Abidjan
+  map.value = L.map(mapContainer.value).setView(ABIDJAN_CENTER, 12);
+  
+  // Ajouter la couche de tuiles OpenStreetMap
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    opacity: 0.7
+  }).addTo(map.value);
+  
+  // Ajouter l'échelle
+  L.control.scale().addTo(map.value);
 }
 
 // Fonction pour gérer la recherche depuis la modal
 const handleModalSearch = () => {
-  if (modalBusNumber.value.trim() !== '') {
+  if (modalBusNumber.value.trim() !== '' && modalBusNumber.value !== lastSearchedBusNumber.value) {
     busNumber.value = modalBusNumber.value;
     showSearchModal.value = false;
     searchRoute();
+  } else {
+    showSearchModal.value = false;
   }
 };
+
+// Initialiser la carte au montage du composant
+onMounted(() => {
+  initDefaultMap();
+});
+
+// Observer les changements de l'itinéraire sélectionné pour mettre à jour la carte
+watch(selectedRoute, () => {
+  updateMap();
+});
 
 // Lorsque la modal s'ouvre, initialiser le numéro de bus
 watch(showSearchModal, (newValue) => {

@@ -17,32 +17,40 @@
       </div>
 
       <!-- Mobile Menu Button -->
-      <button @click="isMenuOpen = !isMenuOpen" class="md:hidden">
-        <i class="pi" :class="isMenuOpen ? 'pi-times' : 'pi-bars'" style="font-size: 1.5rem"></i>
-      </button>
-
       <button 
-              @click="isMenuOpen = !isMenuOpen" 
-              class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-            >
-              <Menu class="h-6 w-6" />
-            </button>
+        @click="isMenuOpen = !isMenuOpen" 
+        class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+      >
+        <Menu v-if="!isMenuOpen" class="h-6 w-6" />
+        <X v-else class="h-6 w-6" />
+      </button>
     </nav>
 
     <!-- Mobile Menu -->
-    <div v-if="isMenuOpen" class="md:hidden bg-white border-t">
-      <div class="container mx-auto px-4 py-4 space-y-4">
-        <NuxtLink to="/" class="block text-gray-700 hover:text-red-600 py-2">Accueil</NuxtLink>
-        <span @click="goToCarResults" class="block text-gray-700 hover:text-red-600 py-2 cursor-pointer">Car</span>
-        <span @click="goToBusResults" class="block text-gray-700 hover:text-red-600 py-2 cursor-pointer">Bus</span>
-        <NuxtLink to="/about" class="block text-gray-700 hover:text-red-600 py-2">À propos</NuxtLink>
-        <NuxtLink to="/contact" class="block text-gray-700 hover:text-red-600 py-2">Contact</NuxtLink>
+    <Transition
+      enter-active-class="transition duration-300 ease-out"
+      enter-from-class="transform -translate-y-8 opacity-0"
+      enter-to-class="transform translate-y-0 opacity-100"
+      leave-active-class="transition duration-200 ease-in"
+      leave-from-class="transform translate-y-0 opacity-100"
+      leave-to-class="transform -translate-y-8 opacity-0"
+    >
+      <div v-if="isMenuOpen" class="md:hidden bg-white border-t shadow-md">
+        <div class="container mx-auto px-4 py-2 space-y-1">
+          <NuxtLink to="/" class="block text-gray-700 hover:text-red-600 py-2">Accueil</NuxtLink>
+          <span @click="goToCarResults" class="block text-gray-700 hover:text-red-600 py-2 cursor-pointer">Car</span>
+          <span @click="goToBusResults" class="block text-gray-700 hover:text-red-600 py-2 cursor-pointer">Bus</span>
+          <NuxtLink to="/about" class="block text-gray-700 hover:text-red-600 py-2">À propos</NuxtLink>
+          <NuxtLink to="/contact" class="block text-gray-700 hover:text-red-600 py-2">Contact</NuxtLink>
+        </div>
       </div>
-    </div>
+    </Transition>
   </header>
 </template>
 
 <script setup>
+import { Menu, X } from 'lucide-vue-next'
+
 const searchStore = useSearchStore();
 
 const isMenuOpen = ref(false)
