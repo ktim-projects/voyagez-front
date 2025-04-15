@@ -11,11 +11,15 @@
               <NuxtLink to="/" class="text-white">
                 <ChevronLeft class="w-5 h-5" />
               </NuxtLink>
-              <div class="text-white font-medium">
+              <div v-if="departures.length > 0" class="text-white font-medium">
                 {{ fromCity }} → {{ toCity }}
+              </div>
+              <div v-else class="text-white font-medium">
+                Recherche
               </div>
             </div>
             <AppButton 
+              v-if="hasSearched && fromCity && toCity"
               variant="outline" 
               size="small"
               label="Modifier"
@@ -65,10 +69,44 @@
                 label="Rechercher"
                 type="submit"
                 icon="Search"
+                :disabled="!fromCity || !toCity"
               />
             </div>
           </form>
         </div>
+      </div>
+
+      <!-- Mobile Search Form (visible when no results) -->
+      <div v-if="!loading && departures.length === 0" class="md:hidden p-4 bg-white">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">Rechercher un trajet</h2>
+        <form @submit.prevent="handleSearch" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-600 mb-2">Départ</label>
+            <CityAutocomplete
+              v-model="fromCity"
+              @select="handleFromSelect"
+              placeholder="Ville de départ"
+            />
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-600 mb-2">Arrivée</label>
+            <CityAutocomplete
+              v-model="toCity"
+              @select="handleToSelect"
+              placeholder="Ville d'arrivée"
+            />
+          </div>
+          
+          <AppButton 
+            variant="coral" 
+            label="Rechercher"
+            type="submit"
+            icon="Search"
+            :disabled="!fromCity || !toCity"
+            class="w-full"
+          />
+        </form>
       </div>
 
       <div class="border-b border-gray-200 hidden md:block"></div>
@@ -88,7 +126,7 @@
     <div class="flex-1">
       <div class="container mx-auto px-4 py-6">
         <!-- Mobile Filters Modal -->
-        <div class="lg:hidden">
+        <div v-if="hasSearched && (departures.length > 0 || (fromCity && toCity))" class="lg:hidden">
           <SearchFiltersGroupMobile
             v-model:show-modal="showFiltersModal"
             v-model="filters"
@@ -103,6 +141,7 @@
           <div class="col-span-12 lg:col-span-7">
             <!-- Desktop Filters Section -->
             <SearchFiltersGroup
+              v-if="hasSearched && (departures.length > 0 || (fromCity && toCity))"
               v-model="filters"
               :companies="carCompanies"
               @update:modelValue="debouncedFilterSearch"
@@ -230,8 +269,8 @@ const loadingMore = ref(false);
 
 const fromCity = ref(searchStore.from || '');
 const toCity = ref(searchStore.to || '');
-// const fromCity = ref(typeof searchStore.from === 'object' ? searchStore.from.name : searchStore.from);
-// const toCity = ref(typeof searchStore.to === 'object' ? searchStore.to.name : searchStore.to);
+const hasSearched = ref(false); // Variable pour suivre si une recherche a été effectuée
+const showSearchModal = ref(false);
 
 const filters = ref({
   maxPrice: 50000,
@@ -271,7 +310,11 @@ const debouncedFilterSearch = useDebounceFn(() => {
 }, 300);
 
 const handleSearch = async () => {
-  if (!fromCity.value || !toCity.value) return;
+  if (!fromCity.value || !toCity.value) {
+    return;
+  }
+
+  hasSearched.value = true; // Marquer qu'une recherche a été effectuée
   
   loading.value = true;
   departures.value = [];
@@ -443,8 +486,6 @@ const departurePeriods = {
   'afternoon': 'Après-midi (12h - 18h)',
   'evening': 'Soir (18h - 00h)'
 } as const;
-
-const showSearchModal = ref(false);
 
 const handleMobileSearch = () => {
   handleSearch();

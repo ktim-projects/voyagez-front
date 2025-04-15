@@ -1,92 +1,52 @@
 <template>
   <div class="min-h-[calc(100vh-4rem)] relative">
     <div class="grid grid-cols-1 md:grid-cols-12 h-full">
-      <!-- Left Panel -->
-      <div class="md:col-span-5 lg:col-span-4 bg-white border-r border-gray-200 overflow-y-auto h-[calc(100vh-4rem)]">
-        <!-- Search Form -->
-        <div class="p-6 border-b border-gray-200">
-          <form @submit.prevent="searchRoute" class="space-y-6">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-3">Type de recherche</label>
-              <div class="flex space-x-6">
-                <label class="flex items-center">
-                  <input 
-                    type="radio" 
-                    v-model="searchType" 
-                    value="number" 
-                    class="form-radio text-blue-600"
-                  >
-                  <span class="ml-2 text-sm text-gray-600">Par numéro de bus</span>
-                </label>
-                <label class="flex items-center">
-                  <input 
-                    type="radio" 
-                    v-model="searchType" 
-                    value="route" 
-                    class="form-radio text-blue-600"
-                  >
-                  <span class="ml-2 text-sm text-gray-600">Par trajet</span>
-                </label>
+      <!-- Mobile Header -->
+      <div class="bg-primary-600 md:hidden fixed top-0 left-0 right-0 z-40">
+        <div class="container mx-auto px-4 py-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <NuxtLink to="/" class="text-white">
+                <ChevronLeft class="w-5 h-5" />
+              </NuxtLink>
+              <div v-if="selectedRoute" class="text-white font-medium">
+                Ligne {{ busNumber }}
+                <span v-if="selectedRoute.isExpress" class="ml-1 text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full">
+                  Express
+                </span>
+              </div>
+              <div v-else class="text-white font-medium">
+                Recherche de bus
               </div>
             </div>
-
-            <template v-if="searchType === 'number'">
+            <AppButton 
+              v-if="routes.length > 0"
+              variant="outline" 
+              size="small"
+              label="Modifier"
+              :fullWidth="false"
+              class="!text-white !border-white hover:!bg-white/10"
+              @click="showSearchModal = true"
+            />
+          </div>
+        </div>
+      </div>
+      
+      <!-- Left Panel -->
+      <div class="md:col-span-5 lg:col-span-4 bg-white border-r border-gray-200 overflow-y-auto h-[calc(100vh-4rem)] mt-12 md:mt-0">
+        <!-- Search Form (visible on desktop or mobile when no results) -->
+        <div class="p-6 border-b border-gray-200" :class="{'hidden md:block': routes.length > 0}">
+          <form @submit.prevent="searchRoute" class="space-y-6">
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Numéro de bus</label>
                 <input
-                  v-model="search.busNumber"
+                  v-model="busNumber"
                   type="text"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
                   placeholder="Ex: 81"
                 />
               </div>
-            </template>
-
-            <template v-else>
-              <div class="space-y-1 max-w-md mx-auto relative">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">Point de départ</label>
-                  <BusStopSelect
-                    v-model="search.from"
-                    :stops="allStops"
-                    placeholder="Sélectionnez un arrêt de départ"
-                    @select="onFromStopSelect"
-                    class="w-full"
-                  />
-                </div>
-
-                <div class="absolute left-1/2 -translate-x-1/2 -translate-y-1/2" style="top: 50%;">
-                  <button
-                    @click="invertRoute"
-                    class="p-2 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200 z-10"
-                    title="Inverser le trajet"
-                  >
-                    <svg class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                    </svg>
-                  </button>
-                </div>
-
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">Point d'arrivée</label>
-                  <BusStopSelect
-                    v-model="search.to"
-                    :stops="allStops"
-                    placeholder="Sélectionnez un arrêt d'arrivée"
-                    @select="onToStopSelect"
-                    class="w-full"
-                  />
-                </div>
-              </div>
-            </template>
-
-            <button 
-              type="submit" 
-              class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              :disabled="!isFormValid"
-            >
-              Rechercher
-            </button>
+            <AppButton type="submit" variant="coral" label="Rechercher" :disabled="!isFormValid" />
           </form>
         </div>
 
@@ -98,150 +58,88 @@
           </div>
 
           <template v-else>
-            <!-- Affichage pour la recherche par numéro -->
-            <div v-if="searchType === 'number' && busLine" class="bg-white rounded-lg p-6">
-              <!-- Garder l'affichage existant pour la recherche par numéro -->
-              <div class="mb-6">
-                <div class="flex items-center space-x-3 mb-2">
-                  <div class="w-10 h-10 rounded-lg flex items-center justify-center" 
-                       :style="{ backgroundColor: `${busLine.color}20` }">
-                    <span class="text-lg font-bold" :style="{ color: busLine.color }">
-                      {{ busLine.number }}
-                    </span>
-                  </div>
-                  <div class="flex-1">
-                    <h3 class="text-lg font-medium">{{ busLine.name }}</h3>
-                    <p class="text-sm text-gray-500">{{ busLine.description }}</p>
-                  </div>
-                </div>
-              </div>
+            <!-- Affichage des itinéraires -->
+            <div v-if="routes.length > 0" class="bg-white rounded-lg p-4">
+              <h3 class="text-lg font-semibold mb-4 text-gray-800">
+                Ligne {{ busNumber }}
+                <span v-if="selectedRoute && selectedRoute.isExpress" class="ml-2 text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full hidden md:inline-block">
+                  Express
+                </span>
+                <span v-if="lineTags.charge" class="ml-2 text-sm bg-coral-100 text-coral-700 px-2 py-0.5 rounded-full">
+                  {{ lineTags.charge }}
+                </span>
 
-              <!-- Liste des arrêts -->
-              <div class="relative space-y-4">
-                <div class="absolute left-3 top-3 bottom-3 w-0.5 bg-gray-200"></div>
-                
-                <div v-for="(stop, index) in busLine.stops" 
-                     :key="stop.id" 
-                     class="relative pl-8"
-                     @mouseenter="highlightedStop = index"
-                     @mouseleave="highlightedStop = null">
-                  <div class="absolute left-0 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white border-2 flex items-center justify-center transition-colors"
-                       :class="{ 'border-blue-600': highlightedStop === index }"
-                       :style="{ borderColor: highlightedStop === index ? busLine.color : busLine.color + '40' }">
-                    <div class="w-2 h-2 rounded-full" 
-                         :style="{ backgroundColor: highlightedStop === index ? busLine.color : busLine.color + '40' }">
-                    </div>
-                  </div>
-                  <div class="py-1">
-                    <p class="font-medium text-gray-900 text-sm">{{ stop.name }}</p>
-                    <p class="text-xs text-gray-500">{{ stop.description }}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Affichage pour la recherche par trajet -->
-            <div v-else-if="searchType === 'route' && routes.length > 0" class="space-y-6">
-              <h3 class="text-lg font-medium text-gray-900 mb-4">Itinéraires proposés :</h3>
+              </h3>
               
-              <div v-for="(route, index) in routes" :key="index" 
-                   class="bg-white rounded-lg shadow-md p-6">
-                <div class="flex items-center justify-between mb-4">
-                  <div class="flex items-center space-x-2">
-                    <span class="text-lg font-medium">{{ getRouteTitle(route, index) }}</span>
-                    <span class="text-sm text-gray-500">
-                      ({{ Math.round(route.totalDistance * 10) / 10 }} km)
-                    </span>
+              <!-- Informations sur l'itinéraire sélectionné -->
+              <div v-if="selectedRoute" class="mb-4 p-3 bg-gray-50 rounded-lg">
+                <h4 class="font-medium text-gray-800">
+                  {{ selectedRoute.name }}
+                </h4>
+                <div class="mt-2 text-sm text-gray-600">
+                  <div v-if="selectedRoute.stops.length > 0" class="flex items-center">
+                    <span class="font-medium mr-1">Origine:</span> 
+                    {{ selectedRoute.stops[0].name }}
+                  </div>
+                  <div v-if="selectedRoute.stops.length > 1" class="flex items-center mt-1">
+                    <span class="font-medium mr-1">Destination:</span> 
+                    {{ selectedRoute.stops[selectedRoute.stops.length - 1].name }}
+                  </div>
+                  <div class="mt-1">
+                    <span class="font-medium mr-1">Nombre d'arrêts:</span> 
+                    {{ selectedRoute.stops.length }}
+                  </div>
+                  <div v-if="selectedRoute.duration" class="mt-1 flex items-center">
+                    <span class="font-medium mr-1">Durée:</span>
+                    <div class="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {{ formatDuration(selectedRoute.duration) }}
+                    </div>
                   </div>
                 </div>
-
-                <!-- Instructions détaillées -->
-                <div class="space-y-6">
-                  <template v-for="(step, stepIndex) in route.steps" :key="stepIndex">
-                    <!-- Étape de marche initiale si nécessaire -->
-                    <div v-if="step.type === 'walk'" class="pl-4 border-l-2 border-gray-200">
-                      <div class="flex items-center space-x-2">
-                        <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
-                          <span class="text-gray-600">🚶</span>
-                        </div>
-                        <div>
-                          <p class="font-medium">Marchez jusqu'à l'arrêt {{ step.toStop.name }}</p>
-                          <p class="text-sm text-gray-500">{{ Math.round(step.distance * 1000) }}m de marche</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Étape de bus -->
-                    <div v-else-if="step.type === 'bus' && step.busLine" class="pl-4 border-l-2 border-gray-200">
-                      <div class="flex items-center space-x-2 mb-4">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center"
-                             :style="{ backgroundColor: step.busLine.color + '20' }">
-                          <span class="text-sm font-bold" :style="{ color: step.busLine.color }">
-                            {{ step.busLine.number }}
-                          </span>
-                        </div>
-                        <div>
-                          <p class="font-medium">
-                            Prenez le bus {{ step.busLine.number }}
-                            <span class="text-gray-600" v-if="getDirectionInfo(step.busLine, step.fromStop, step.toStop)">
-                              direction {{ getDirectionInfo(step.busLine, step.fromStop, step.toStop)?.direction }}
-                            </span>
-                          </p>
-                          <p class="text-sm text-gray-500" v-if="getDirectionInfo(step.busLine, step.fromStop, step.toStop)">
-                            {{ getDirectionInfo(step.busLine, step.fromStop, step.toStop)?.numberOfStops }} 
-                            arrêt{{ getDirectionInfo(step.busLine, step.fromStop, step.toStop)?.numberOfStops !== 1 ? 's' : '' }}
-                            ({{ Math.round(step.distance * 10) / 10 }} km)
-                          </p>
-                        </div>
-                      </div>
-
-                      <!-- Liste des arrêts pour cette ligne -->
-                      <div class="ml-10 space-y-2" v-if="getDirectionInfo(step.busLine, step.fromStop, step.toStop)">
-                        <div v-for="(stop, stopIndex) in getDirectionInfo(step.busLine, step.fromStop, step.toStop)?.stops"
-                             :key="stop.id"
-                             class="flex items-center space-x-2">
-                          <div class="w-2 h-2 rounded-full"
-                               :class="{ 
-                                 'bg-blue-500': stopIndex === 0,
-                                 'bg-green-500': stopIndex === getDirectionInfo(step.busLine, step.fromStop, step.toStop)?.stops.length! - 1,
-                                 'bg-gray-300': stopIndex > 0 && stopIndex < getDirectionInfo(step.busLine, step.fromStop, step.toStop)?.stops.length! - 1
-                               }">
-                          </div>
-                          <span :class="{
-                            'font-medium': stopIndex === 0 || stopIndex === getDirectionInfo(step.busLine, step.fromStop, step.toStop)?.stops.length! - 1,
-                            'text-gray-500': stopIndex > 0 && stopIndex < getDirectionInfo(step.busLine, step.fromStop, step.toStop)?.stops.length! - 1
-                          }">
-                            {{ stop.name }}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Étape de correspondance -->
-                    <div v-if="stepIndex < route.steps.length - 1 && step.type === 'bus' && route.steps[stepIndex + 1].type === 'bus'"
-                         class="pl-4 border-l-2 border-orange-200">
-                      <div class="flex items-center space-x-2 text-orange-500">
-                        <div class="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center">
-                          <span>↓</span>
-                        </div>
-                        <div>
-                          <p class="font-medium">Correspondance à {{ step.toStop.name }}</p>
-                          <p class="text-sm">
-                            {{ Math.round(calculateDistance(
-                              step.toStop.latitude,
-                              step.toStop.longitude,
-                              route.steps[stepIndex + 1].fromStop.latitude,
-                              route.steps[stepIndex + 1].fromStop.longitude
-                            ) * 1000) }}m jusqu'à l'arrêt du bus suivant
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </template>
+              </div>
+              
+              <!-- Sélection d'itinéraire s'il y en a plusieurs -->
+              <div v-if="routes.length > 1" class="mb-6">
+                <p class="text-sm text-gray-600 mb-2">Sélectionnez un itinéraire :</p>
+                <div class="relative">
+                  <select 
+                    v-model="selectedRouteId" 
+                    @change="handleRouteChange"
+                    class="w-full px-4 py-2 pr-10 rounded-md text-sm font-normal bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent appearance-none truncate"
+                  >
+                    <option 
+                      v-for="route in routes" 
+                      :key="route.id" 
+                      :value="route.id"
+                    >
+                      {{ route.name }}
+                    </option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                    </svg>
+                  </div>
                 </div>
               </div>
+              
+              <!-- Affichage des arrêts de l'itinéraire sélectionné -->
+              <div v-if="selectedRoute" class="mt-4">
+                <div class="flex items-center mb-4">
+                  <div class="w-3 h-3 rounded-full mr-2" :style="{ backgroundColor: selectedRoute.color }"></div>
+                  <h4 class="text-md font-medium text-gray-800">Arrêts</h4>
+                </div>
+                
+                <BusRouteStopsList 
+                  :stops="selectedRoute.stops" 
+                  :route-color="selectedRoute.color" 
+                />
+              </div>
             </div>
-
+            
             <EmptyState
               v-else
               title="Aucun résultat trouvé"
@@ -258,657 +156,190 @@
       </div>
     </div>
   </div>
+  
+  <!-- Search Form Modal -->
+  <BusSearchModal
+    v-model:show="showSearchModal"
+    v-model:busNumber="modalBusNumber"
+    @search="handleModalSearch"
+  />
 </template>
 
 <script setup lang="ts">
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import type { BusLine } from '~/server/data/mockData';
-import BusStopSelect from './BusStopSelect.vue';
-import { busLines } from '~/server/data';
+import { LineData } from '~/modules/bus/models/line_data';
+import { getAllRoutesInfo } from '~/modules/bus/utils/route-utils';
+import { displayRouteMap } from '~/modules/bus/utils/map-utils';
+import { ChevronLeft, X as XIcon } from 'lucide-vue-next';
 
-interface BusStop {
-  id: string
-  name: string
-  latitude: number
-  longitude: number
-  description: string
-}
-
-interface BusRouteStep {
-  type: 'walk' | 'bus';
-  busLine?: BusLine;
-  fromStop: BusStop;
-  toStop: BusStop;
-  distance: number;
-  stops?: BusStop[];
-}
-
-interface BusRoute {
-  steps: BusRouteStep[];
-  totalDistance: number;
-}
-
-const route = useRoute();
-const router = useRouter();
+const lines = ref<BusLine[]>([]);
+const busNumber = ref('');
+const modalBusNumber = ref('');
 const loading = ref(false);
-const mapContainer = ref<HTMLElement | null>(null);
-let map: L.Map | null = null;
-let polyline: L.Polyline | null = null;
-let markers: L.Marker[] = [];
+const isFormValid = computed(() => busNumber.value.trim() !== '');
+const routes = ref<any[]>([]);
+const selectedRouteId = ref<number | null>(null);
+const mapContainer = ref<HTMLDivElement | null>(null);
+const map = ref<L.Map | null>(null);
+const lineTags = ref<Record<string, string>>({});
+const showSearchModal = ref(false);
 
-const searchType = ref<'number' | 'route'>('number');
-const search = ref({
-  from: '',
-  to: '',
-  busNumber: ''
-});
-
-const busLine = ref<BusLine | null>(null);
-const selectedFromStop = ref<BusStop | null>(null);
-const selectedToStop = ref<BusStop | null>(null);
-const highlightedStop = ref<number | null>(null);
-const routes = ref<BusRoute[]>([]);
-
-const allStops = computed(() => {
-  const stopsMap = new Map<string, BusStop>();
-  
-  busLines.forEach(line => {
-    line.stops.forEach(stop => {
-      if (!stopsMap.has(stop.id)) {
-        stopsMap.set(stop.id, {
-          ...stop,
-          description: `Ligne ${line.number}`
-        });
-      }
-    });
-  });
-  
-  return Array.from(stopsMap.values());
-});
-
-// Centre d'Abidjan
-const ABIDJAN_CENTER: [number, number] = [5.3599, -4.0083];
-
-const isFormValid = computed(() => {
-  if (searchType.value === 'number') {
-    return search.value.busNumber.trim() !== ''
-  } else {
-    return search.value.from.trim() !== '' && search.value.to.trim() !== ''
-  }
-});
-
-const clearMap = () => {
-  if (!map) return;
-  
-  markers.forEach(marker => map?.removeLayer(marker));
-  markers = [];
-  
-  if (polyline) {
-    map.removeLayer(polyline);
-    polyline = null;
-  }
-};
-
-const drawBusLine = (line: BusLine) => {
-  if (!map) return;
-  clearMap();
-
-  const coordinates = line.stops.map(stop => [stop.latitude, stop.longitude]);
-  
-  polyline = L.polyline(coordinates as L.LatLngExpression[], {
-    color: line.color,
-    weight: 4,
-    opacity: 0.7
-  }).addTo(map);
-
-  line.stops.forEach((stop, index) => {
-    const icon = L.divIcon({
-      html: '•',
-      className: 'custom-marker',
-      iconSize: [12, 12],
-      iconAnchor: [6, 6]
-    });
-
-    const marker = L.marker([stop.latitude, stop.longitude], { icon });
-    marker.addTo(map!);
-    markers.push(marker);
-  });
-
-  const bounds = L.latLngBounds(coordinates as L.LatLngExpression[]);
-  map.fitBounds(bounds, { padding: [50, 50] });
-};
-
-const drawMultiBusRoute = (route: BusRoute, options: { opacity?: number; color?: string } = {}) => {
-  if (!map) return;
-  clearMap();
-
-  let allCoordinates: L.LatLngExpression[] = [];
-  
-  route.steps.forEach((step) => {
-    if (step.type === 'bus' && step.stops) {
-      const coordinates = step.stops.map(stop => [stop.latitude, stop.longitude] as L.LatLngExpression);
-      
-      const line = L.polyline(coordinates, {
-        color: options.color || step.busLine?.color || '#3B82F6',
-        weight: 4,
-        opacity: options.opacity || 0.7
-      }).addTo(map!);
-      
-      allCoordinates = [...allCoordinates, ...coordinates];
-    }
-  });
-
-  // Add markers for all stops
-  route.steps.forEach((step) => {
-    if (step.type === 'bus' && step.stops) {
-      step.stops.forEach((stop, index) => {
-        const isEndpoint = index === 0 || index === step.stops!.length - 1;
-        
-        const icon = L.divIcon({
-          html: isEndpoint ? '🚏' : '•',
-          className: `custom-marker ${isEndpoint ? 'endpoint' : ''}`,
-          iconSize: isEndpoint ? [24, 24] : [12, 12],
-          iconAnchor: isEndpoint ? [12, 24] : [6, 6]
-        });
-
-        const marker = L.marker([stop.latitude, stop.longitude], { icon });
-        marker.addTo(map!);
-        markers.push(marker);
-      });
-    }
-  });
-
-  if (allCoordinates.length > 0) {
-    const bounds = L.latLngBounds(allCoordinates);
-    map.fitBounds(bounds, { padding: [50, 50] });
-  }
-};
-
-const findAllPossibleRoutes = (fromStop: BusStop, toStop: BusStop): BusRoute[] => {
-  const routes: BusRoute[] = [];
-  const maxWalkingDistance = 1; // 1km maximum pour la marche
-
-  // Fonction pour ajouter une route si elle n'existe pas déjà
-  const addRouteIfUnique = (newRoute: BusRoute) => {
-    const routeExists = routes.some(existingRoute => {
-      if (existingRoute.steps.length !== newRoute.steps.length) return false;
-      return existingRoute.steps.every((step, index) => {
-        const newStep = newRoute.steps[index];
-        if (step.type !== newStep.type) return false;
-        if (step.type === 'bus') {
-          return step.busLine?.number === newStep.busLine?.number &&
-                 step.fromStop.id === newStep.fromStop.id &&
-                 step.toStop.id === newStep.toStop.id;
-        }
-        return step.fromStop.id === newStep.fromStop.id &&
-               step.toStop.id === newStep.toStop.id;
-      });
-    });
-
-    if (!routeExists) {
-      routes.push(newRoute);
-    }
-  };
-
-  // 1. Rechercher les trajets directs en bus
-  for (const line of busLines) {
-    const fromStopIndex = line.stops.findIndex(s => s.id === fromStop.id);
-    const toStopIndex = line.stops.findIndex(s => s.id === toStop.id);
-
-    if (fromStopIndex !== -1 && toStopIndex !== -1) {
-      // Créer le trajet dans le bon sens
-      const isForward = fromStopIndex < toStopIndex;
-      const stops = isForward
-        ? line.stops.slice(fromStopIndex, toStopIndex + 1)
-        : line.stops.slice(toStopIndex, fromStopIndex + 1).reverse();
-
-      addRouteIfUnique({
-        steps: [{
-          type: 'bus',
-          busLine: line,
-          fromStop: fromStop,
-          toStop: toStop,
-          distance: calculateRouteDistance(stops),
-          stops: stops
-        }],
-        totalDistance: calculateRouteDistance(stops)
-      });
-    }
-  }
-
-  // 2. Rechercher les trajets avec marche au début ou à la fin
-  for (const line of busLines) {
-    // Pour chaque arrêt de la ligne
-    for (const lineStop of line.stops) {
-      // Vérifier la marche depuis le point de départ
-      const walkToStart = calculateDistance(
-        fromStop.latitude,
-        fromStop.longitude,
-        lineStop.latitude,
-        lineStop.longitude
-      );
-
-      if (walkToStart <= maxWalkingDistance) {
-        // Chercher tous les arrêts possibles pour descendre
-        for (const endStop of line.stops) {
-          if (endStop.id === lineStop.id) continue;
-
-          const walkToEnd = calculateDistance(
-            endStop.latitude,
-            endStop.longitude,
-            toStop.latitude,
-            toStop.longitude
-          );
-
-          if (walkToEnd <= maxWalkingDistance) {
-            const fromIndex = line.stops.findIndex(s => s.id === lineStop.id);
-            const toIndex = line.stops.findIndex(s => s.id === endStop.id);
-
-            if (fromIndex !== -1 && toIndex !== -1) {
-              const isForward = fromIndex < toIndex;
-              const busStops = isForward
-                ? line.stops.slice(fromIndex, toIndex + 1)
-                : line.stops.slice(toIndex, fromIndex + 1).reverse();
-
-              const steps: BusRouteStep[] = [];
-
-              // Ajouter l'étape de marche initiale si nécessaire
-              if (walkToStart > 0.05) {
-                steps.push({
-                  type: 'walk',
-                  fromStop: fromStop,
-                  toStop: lineStop,
-                  distance: walkToStart
-                });
-              }
-
-              // Ajouter l'étape en bus
-              steps.push({
-                type: 'bus',
-                busLine: line,
-                fromStop: lineStop,
-                toStop: endStop,
-                distance: calculateRouteDistance(busStops),
-                stops: busStops
-              });
-
-              // Ajouter l'étape de marche finale si nécessaire
-              if (walkToEnd > 0.05) {
-                steps.push({
-                  type: 'walk',
-                  fromStop: endStop,
-                  toStop: toStop,
-                  distance: walkToEnd
-                });
-              }
-
-              const totalDistance = steps.reduce((total, step) => total + step.distance, 0);
-              addRouteIfUnique({ steps, totalDistance });
-            }
-          }
-        }
-      }
-
-      // Vérifier la marche vers le point d'arrivée
-      const walkFromEnd = calculateDistance(
-        lineStop.latitude,
-        lineStop.longitude,
-        toStop.latitude,
-        toStop.longitude
-      );
-
-      if (walkFromEnd <= maxWalkingDistance) {
-        // Faire la même chose dans l'autre sens
-        for (const startStop of line.stops) {
-          if (startStop.id === lineStop.id) continue;
-
-          const walkFromStart = calculateDistance(
-            fromStop.latitude,
-            fromStop.longitude,
-            startStop.latitude,
-            startStop.longitude
-          );
-
-          if (walkFromStart <= maxWalkingDistance) {
-            const fromIndex = line.stops.findIndex(s => s.id === startStop.id);
-            const toIndex = line.stops.findIndex(s => s.id === lineStop.id);
-
-            if (fromIndex !== -1 && toIndex !== -1) {
-              const isForward = fromIndex < toIndex;
-              const busStops = isForward
-                ? line.stops.slice(fromIndex, toIndex + 1)
-                : line.stops.slice(toIndex, fromIndex + 1).reverse();
-
-              const steps: BusRouteStep[] = [];
-
-              // Ajouter l'étape de marche initiale si nécessaire
-              if (walkFromStart > 0.05) {
-                steps.push({
-                  type: 'walk',
-                  fromStop: fromStop,
-                  toStop: startStop,
-                  distance: walkFromStart
-                });
-              }
-
-              // Ajouter l'étape en bus
-              steps.push({
-                type: 'bus',
-                busLine: line,
-                fromStop: startStop,
-                toStop: lineStop,
-                distance: calculateRouteDistance(busStops),
-                stops: busStops
-              });
-
-              // Ajouter l'étape de marche finale si nécessaire
-              if (walkFromEnd > 0.05) {
-                steps.push({
-                  type: 'walk',
-                  fromStop: lineStop,
-                  toStop: toStop,
-                  distance: walkFromEnd
-                });
-              }
-
-              const totalDistance = steps.reduce((total, step) => total + step.distance, 0);
-              addRouteIfUnique({ steps, totalDistance });
-            }
-          }
-        }
-      }
-    }
-  }
-
-  // Trier les routes par distance totale
-  routes.sort((a, b) => a.totalDistance - b.totalDistance);
-
-  // Retourner les 3 meilleures routes
-  return routes.slice(0, 3);
-};
-
-const findDirectBusLine = (fromStop: BusStop, toStop: BusStop) => {
-  for (const line of busLines) {
-    const fromStopIndex = line.stops.findIndex(s => s.id === fromStop.id);
-    const toStopIndex = line.stops.findIndex(s => s.id === toStop.id);
-    
-    if (fromStopIndex !== -1 && toStopIndex !== -1) {
-      // On retourne l'itinéraire quel que soit le sens (aller ou retour)
-      return {
-        line,
-        fromIndex,
-        toIndex
-      };
-    }
-  }
-  return null;
-};
-
-const getDirectionInfo = (busLine: BusLine, fromStop: BusStop, toStop: BusStop) => {
-  const fromIndex = busLine.stops.findIndex(s => s.id === fromStop.id);
-  const toIndex = busLine.stops.findIndex(s => s.id === toStop.id);
-  
-  if (fromIndex === -1 || toIndex === -1) return null;
-
-  // Déterminer le sens de circulation
-  const isForward = fromIndex < toIndex;
-  
-  // Déterminer le terminus en fonction du sens
-  const terminus = isForward ? busLine.stops[busLine.stops.length - 1] : busLine.stops[0];
-  
-  // Obtenir la liste des arrêts dans le bon ordre
-  let stops;
-  if (isForward) {
-    stops = busLine.stops.slice(
-      Math.min(fromIndex, toIndex),
-      Math.max(fromIndex, toIndex) + 1
-    );
-  } else {
-    stops = busLine.stops.slice(toIndex, fromIndex + 1).reverse();
-  }
-  
-  return {
-    direction: terminus.name,
-    isForward,
-    stops,
-    numberOfStops: stops.length - 1
-  };
-};
-
-const calculateRouteDistance = (stops: BusStop[]): number => {
-  let distance = 0;
-  for (let i = 1; i < stops.length; i++) {
-    distance += calculateDistance(
-      stops[i-1].latitude,
-      stops[i-1].longitude,
-      stops[i].latitude,
-      stops[i].longitude
-    );
-  }
-  return distance;
-};
-
-const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
-  const R = 6371; // Rayon de la Terre en km
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  return R * c;
-};
-
-const findNearestStops = (latitude: number, longitude: number, maxDistance: number = 1): Array<{ stop: BusStop; distance: number; busLine: BusLine }> => {
-  const nearestStops: Array<{ stop: BusStop; distance: number; busLine: BusLine }> = [];
-
-  for (const line of busLines) {
-    for (const stop of line.stops) {
-      const distance = calculateDistance(latitude, longitude, stop.latitude, stop.longitude);
-      if (distance <= maxDistance) {
-        nearestStops.push({
-          stop,
-          distance,
-          busLine: line
-        });
-      }
-    }
-  }
-
-  return nearestStops.sort((a, b) => a.distance - b.distance);
-};
-
-const formatRouteInstructions = (route: BusRoute): string[] => {
-  const instructions: string[] = [];
-  
-  for (const step of route.steps) {
-    if (step.type === 'walk') {
-      const distance = (step.distance * 1000).toFixed(0); // Convertir en mètres
-      instructions.push(`🚶 Marcher ${distance}m jusqu'à l'arrêt ${step.toStop.name}`);
-    } else if (step.type === 'bus' && step.busLine) {
-      const directionInfo = getDirectionInfo(step.busLine, step.fromStop, step.toStop);
-      
-      if (directionInfo) {
-        // Instruction principale avec la direction
-        instructions.push(`🚌 Prendre le bus ${step.busLine.number} direction ${directionInfo.direction}`);
-        
-        // Détails des arrêts
-        instructions.push(`   Monter à l'arrêt ${step.fromStop.name}`);
-        
-        // Liste des arrêts intermédiaires
-        if (directionInfo.stops.length > 2) {
-          const intermediateStops = directionInfo.stops.slice(1, -1);
-          if (intermediateStops.length > 0) {
-            instructions.push('   Arrêts traversés :');
-            intermediateStops.forEach(stop => {
-              instructions.push(`   • ${stop.name}`);
-            });
-          }
-        }
-        
-        instructions.push(`   Descendre à l'arrêt ${step.toStop.name} (${directionInfo.numberOfStops} arrêt${directionInfo.numberOfStops > 1 ? 's' : ''})`);
-      }
-    }
-  }
-  
-  // Ajouter la distance totale à la fin
-  const totalDistance = route.totalDistance;
-  const walkingDistance = route.steps
-    .filter(step => step.type === 'walk')
-    .reduce((total, step) => total + step.distance, 0);
-  
-  instructions.push(
-    `\nℹ️ Distance totale : ${(totalDistance * 1000).toFixed(0)}m` +
-    (walkingDistance > 0 ? ` (dont ${(walkingDistance * 1000).toFixed(0)}m de marche)` : '')
-  );
-  
-  return instructions;
-};
-
-const getRouteTitle = (route: BusRoute, index: number): string => {
-  // const busSteps = route.steps.filter(step => step.type === 'bus');
-  // const walkSteps = route.steps.filter(step => step.type === 'walk');
-  
-  // const parts: string[] = [];
-  
-  // if (busSteps.length === 1) {
-  //   parts.push(`Bus ${busSteps[0].busLine?.number}`);
-  // } else if (busSteps.length > 1) {
-  //   const busNumbers = busSteps.map(step => step.busLine?.number).join(' + ');
-  //   parts.push(`${busSteps.length} bus (${busNumbers})`);
-  // }
-  
-  // if (walkSteps.length > 0) {
-  //   const totalWalkDistance = walkSteps.reduce((total, step) => total + step.distance, 0);
-  //   if (totalWalkDistance > 0.05) { // Plus de 50m de marche
-  //     parts.push(`${(totalWalkDistance * 1000).toFixed(0)}m de marche`);
-  //   }
-  // }
-  
-  // : ${parts.join(' + ')}
-  return `Option ${index + 1}`;
-};
-
-const formatNumber = (busLine: string) => {
-  return Number(busLine) < 10 ? `0${busLine}` : `${busLine}`;
-};
-
+// Fonction pour rechercher une ligne de bus
 const searchRoute = async () => {
-  loading.value = true;
-  busLine.value = null;
-  routes.value = [];
-  clearMap();
+  if (!isFormValid.value) return;
   
   try {
-    if (searchType.value === 'number') {
-      const line = formatNumber(search.value.busNumber);
-      console.log('line', line);
-      
-      const foundLine = await $fetch(`/api/bus/line/${line}`);
-      if (foundLine) {
-        busLine.value = foundLine;
-        drawBusLine(foundLine);
-      }
-    } else if (selectedFromStop.value && selectedToStop.value) {
-      // Utiliser le nouvel algorithme pour trouver tous les itinéraires possibles
-      routes.value = findAllPossibleRoutes(selectedFromStop.value, selectedToStop.value);
-
-      // Dessiner tous les itinéraires trouvés sur la carte
-      if (routes.value.length > 0) {
-        // Dessiner le premier itinéraire en surbrillance
-        drawMultiBusRoute(routes.value[0]);
-        
-        // Dessiner les autres itinéraires en plus clair
-        for (let i = 1; i < routes.value.length; i++) {
-          drawMultiBusRoute(routes.value[i], { opacity: 0.5, color: '#666' });
-        }
-      }
+    loading.value = true;
+    routes.value = [];
+    selectedRouteId.value = null;
+    
+    // Réinitialiser la carte si elle existe
+    if (map.value) {
+      map.value.remove();
+      map.value = null;
     }
     
-    updateQueryParams();
+    // Appel à l'API combinée qui récupère toutes les données en une seule requête
+    const response = await fetch(`/api/bus/line-details?ref=${busNumber.value.trim()}`);
+    
+    if (!response.ok) {
+      throw new Error(`Erreur lors de la recherche: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    console.log('Réponse de l\'API combinée:', data);
+    
+    // Traiter les données directement
+    if (data && data.lineId && data.details) {
+      console.log('ID de la ligne:', data.lineId);
+      console.log('Tags de la ligne:', data.lineTags);
+      
+      // Stocker les tags de la ligne
+      lineTags.value = data.lineTags || {};
+      
+      // Utiliser la classe LineData pour le traitement des données
+      // en passant directement les données déjà récupérées
+      const lineData = new LineData();
+      const result = lineData.initFromData(data.details, data.lineId);
+      console.log('Résultat de l\'initialisation:', result);
+      
+      // Récupérer les informations sur les itinéraires
+      const trips = lineData.getTrips();
+      routes.value = getAllRoutesInfo(trips);
+      
+      if (routes.value.length > 0) {
+        selectedRouteId.value = routes.value[0].id;
+        // Initialiser la carte avec le premier itinéraire
+        nextTick(() => {
+          updateMap();
+        });
+      }
+      
+      console.log('Routes:', routes.value);
+    } else {
+      console.error('Données incomplètes dans la réponse');
+    }
+    
   } catch (error) {
-    console.error('Erreur lors de la recherche :', error);
+    console.error('Erreur lors de la recherche:', error);
   } finally {
     loading.value = false;
   }
-};
+}
 
-const updateQueryParams = () => {
-  const query: Record<string, string> = {};
-  
-  if (searchType.value === 'number' && search.value.busNumber) {
-    query.number = search.value.busNumber;
-  } else if (searchType.value === 'route' && selectedFromStop.value && selectedToStop.value) {
-    query.from = selectedFromStop.value.name;
-    query.to = selectedToStop.value.name;
-  }
-  
-  router.replace({ query });
-};
-
-const initFromQueryParams = async () => {
-  const { number, from, to } = route.query;
-
-  if (number) {
-    searchType.value = 'number';
-    search.value.busNumber = number as string;
-    await searchRoute();
-  } else if (from && to) {
-    searchType.value = 'route';
-    // Trouver les arrêts correspondants
-    const fromStop = busLines.flatMap(line => line.stops).find(stop => stop.name === from);
-    const toStop = busLines.flatMap(line => line.stops).find(stop => stop.name === to);
-    
-    if (fromStop && toStop) {
-      selectedFromStop.value = fromStop;
-      selectedToStop.value = toStop;
-      search.value.from = fromStop.name;
-      search.value.to = toStop.name;
-      await searchRoute();
-    }
+// Fonction pour gérer le changement d'itinéraire dans le menu déroulant
+const handleRouteChange = () => {
+  if (selectedRouteId.value !== null) {
+    selectRoute(selectedRouteId.value);
   }
 };
 
-onMounted(() => {
-  if (mapContainer.value) {
-    map = L.map(mapContainer.value).setView(ABIDJAN_CENTER, 12);
-    
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-    
-    initFromQueryParams();
-  }
+// Sélectionner un itinéraire
+const selectRoute = (routeId: number) => {
+  selectedRouteId.value = routeId;
+  // Mettre à jour la carte quand on change d'itinéraire
+  nextTick(() => {
+    updateMap();
+  });
+}
+
+// Obtenir l'itinéraire sélectionné
+const selectedRoute = computed(() => {
+  if (!selectedRouteId.value) return null;
+  return routes.value.find(route => route.id === selectedRouteId.value) || null;
 });
 
-const onFromStopSelect = (stop: BusStop) => {
-  selectedFromStop.value = stop;
-  search.from = stop.name;
+// Type pour les arrêts
+interface Stop {
+  id: string | number | undefined;
+  name: string;
+  coordinates: [number, number] | null;
+}
+
+// Fonction pour formater la durée en heures et minutes
+const formatDuration = (minutes: number): string => {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  
+  if (hours > 0) {
+    return `${hours}h${mins > 0 ? ` ${mins}min` : ''}`;
+  }
+  
+  return `${mins} min`;
 };
 
-const onToStopSelect = (stop: BusStop) => {
-  selectedToStop.value = stop;
-  search.to = stop.name;
-};
+// Mettre à jour la carte avec l'itinéraire sélectionné
+const updateMap = () => {
+  if (!mapContainer.value || !selectedRoute.value) return;
+  
+  // Supprimer la carte existante si elle existe
+  if (map.value) {
+    map.value.remove();
+  }
+  
+  // Afficher la nouvelle carte avec l'itinéraire sélectionné
+  const route = selectedRoute.value;
+  map.value = displayRouteMap(
+    mapContainer.value,
+    route.shape,
+    route.stops.map((stop: Stop) => {
+      // Convertir les arrêts en format GeoJSON pour la carte
+      if (stop.coordinates) {
+        return {
+          id: stop.id,
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: stop.coordinates
+          },
+          properties: {
+            name: stop.name
+          }
+        };
+      }
+      return null;
+    }).filter(Boolean),
+    route.color
+  );
+}
 
-const invertRoute = () => {
-  if (selectedFromStop.value && selectedToStop.value) {
-    const tempFrom = selectedFromStop.value;
-    const tempTo = selectedToStop.value;
-    
-    selectedFromStop.value = tempTo;
-    selectedToStop.value = tempFrom;
-    
-    search.from = tempTo.name;
-    search.to = tempFrom.name;
-    
-    nextTick(() => {
-      searchRoute();
-    });
+// Fonction pour gérer la recherche depuis la modal
+const handleModalSearch = () => {
+  if (modalBusNumber.value.trim() !== '') {
+    busNumber.value = modalBusNumber.value;
+    showSearchModal.value = false;
+    searchRoute();
   }
 };
+
+// Lorsque la modal s'ouvre, initialiser le numéro de bus
+watch(showSearchModal, (newValue) => {
+  if (newValue) {
+    modalBusNumber.value = busNumber.value;
+  }
+});
 
 // SEO
 useHead({
@@ -923,23 +354,5 @@ useHead({
 </script>
 
 <style scoped>
-.custom-marker {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-}
-
-.custom-marker.endpoint {
-  font-size: 1.5rem;
-}
-
-.custom-marker.highlighted {
-  color: #2563eb;
-  font-size: 1.4rem;
-}
-
-.custom-marker.faded {
-  opacity: 0.4;
-}
+/* Styles spécifiques au composant si nécessaire */
 </style>

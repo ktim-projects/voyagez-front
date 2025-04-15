@@ -10,7 +10,8 @@
       <!-- Desktop Menu -->
       <div class="hidden md:flex space-x-8">
         <NuxtLink to="/" class="text-gray-700 hover:text-coral-600">Accueil</NuxtLink>
-        <NuxtLink to="/destinations" class="text-gray-700 hover:text-coral-600">Destinations</NuxtLink>
+        <NuxtLink @click.prevent="goToCarResults" class="text-gray-700 hover:text-coral-600 cursor-pointer">Car</NuxtLink>
+        <NuxtLink @click.prevent="goToBusResults" class="text-gray-700 hover:text-coral-600 cursor-pointer">Bus</NuxtLink>
         <NuxtLink to="/about" class="text-gray-700 hover:text-coral-600">À propos</NuxtLink>
         <NuxtLink to="/contact" class="text-gray-700 hover:text-coral-600">Contact</NuxtLink>
       </div>
@@ -32,7 +33,8 @@
     <div v-if="isMenuOpen" class="md:hidden bg-white border-t">
       <div class="container mx-auto px-4 py-4 space-y-4">
         <NuxtLink to="/" class="block text-gray-700 hover:text-red-600 py-2">Accueil</NuxtLink>
-        <NuxtLink to="/destinations" class="block text-gray-700 hover:text-red-600 py-2">Destinations</NuxtLink>
+        <span @click="goToCarResults" class="block text-gray-700 hover:text-red-600 py-2 cursor-pointer">Car</span>
+        <span @click="goToBusResults" class="block text-gray-700 hover:text-red-600 py-2 cursor-pointer">Bus</span>
         <NuxtLink to="/about" class="block text-gray-700 hover:text-red-600 py-2">À propos</NuxtLink>
         <NuxtLink to="/contact" class="block text-gray-700 hover:text-red-600 py-2">Contact</NuxtLink>
       </div>
@@ -41,7 +43,35 @@
 </template>
 
 <script setup>
+const searchStore = useSearchStore();
+
 const isMenuOpen = ref(false)
 const route = useRoute()
+const router = useRouter()
+
+
 const isSearchResults = computed(() => route.name === 'results')
+
+const goToBusResults = async () => {
+
+  searchStore.setSearchParams({
+    type: 'bus',
+    from: '',
+    to: '',
+    date: null
+  });
+
+  await router.push('/results');
+}
+
+const goToCarResults = async () => {
+  searchStore.setSearchParams({
+    type: 'car',
+    from: '',
+    to: '',
+    date: null
+  });
+
+  await router.push('/results');
+}
 </script>
