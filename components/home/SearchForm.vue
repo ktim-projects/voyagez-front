@@ -2,7 +2,7 @@
   <div class="container mx-auto px-4 -mt-16 relative z-20">
     <div class="max-w-4xl mx-auto">
       <div class="rounded-lg bg-white shadow-lg p-8">
-        <form class="grid grid-cols-1 sm:grid-cols-3 gap-6"@submit.prevent="handleCarSearch">
+        <form class="grid grid-cols-1 sm:grid-cols-3 gap-2"@submit.prevent="handleCarSearch">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Ville de départ</label>
             <CityAutocomplete

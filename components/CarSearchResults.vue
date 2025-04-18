@@ -34,7 +34,7 @@
       <!-- Desktop Search Form -->
       <div class="hidden md:block">
         <div class="container mx-auto px-4 py-4">
-          <form @submit.prevent="handleSearch" class="grid gap-4 md:grid-cols-4">
+          <form @submit.prevent="handleSearch" class="grid gap-2 md:grid-cols-4">
             <div>
               <label class="block text-sm font-medium text-gray-600 mb-2">Départ</label>
               <CityAutocomplete
@@ -240,10 +240,10 @@ import { useIntersectionObserver, useDebounceFn } from '@vueuse/core';
 import { useSearchStore } from '~/stores/search';
 import { useRouter } from 'vue-router';
 import { capitalizeWords } from '~/utils/string';
-import SearchFormModal from './SearchFormModal.vue'; // Import du nouveau composant
+import SearchFormModal from './SearchFormModal.vue';
 
 const router = useRouter();
-const sessionTimeout = 2 * 60 * 1000; // 2 minutes en millisecondes
+const sessionTimeout = 10 * 60 * 1000; // 10 minutes en millisecondes
 let sessionTimer: NodeJS.Timeout | null = null;
 const showSessionExpiredModal = ref(false);
 
@@ -269,7 +269,7 @@ const loadingMore = ref(false);
 
 const fromCity = ref(searchStore.from || '');
 const toCity = ref(searchStore.to || '');
-const hasSearched = ref(false); // Variable pour suivre si une recherche a été effectuée
+const hasSearched = ref(false); // Variable for tracking if a search has been performed
 const showSearchModal = ref(false);
 
 const filters = ref({
@@ -314,7 +314,7 @@ const handleSearch = async () => {
     return;
   }
 
-  hasSearched.value = true; // Marquer qu'une recherche a été effectuée
+  hasSearched.value = true; // Mark that a search has been performed
   
   loading.value = true;
   departures.value = [];
@@ -379,7 +379,7 @@ const loadMoreResults = async () => {
   }
 }
 
-// Déclencher la recherche au montage du composant
+// Trigger search on component mount
  onMounted(() => {
   if (fromCity.value && toCity.value) {
     handleSearch();
