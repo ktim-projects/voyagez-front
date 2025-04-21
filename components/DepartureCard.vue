@@ -1,62 +1,99 @@
 <template>
   <div 
-    class="bg-white rounded-xl p-6 transition-opacity duration-200 cursor-pointer hover:shadow-md result-card"
+    class="bg-white rounded-xl p-5 transition-all duration-300 cursor-pointer hover:shadow-md hover:scale-[1.01] group result-card"
     @click="$emit('click', departure)"
   >
     <div class="flex flex-col">
       <!-- En-tête avec opérateur et prix -->
-      <div class="flex justify-between items-center mb-6">
+      <div class="flex justify-between items-center mb-4">
         <div class="flex items-center">
-          <img 
-            v-if="departure.company?.logo_url"
-            :src="departure.company.logo_url" 
-            :alt="departure.company.name" 
-            class="h-8 w-8 mr-3 object-contain"
-          />
-          <h3 class="text-lg font-semibold text-gray-800">
+          <div class="relative h-8 w-8 mr-2 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+            <img 
+              v-if="departure.company?.logo_url"
+              :src="departure.company.logo_url" 
+              :alt="departure.company.name" 
+              class="h-8 w-8 object-contain"
+            />
+            <span v-else class="text-sm font-bold text-primary-600">
+              {{ getInitials(departure.company?.name) }}
+            </span>
+          </div>
+          <h3 class="text-base font-semibold text-gray-800 group-hover:text-primary-600 transition-colors duration-300">
             {{ departure.company?.name }}
           </h3>
         </div>
         <div class="hidden sm:block">
-          <p class="text-lg font-bold text-primary-600">
-            {{ departure.price.toLocaleString() }} FCFA
+          <p class="text-lg font-bold text-primary-600 group-hover:text-coral-500 transition-colors duration-300">
+            {{ departure.price.toLocaleString() }} <span class="text-sm">FCFA</span>
           </p>
         </div>
       </div>
 
-      <div class="grid grid-cols-3 gap-4 mb-4">
-        <div>
-          <p class="text-xs text-gray-500">Départ</p>
-          <p class="font-medium">{{ formatTime(departure.departure_time) }}</p>
-          <p class="text-sm text-gray-600">{{ departure.origin }} - <span class="text-xs text-gray-400">{{ departure.departure_station }}</span></p>
+      <!-- Informations de voyage en format compact -->
+      <div class="grid grid-cols-12 gap-2 mb-3">
+        <!-- Départ -->
+        <div class="col-span-5">
+          <div class="flex items-center">
+            <!-- <div class="h-3 w-3 rounded-full bg-primary-600 mr-2"></div> -->
+            <p class="font-medium text-sm">{{ formatTime(departure.departure_time) }}</p>
+          </div>
+          <p class="text-xs text-gray-600">{{ departure.origin }}</p>
+          <p class="text-xs text-gray-400">{{ departure.departure_station }}</p>
         </div>
-        <div class="text-center">
-          <p class="text-xs text-gray-500">Durée (estimée)</p>
-          <p class="font-medium">{{ formatDuration(departure.duration) }}</p>
-          <div class="border-t border-gray-200 my-1"></div>
-          <p class="text-xs text-gray-400">* Temps approximatif</p>
+        
+        <!-- Durée -->
+        <div class="col-span-2 flex flex-col items-center justify-center">
+          <p class="text-xs text-gray-500">{{ formatDuration(departure.duration) }}</p>
+          <div class="w-full h-px bg-gray-200 my-1"></div>
+          <ClockIcon class="h-3 w-3 text-gray-400" />
         </div>
-        <div class="text-right">
-          <p class="text-xs text-gray-500">Arrivée</p>
-          <p class="font-medium">{{ formatTime(departure.arrival_time) }}</p>
-          <p class="text-sm text-gray-600">{{ departure.destination }}</p>
+        
+        <!-- Arrivée -->
+        <div class="col-span-5 text-right">
+          <div class="flex items-center justify-end">
+            <p class="font-medium text-sm">{{ formatTime(departure.arrival_time) }}</p>
+            <!-- <div class="h-3 w-3 rounded-full bg-coral-500 ml-2"></div> -->
+          </div>
+          <p class="text-xs text-gray-600">{{ departure.destination }}</p>
         </div>
       </div>
 
-      <div class="block sm:hidden">
-        <p class="text-lg font-bold text-primary-600 text-center">
-          {{ departure.price.toLocaleString() }} FCFA
-        </p>
+      <!-- Informations supplémentaires -->
+      <div class="flex justify-between items-center border-t border-gray-100 pt-3">
+        <div class="flex items-center space-x-3">
+          <div class="flex items-center text-xs text-gray-500">
+            <WifiIcon v-if="hasWifi" class="h-3 w-3 mr-1 text-gray-400" />
+          </div>
+          <div class="flex items-center text-xs text-gray-500">
+            <AirVent v-if="hasAirVent" class="h-3 w-3 mr-1 text-gray-400" />
+          </div>
+          <div class="flex items-center text-xs text-gray-500">
+            <Toilet v-if="hasToilet" class="h-3 w-3 mr-1 text-gray-400" />
+          </div>
+          <div class="flex items-center text-xs text-gray-500">
+            <UtensilsCrossed v-if="hasBreakfast" class="h-3 w-3 mr-1 text-gray-400" />
+          </div>
+        </div>
+        
+        <div class="block sm:hidden">
+          <p class="text-base font-bold text-primary-600">
+            {{ departure.price.toLocaleString() }} <span class="text-xs">FCFA</span>
+          </p>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { h, defineComponent } from 'vue';
+import { Clock as ClockIcon, Wifi as WifiIcon, AirVent, Toilet, UtensilsCrossed } from 'lucide-vue-next';
+
 interface Company {
   id: string;
   name: string;
   logo_url?: string;
+  services?: string[];
 }
 
 interface Departure {
@@ -69,6 +106,7 @@ interface Departure {
   origin: string;
   destination: string;
   departure_station: string;
+
 }
 
 const props = defineProps<{
@@ -79,11 +117,26 @@ defineEmits<{
   (e: 'click', departure: Departure): void;
 }>();
 
+
+const getInitials = (name?: string) => {
+  if (!name) return '';
+  return name
+    .split(' ')
+    .map(word => word[0])
+    .join('')
+    .toUpperCase()
+    .substring(0, 2);
+};
+
+const hasToilet = computed(() => props.departure?.company?.services?.includes('toilette') || false);
+const hasWifi = computed(() => props.departure?.company?.services?.includes('wifi') || false);
+const hasAirVent = computed(() => props.departure?.company?.services?.includes('climatisation') || false);
+const hasBreakfast = computed(() => props.departure?.company?.services?.includes('petit dejeuner') || false);
+  
 </script>
 
 <style scoped>
 .result-card {
-  background-color: rgb(255, 255, 255);
-  box-shadow: rgba(19, 41, 104, 0.2) 0px 2px 5px 0px;
+  box-shadow: rgba(19, 41, 104, 0.1) 0px 2px 5px 0px;
 }
 </style>
