@@ -6,12 +6,12 @@
           <!-- Texte à gauche -->
           <div class="md:w-1/2">
             <h2 class="text-3xl font-bold text-gray-900 mb-6">
-              Toutes les options de voyage sur une seule plateforme
+              {{ $t('home.partners.title') }}
             </h2>
             <p class="text-gray-600 mb-8 text-lg">
-              Plus de 1000 partenaires de transport pour vos trajets en train, bus, avion, ferry et vos transferts aéroportuaires pour profiter pleinement du voyage.
+              {{ $t('home.partners.description') }}
             </p>
-            <AppButton variant="coral" label="J'en profite" />
+            <AppButton variant="coral" :label="$t('home.partners.button')" :fullWidth="false" />
           </div>
 
           <!-- Partenaires à droite -->

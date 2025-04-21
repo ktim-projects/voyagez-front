@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxtjs/color-mode',
     '@nuxtjs/supabase',
+    '@nuxtjs/i18n',
   ],
   css: [
     '~/assets/css/main.css',
@@ -20,6 +21,14 @@ export default defineNuxtConfig({
 
   build: {
     transpile: ['primevue']
+  },
+
+  i18n: {
+    defaultLocale: 'fr',
+    locales: [
+      { code: 'en', name: 'English', file: 'en.json' },
+      { code: 'fr', name: 'Français', file: 'fr.json' }
+    ]
   },
 
   app: {

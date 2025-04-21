@@ -15,14 +15,14 @@
                 {{ fromCity }} → {{ toCity }}
               </div>
               <div v-else class="text-white font-medium">
-                Recherche
+                {{ $t('results.searchTitle') }}
               </div>
             </div>
             <AppButton 
               v-if="hasSearched && fromCity && toCity"
               variant="outline" 
               size="small"
-              label="Modifier"
+              :label="$t('common.modify')"
               :fullWidth="false"
               class="!text-white !border-white hover:!bg-white/10"
               @click="showSearchModal = true"
@@ -36,37 +36,37 @@
         <div class="container mx-auto px-4 py-4">
           <form @submit.prevent="handleSearch" class="grid gap-2 md:grid-cols-4">
             <div>
-              <label class="block text-sm font-medium text-gray-600 mb-2">Départ</label>
+              <label class="block text-sm font-medium text-gray-600 mb-2">{{ $t('common.departure') }}</label>
               <CityAutocomplete
                 v-model="fromCity"
                 @select="handleFromSelect"
-                placeholder="Ville de départ"
+                :placeholder="$t('search.departurePlaceholder')"
               />
             </div>
             
             <div>
-              <label class="block text-sm font-medium text-gray-600 mb-2">Arrivée</label>
+              <label class="block text-sm font-medium text-gray-600 mb-2">{{ $t('common.arrival') }}</label>
               <CityAutocomplete
                 v-model="toCity"
                 @select="handleToSelect"
-                placeholder="Ville d'arrivée"
+                :placeholder="$t('search.arrivalPlaceholder')"
               />
             </div>
             
             <div>
-              <label class="block text-sm font-medium text-gray-600 mb-2">Disponibilité</label>
+              <label class="block text-sm font-medium text-gray-600 mb-2">{{ $t('common.availability') }}</label>
               <div class="w-full p-3 bg-green-50 border border-green-200 rounded-md text-sm text-green-700 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                Départs tous les jours
+                {{ $t('search.dailyDepartures') }}
               </div>
             </div>
 
             <div class="flex items-end">
               <AppButton 
                 variant="coral" 
-                label="Rechercher"
+                :label="$t('common.search')"
                 type="submit"
                 icon="Search"
                 :disabled="!fromCity || !toCity"
@@ -78,29 +78,29 @@
 
       <!-- Mobile Search Form (visible when no results) -->
       <div v-if="!loading && departures.length === 0" class="md:hidden p-4 bg-white">
-        <h2 class="text-lg font-medium text-gray-900 mb-4">Rechercher un trajet</h2>
+        <h2 class="text-lg font-medium text-gray-900 mb-4">{{ $t('search.title') }}</h2>
         <form @submit.prevent="handleSearch" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-600 mb-2">Départ</label>
+            <label class="block text-sm font-medium text-gray-600 mb-2">{{ $t('common.departure') }}</label>
             <CityAutocomplete
               v-model="fromCity"
               @select="handleFromSelect"
-              placeholder="Ville de départ"
+              :placeholder="$t('search.departurePlaceholder')"
             />
           </div>
           
           <div>
-            <label class="block text-sm font-medium text-gray-600 mb-2">Arrivée</label>
+            <label class="block text-sm font-medium text-gray-600 mb-2">{{ $t('common.arrival') }}</label>
             <CityAutocomplete
               v-model="toCity"
               @select="handleToSelect"
-              placeholder="Ville d'arrivée"
+              :placeholder="$t('search.arrivalPlaceholder')"
             />
           </div>
           
           <AppButton 
             variant="coral" 
-            label="Rechercher"
+            :label="$t('common.search')"
             type="submit"
             icon="Search"
             :disabled="!fromCity || !toCity"
@@ -152,7 +152,7 @@
               <!-- Loading State -->
               <div v-if="loading" class="text-center py-8">
                 <CarLoader />
-                <p class="text-gray-500">Recherche des voyages disponibles...</p>
+                <p class="text-gray-500">{{ $t('results.searchingTrips') }}</p>
               </div>
 
               <!-- Results List -->
@@ -172,7 +172,7 @@
                     class="px-6 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all duration-200"
                   >
                     <RefreshCcwIcon v-if="loadingMore" class="w-4 h-4 animate-spin" />
-                    <span>{{ loadingMore ? 'Chargement...' : 'Voir plus' }}</span>
+                    <span>{{ loadingMore ? $t('common.loading') : $t('common.showMore') }}</span>
                   </button>
                 </div>
               </div>
@@ -180,8 +180,8 @@
               <!-- Empty State -->
               <div v-else>
                 <SearchEmptyState
-                  title="Aucun départ trouvé"
-                  description="Essayez de modifier vos critères de recherche pour trouver plus de résultats."
+                  :title="$t('results.noResults')"
+                  :description="$t('results.noResultsDescription')"
                 />
               </div>
             </div>
@@ -197,7 +197,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                     </svg>
-                    <p>Carte du trajet</p>
+                    <p>{{ $t('results.routeMap') }}</p>
                   </div>
                 </div>
               </div>

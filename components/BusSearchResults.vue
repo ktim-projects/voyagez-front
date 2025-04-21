@@ -10,20 +10,20 @@
                 <ChevronLeft class="w-5 h-5" />
               </NuxtLink>
               <div v-if="selectedRoute" class="text-white font-medium">
-                Ligne {{ busNumber }}
+                {{ $t('busSearch.line') }} {{ busNumber }}
                 <span v-if="selectedRoute.isExpress" class="ml-1 text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full">
-                  Express
+                  {{ $t('busSearch.express') }}
                 </span>
               </div>
               <div v-else class="text-white font-medium">
-                Recherche de bus
+                {{ $t('busSearch.title') }}
               </div>
             </div>
             <AppButton 
               v-if="routes.length > 0"
               variant="outline" 
               size="small"
-              label="Modifier"
+              :label="$t('busSearch.modify')"
               :fullWidth="false"
               class="!text-white !border-white hover:!bg-white/10"
               @click="showSearchModal = true"
@@ -38,15 +38,15 @@
         <div class="p-6 border-b border-gray-200" :class="{'hidden md:block': routes.length > 0}">
           <form @submit.prevent="searchRoute" class="space-y-6">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Numéro de bus</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('busSearch.busNumber') }}</label>
                 <input
                   v-model="busNumber"
                   type="text"
                   class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
-                  placeholder="Ex: 81"
+                  :placeholder="$t('busSearch.busNumberPlaceholder')"
                 />
               </div>
-            <AppButton type="submit" variant="coral" label="Rechercher" :disabled="!isFormValid" />
+            <AppButton type="submit" variant="coral" :label="$t('busSearch.searchButton')" :disabled="!isFormValid" />
           </form>
         </div>
 
@@ -54,23 +54,21 @@
         <div class="p-6">
           <div v-if="loading" class="text-center py-8">
             <BusLoader />
-            <p class="text-gray-500 mt-2">Recherche en cours...</p>
+            <p class="text-gray-500 mt-2">{{ $t('busSearch.searchingMessage') }}</p>
           </div>
 
           <template v-else>
             <!-- Affichage des itinéraires -->
             <div v-if="routes.length > 0" class="bg-white rounded-lg p-4">
               <h3 class="text-lg font-semibold mb-4 text-gray-800">
-                Ligne {{ busNumber }}
+                {{ $t('busSearch.line') }} {{ busNumber }}
                 <span v-if="selectedRoute && selectedRoute.isExpress" class="ml-2 text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full hidden md:inline-block">
-                  Express
+                  {{ $t('busSearch.express') }}
                 </span>
                 <span v-if="lineTags.charge" class="ml-2 text-sm bg-coral-100 text-coral-700 px-2 py-0.5 rounded-full">
                   {{ lineTags.charge }}
                 </span>
-
               </h3>
-              
               <!-- Informations sur l'itinéraire sélectionné -->
               <div v-if="selectedRoute" class="mb-4 p-3 bg-gray-50 rounded-lg">
                 <h4 class="font-medium text-gray-800">
@@ -78,19 +76,19 @@
                 </h4>
                 <div class="mt-2 text-sm text-gray-600">
                   <div v-if="selectedRoute.stops.length > 0" class="flex items-center">
-                    <span class="font-medium mr-1">Origine:</span> 
+                    <span class="font-medium mr-1">{{ $t('busSearch.routeInfo.origin') }}:</span> 
                     {{ selectedRoute.stops[0].name }}
                   </div>
                   <div v-if="selectedRoute.stops.length > 1" class="flex items-center mt-1">
-                    <span class="font-medium mr-1">Destination:</span> 
+                    <span class="font-medium mr-1">{{ $t('busSearch.routeInfo.destination') }}:</span> 
                     {{ selectedRoute.stops[selectedRoute.stops.length - 1].name }}
                   </div>
                   <div class="mt-1">
-                    <span class="font-medium mr-1">Nombre d'arrêts:</span> 
+                    <span class="font-medium mr-1">{{ $t('busSearch.routeInfo.stopsCount') }}:</span> 
                     {{ selectedRoute.stops.length }}
                   </div>
                   <div v-if="selectedRoute.duration" class="mt-1 flex items-center">
-                    <span class="font-medium mr-1">Durée:</span>
+                    <span class="font-medium mr-1">{{ $t('busSearch.routeInfo.duration') }}:</span>
                     <div class="flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -100,10 +98,9 @@
                   </div>
                 </div>
               </div>
-              
               <!-- Sélection d'itinéraire s'il y en a plusieurs -->
               <div v-if="routes.length > 1" class="mb-6">
-                <p class="text-sm text-gray-600 mb-2">Sélectionnez un itinéraire :</p>
+                <p class="text-sm text-gray-600 mb-2">{{ $t('busSearch.selectRoute') }}</p>
                 <div class="relative">
                   <select 
                     v-model="selectedRouteId" 
@@ -125,38 +122,33 @@
                   </div>
                 </div>
               </div>
-              
               <!-- Affichage des arrêts de l'itinéraire sélectionné -->
               <div v-if="selectedRoute" class="mt-4">
                 <div class="flex items-center mb-4">
                   <div class="w-3 h-3 rounded-full mr-2" :style="{ backgroundColor: selectedRoute.color }"></div>
-                  <h4 class="text-md font-medium text-gray-800">Arrêts</h4>
+                  <h4 class="text-md font-medium text-gray-800">{{ $t('busSearch.stops') }}</h4>
                 </div>
-                
                 <BusRouteStopsList 
                   :stops="selectedRoute.stops" 
                   :route-color="selectedRoute.color" 
                 />
               </div>
             </div>
-            
             <EmptyState
               v-else
-              title="Aucun résultat trouvé"
-              description="Essayez de modifier vos critères de recherche"
+              :title="$t('busSearch.noResults')"
+              :description="$t('busSearch.noResultsDescription')"
               image="/images/empty-search.svg"
             />
           </template>
         </div>
       </div>
-
       <!-- Map (Desktop only) -->
       <div class="hidden md:block md:col-span-7 lg:col-span-8 relative h-[calc(100vh-4rem)]">
         <div ref="mapContainer" class="absolute inset-0 z-0"></div>
       </div>
     </div>
   </div>
-  
   <!-- Search Form Modal -->
   <BusSearchModal
     v-model:show="showSearchModal"

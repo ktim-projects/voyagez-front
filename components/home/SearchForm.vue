@@ -4,23 +4,23 @@
       <div class="rounded-lg bg-white shadow-lg p-8">
         <form class="grid grid-cols-1 sm:grid-cols-3 gap-2"@submit.prevent="handleCarSearch">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Ville de départ</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('search.departureCity') }}</label>
             <CityAutocomplete
                 v-model="from"
                 @select="handleFromSelect"
-                placeholder="Ville de départ"
+                :placeholder="$t('search.departurePlaceholder')"
               />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Ville d'arrivée</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('search.arrivalCity') }}</label>
             <CityAutocomplete
               v-model="to"
               @select="handleToSelect"
-              placeholder="Ville d'arrivée"
+              :placeholder="$t('search.arrivalPlaceholder')"
             />
           </div>
           <div class="flex flex-col justify-end">
-           <AppButton type="submit" variant="coral" label="Rechercher" :disabled="!isSearchEnabled" />
+           <AppButton type="submit" variant="coral" :label="$t('search.searchButton')" :disabled="!isSearchEnabled" />
           </div>
         </form>
       </div>

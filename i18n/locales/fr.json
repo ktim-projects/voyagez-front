@@ -1,0 +1,166 @@
+{
+  "common": {
+    "search": "Rechercher",
+    "modify": "Modifier",
+    "loading": "Chargement...",
+    "showMore": "Voir plus",
+    "departure": "Départ",
+    "arrival": "Arrivée",
+    "availability": "Disponibilité"
+  },
+  "header": {
+    "home": "Accueil",
+    "car": "Car",
+    "bus": "Bus",
+    "about": "À propos",
+    "contact": "Contact",
+    "appName": "Transport CI"
+  },
+  "search": {
+    "title": "Rechercher un trajet",
+    "departureCity": "Ville de départ",
+    "arrivalCity": "Ville d'arrivée",
+    "departurePlaceholder": "Ville de départ",
+    "arrivalPlaceholder": "Ville d'arrivée",
+    "searchButton": "Rechercher",
+    "dailyDepartures": "Départs tous les jours"
+  },
+  "results": {
+    "searchTitle": "Recherche",
+    "noResults": "Aucun départ trouvé",
+    "noResultsDescription": "Essayez de modifier vos critères de recherche pour trouver plus de résultats.",
+    "searchingTrips": "Recherche des voyages disponibles...",
+    "routeMap": "Carte du trajet",
+    "filters": {
+      "title": "Filtres",
+      "reset": "Réinitialiser",
+      "apply": "Appliquer",
+      "companies": "Compagnies",
+      "departureTime": "Heure de départ",
+      "allTimes": "Toute heure",
+      "morning": "Matin (5h - 12h)",
+      "afternoon": "Après-midi (12h - 18h)",
+      "evening": "Soir (18h - 22h)",
+      "night": "Nuit (22h - 5h)"
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Voyagez à travers la Côte d'Ivoire",
+      "subtitle": "Réservez vos billets de transport en toute simplicité pour voyager dans tout le pays"
+    },
+    "advantages": {
+      "title": "Pourquoi nous choisir ?",
+      "subtitle": "Nous vous offrons la meilleure expérience de voyage possible",
+      "timeGain": {
+        "title": "Gain de temps",
+        "description": "Trouvez rapidement le meilleur trajet sans passer des heures à comparer."
+      },
+      "bestPrices": {
+        "title": "Meilleurs prix",
+        "description": "Comparez les prix et choisissez l'option la plus économique."
+      },
+      "reliability": {
+        "title": "Fiabilité",
+        "description": "Des informations à jour et vérifiées pour voyager en toute tranquillité."
+      }
+    },
+    "destinations": {
+      "title": "Destinations Populaires",
+      "priceFrom": "À partir de"
+    },
+    "partners": {
+      "title": "Toutes les options de voyage sur une seule plateforme",
+      "description": "Plus de 1000 partenaires de transport pour vos trajets en train, bus, avion, ferry et vos transferts aéroportuaires pour profiter pleinement du voyage.",
+      "button": "J'en profite"
+    },
+    "faq": {
+      "title": "Questions Fréquentes",
+      "howToBook": {
+        "title": "Comment réserver un billet ?",
+        "intro": "La réservation se fait en quelques étapes simples :",
+        "step1": "Choisissez votre ville de départ et d'arrivée",
+        "step2": "Sélectionnez votre date de voyage",
+        "step3": "Choisissez vos options de voyage",
+        "step4": "Procédez au paiement sécurisé"
+      },
+      "paymentMethods": {
+        "title": "Quels sont les moyens de paiement acceptés ?",
+        "intro": "Nous acceptons plusieurs moyens de paiement :",
+        "method1": "Cartes bancaires (Visa, Mastercard)",
+        "method2": "Mobile Money (Orange Money, MTN Money, Wave)",
+        "method3": "Paiement en espèces dans nos agences"
+      },
+      "modifyBooking": {
+        "title": "Comment modifier ma réservation ?",
+        "intro": "Pour modifier votre réservation :",
+        "point1": "La modification est possible jusqu'à 24h avant le départ",
+        "point2": "Contactez notre service client disponible 24/7",
+        "point3": "Rendez-vous dans l'une de nos agences",
+        "point4": "Des frais peuvent s'appliquer selon le type de modification"
+      }
+    },
+    "newsletter": {
+      "title": "Restez informé",
+      "subtitle": "Recevez nos meilleures offres et actualités",
+      "placeholder": "Votre email",
+      "button": "S'abonner"
+    }
+  },
+  "busSearch": {
+    "title": "Recherche de bus",
+    "busNumber": "Numéro de bus",
+    "busNumberPlaceholder": "Ex: 81",
+    "searchButton": "Rechercher",
+    "searchingMessage": "Recherche en cours...",
+    "noResults": "Aucun résultat trouvé",
+    "noResultsDescription": "Essayez de modifier vos critères de recherche",
+    "modify": "Modifier",
+    "line": "Ligne",
+    "express": "Express",
+    "selectRoute": "Sélectionnez un itinéraire :",
+    "stops": "Arrêts",
+    "routeInfo": {
+      "origin": "Origine",
+      "destination": "Destination",
+      "stopsCount": "Nombre d'arrêts",
+      "duration": "Durée"
+    }
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "subtitle": "Une question ? Un retour ? N'hésitez pas à nous contacter, nous vous répondrons dans les plus brefs délais.",
+    "form": {
+      "fullName": "Nom complet",
+      "fullNamePlaceholder": "Votre nom",
+      "email": "Email",
+      "emailPlaceholder": "vousexemple.com",
+      "subject": "Sujet",
+      "subjectPlaceholder": "Sélectionnez un sujet",
+      "subjectOptions": {
+        "general": "Question générale",
+        "support": "Support technique",
+        "partnership": "Partenariat",
+        "other": "Autre"
+      },
+      "message": "Message",
+      "messagePlaceholder": "Votre message...",
+      "sending": "Envoi en cours...",
+      "send": "Envoyer le message",
+      "successMessage": "Votre message a été envoyé avec succès !",
+      "errorMessage": "Une erreur est survenue lors de l'envoi du message."
+    },
+    "contactInfo": {
+      "phone": {
+        "title": "Support téléphonique",
+        "hours": "Du lundi au vendredi, 9h-18h",
+        "number": "+33 1 23 45 67 89"
+      },
+      "email": {
+        "title": "Email",
+        "response": "Notre équipe vous répond sous 24h",
+        "address": "contactvoyagez.fr"
+      }
+    }
+  }
+}

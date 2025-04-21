@@ -3,9 +3,9 @@
     <div class="max-w-3xl mx-auto">
       <!-- En-tête -->
       <div class="text-center mb-12">
-        <h1 class="text-3xl font-bold text-gray-900 mb-4">Contactez-nous</h1>
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ $t('contact.title') }}</h1>
         <p class="text-lg text-gray-600">
-          Une question ? Un retour ? N'hésitez pas à nous contacter, nous vous répondrons dans les plus brefs délais.
+          {{ $t('contact.subtitle') }}
         </p>
       </div>
 
@@ -14,57 +14,57 @@
         <form @submit.prevent="handleSubmit" class="space-y-6">
           <!-- Nom -->
           <div>
-            <label for="name" class="block text-sm font-medium text-gray-700">Nom complet</label>
+            <label for="name" class="block text-sm font-medium text-gray-700">{{ $t('contact.form.fullName') }}</label>
             <input
               id="name"
               v-model="formData.name"
               type="text"
               required
               class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-primary-500 focus:border-primary-500"
-              placeholder="Votre nom"
+              :placeholder="$t('contact.form.fullNamePlaceholder')"
             />
           </div>
 
           <!-- Email -->
           <div>
-            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <label for="email" class="block text-sm font-medium text-gray-700">{{ $t('contact.form.email') }}</label>
             <input
               id="email"
               v-model="formData.email"
               type="email"
               required
               class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-primary-500 focus:border-primary-500"
-              placeholder="vous@exemple.com"
+              :placeholder="$t('contact.form.emailPlaceholder')"
             />
           </div>
 
           <!-- Sujet -->
           <div>
-            <label for="subject" class="block text-sm font-medium text-gray-700">Sujet</label>
+            <label for="subject" class="block text-sm font-medium text-gray-700">{{ $t('contact.form.subject') }}</label>
             <select
               id="subject"
               v-model="formData.subject"
               required
               class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-primary-500 focus:border-primary-500"
             >
-              <option value="">Sélectionnez un sujet</option>
-              <option value="general">Question générale</option>
-              <option value="support">Support technique</option>
-              <option value="partnership">Partenariat</option>
-              <option value="other">Autre</option>
+              <option value="">{{ $t('contact.form.subjectPlaceholder') }}</option>
+              <option value="general">{{ $t('contact.form.subjectOptions.general') }}</option>
+              <option value="support">{{ $t('contact.form.subjectOptions.support') }}</option>
+              <option value="partnership">{{ $t('contact.form.subjectOptions.partnership') }}</option>
+              <option value="other">{{ $t('contact.form.subjectOptions.other') }}</option>
             </select>
           </div>
 
           <!-- Message -->
           <div>
-            <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
+            <label for="message" class="block text-sm font-medium text-gray-700">{{ $t('contact.form.message') }}</label>
             <textarea
               id="message"
               v-model="formData.message"
               rows="4"
               required
               class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-primary-500 focus:border-primary-500"
-              placeholder="Votre message..."
+              :placeholder="$t('contact.form.messagePlaceholder')"
             ></textarea>
           </div>
 
@@ -80,9 +80,9 @@
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Envoi en cours...
+                {{ $t('contact.form.sending') }}
               </span>
-              <span v-else>Envoyer le message</span>
+              <span v-else>{{ $t('contact.form.send') }}</span>
             </button>
           </div>
         </form>
@@ -95,10 +95,10 @@
             <PhoneIcon class="h-6 w-6 text-primary-600" />
           </div>
           <div class="ml-4">
-            <h3 class="text-lg font-medium text-gray-900">Support téléphonique</h3>
-            <p class="mt-1 text-gray-600">Du lundi au vendredi, 9h-18h</p>
-            <a href="tel:+33123456789" class="mt-1 block text-primary-600 hover:text-primary-500">
-              +33 1 23 45 67 89
+            <h3 class="text-lg font-medium text-gray-900">{{ $t('contact.contactInfo.phone.title') }}</h3>
+            <p class="mt-1 text-gray-600">{{ $t('contact.contactInfo.phone.hours') }}</p>
+            <a :href="'tel:' + $t('contact.contactInfo.phone.number')" class="mt-1 block text-primary-600 hover:text-primary-500">
+              {{ $t('contact.contactInfo.phone.number') }}
             </a>
           </div>
         </div>
@@ -108,10 +108,10 @@
             <MailIcon class="h-6 w-6 text-primary-600" />
           </div>
           <div class="ml-4">
-            <h3 class="text-lg font-medium text-gray-900">Email</h3>
-            <p class="mt-1 text-gray-600">Notre équipe vous répond sous 24h</p>
-            <a href="mailto:contact@voyagez.fr" class="mt-1 block text-primary-600 hover:text-primary-500">
-              contact@voyagez.fr
+            <h3 class="text-lg font-medium text-gray-900">{{ $t('contact.contactInfo.email.title') }}</h3>
+            <p class="mt-1 text-gray-600">{{ $t('contact.contactInfo.email.response') }}</p>
+            <a :href="'mailto:' + $t('contact.contactInfo.email.address')" class="mt-1 block text-primary-600 hover:text-primary-500">
+              {{ $t('contact.contactInfo.email.address') }}
             </a>
           </div>
         </div>
@@ -149,9 +149,9 @@ const handleSubmit = async () => {
     }
     
     // Afficher un message de succès
-    alert('Votre message a été envoyé avec succès !')
+    alert($t('contact.form.successMessage'))
   } catch (error) {
-    alert('Une erreur est survenue lors de l\'envoi du message.')
+    alert($t('contact.form.errorMessage'))
   } finally {
     isSubmitting.value = false
   }

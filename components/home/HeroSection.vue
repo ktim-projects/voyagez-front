@@ -3,10 +3,10 @@
     <div class="absolute inset-0 bg-black bg-opacity-50"></div>
     <div class="container mx-auto px-4 relative z-10 h-full flex flex-col justify-center items-center text-center">
       <h2 class="text-4xl font-bold tracking-tight text-white sm:text-5xl">
-        Voyagez à travers la Côte d'Ivoire
+        {{ $t('home.hero.title') }}
       </h2>
       <p class="mt-6 text-lg leading-8 text-gray-200 max-w-2xl">
-        Réservez vos billets de transport en toute simplicité pour voyager dans tout le pays
+        {{ $t('home.hero.subtitle') }}
       </p>
     </div>
   </div>

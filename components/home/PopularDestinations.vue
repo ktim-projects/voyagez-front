@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto px-4 py-16">
-    <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">Destinations Populaires</h2>
+    <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">{{ $t('home.destinations.title') }}</h2>
     
     <!-- Desktop View -->
     <div class="hidden md:grid grid-cols-4 gap-6">
@@ -14,7 +14,7 @@
           </div>
           <div class="absolute bottom-0 left-0 right-0 p-4">
             <h3 class="text-lg font-semibold text-white">{{ destination.name }}</h3>
-            <p class="mt-1 text-white text-sm font-medium">À partir de {{ destination.price }} FCFA</p>
+            <p class="mt-1 text-white text-sm font-medium">{{ $t('home.destinations.priceFrom') }} {{ destination.price }} FCFA</p>
           </div>
         </div>
       </div>
@@ -38,7 +38,7 @@
               </div>
               <div class="absolute bottom-0 left-0 right-0 p-4">
                 <h3 class="text-lg font-semibold text-white">{{ destination.name }}</h3>
-                <p class="mt-1 text-white text-sm font-medium">À partir de {{ destination.price }} FCFA</p>
+                <p class="mt-1 text-white text-sm font-medium">{{ $t('home.destinations.priceFrom') }} {{ destination.price }} FCFA</p>
               </div>
             </div>
           </div>
