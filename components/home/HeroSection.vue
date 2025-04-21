@@ -1,5 +1,5 @@
 <template>
-  <div class="relative h-[600px] overflow-hidden">
+  <div class="relative h-[600px] sm:h-[600px] overflow-hidden">
     <!-- Image de fond avec effet parallaxe -->
     <div 
       class="absolute inset-0 bg-cover bg-center transform scale-110 transition-transform duration-1000"
@@ -27,7 +27,7 @@
         </p>
         
         <!-- Boutons d'action -->
-        <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+        <div class="mt-10 mb-16 sm:mb-10 flex flex-col sm:flex-row gap-4 justify-center">
           <button 
             class="px-8 py-3 bg-coral-500 text-white rounded-full font-medium hover:bg-coral-600 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-coral-500/30"
             @click="scrollToSearch"

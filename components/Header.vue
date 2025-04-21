@@ -66,7 +66,7 @@ const route = useRoute()
 const router = useRouter()
 
 
-const isSearchResults = computed(() => route.name === 'results')
+const isSearchResults = computed(() => route.path === '/results')
 
 const goToBusResults = async () => {
 

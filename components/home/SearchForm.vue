@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto px-4 -mt-24 relative z-20 search-form-section">
+  <div class="container mx-auto px-4 -mt-16 sm:-mt-24 relative z-20 search-form-section">
     <div class="max-w-4xl mx-auto">
       <div class="rounded-2xl bg-white dark:bg-gray-800 shadow-xl p-8 transform transition-all duration-500 hover:shadow-2xl">
         <!-- Onglets de type de transport -->
@@ -73,16 +73,16 @@
         <form v-if="activeTab === 'bus'" class="space-y-6" @submit.prevent="handleBusSearch">
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ $t('busSearch.busNumber') }}</label>
-            <div class="flex gap-2 align-center items-center justify-center">
-              <div class="w-3/4">
+            <div class="flex flex-col sm:flex-row gap-3 sm:gap-2 align-center items-center justify-center">
+              <div class="w-full sm:w-3/4">
                 <input
                   v-model="busNumber"
                   type="text"
-                  class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
+                  class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
                   :placeholder="$t('busSearch.busNumberPlaceholder')"
                 />
               </div>
-              <div class="w-1/4">
+              <div class="w-full sm:w-1/4 mt-3 sm:mt-0">
                 <AppButton 
                   type="submit" 
                   variant="coral" 

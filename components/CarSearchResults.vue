@@ -4,7 +4,7 @@
     <div class="bg-white md:bg-white dark:bg-gray-900 dark:md:bg-gray-900 sticky top-0 md:top-16 z-40">
       
       <!-- Mobile Header -->
-      <div class="bg-primary-600 md:hidden">
+      <div class="bg-primary-600 md:hidden fixed top-0 left-0 right-0 z-50 shadow-md">
         <div class="container mx-auto px-4 py-3">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -123,7 +123,7 @@
     />
 
     <!-- Main Content -->
-    <div class="flex-1">
+    <div class="flex-1 mt-12 md:mt-0">
       <div class="container mx-auto px-4 py-6">
         <!-- Mobile Filters Modal -->
         <div v-if="hasSearched && (departures.length > 0 || (fromCity && toCity))" class="lg:hidden">

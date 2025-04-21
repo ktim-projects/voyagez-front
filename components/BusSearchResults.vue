@@ -2,7 +2,7 @@
   <div class="min-h-[calc(100vh-4rem)] relative dark:bg-gray-950">
     <div class="grid grid-cols-1 md:grid-cols-12 h-full">
       <!-- Mobile Header -->
-      <div class="bg-primary-600 md:hidden fixed top-0 left-0 right-0 z-40">
+      <div class="bg-primary-600 md:hidden fixed top-0 left-0 right-0 z-50 shadow-md">
         <div class="container mx-auto px-4 py-3">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -33,7 +33,7 @@
       </div>
       
       <!-- Left Panel -->
-      <div class="md:col-span-5 lg:col-span-4 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto h-[calc(100vh-4rem)] mt-12 md:mt-0">
+      <div class="md:col-span-5 lg:col-span-4 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto h-[calc(100vh-4rem)] md:mt-0">
         <!-- Search Form (visible on desktop or mobile when no results) -->
         <div class="p-6 border-b border-gray-200 dark:border-gray-700" :class="{'hidden md:block': routes.length > 0}">
           <form @submit.prevent="searchRoute" class="space-y-6">
