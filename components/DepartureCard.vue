@@ -43,7 +43,7 @@
         
         <!-- Durée -->
         <div class="col-span-2 flex flex-col items-center justify-center">
-          <p class="text-xs text-gray-500 dark:text-gray-400">{{ formatDuration(departure.duration) }}</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap sm:whitespace-normal">{{ formatDuration(departure.duration) }}</p>
           <div class="w-full h-px bg-gray-200 dark:bg-gray-700 my-1"></div>
           <ClockIcon class="h-3 w-3 text-gray-400 dark:text-gray-500" />
         </div>
