@@ -1,28 +1,30 @@
 <template>
-  <header class="bg-white shadow-sm sticky top-0 z-50" :class="{ 'md:block hidden': isSearchResults }">
+  <header class="bg-white dark:bg-gray-900 shadow-sm sticky top-0 z-50" :class="{ 'md:block hidden': isSearchResults }">
     <nav class="container mx-auto px-4 h-16 flex items-center justify-between">
       <div class="flex items-center">
-        <NuxtLink to="/" class="text-2xl font-bold text-coral-600 hover:text-coral-700 transition-colors">
+        <NuxtLink to="/" class="text-2xl font-bold text-coral-600 hover:text-coral-700 dark:text-coral-500 dark:hover:text-coral-400 transition-colors">
           {{ $t('header.appName') }}
         </NuxtLink>
       </div>
       
       <!-- Desktop Menu -->
       <div class="hidden md:flex space-x-8 items-center">
-        <NuxtLink to="/" class="text-gray-700 hover:text-coral-600">{{ $t('header.home') }}</NuxtLink>
-        <NuxtLink @click.prevent="goToCarResults" class="text-gray-700 hover:text-coral-600 cursor-pointer">{{ $t('header.car') }}</NuxtLink>
-        <NuxtLink @click.prevent="goToBusResults" class="text-gray-700 hover:text-coral-600 cursor-pointer">{{ $t('header.bus') }}</NuxtLink>
-        <NuxtLink to="/about" class="text-gray-700 hover:text-coral-600">{{ $t('header.about') }}</NuxtLink>
-        <NuxtLink to="/contact" class="text-gray-700 hover:text-coral-600">{{ $t('header.contact') }}</NuxtLink>
+        <NuxtLink to="/" class="text-gray-700 hover:text-coral-600 dark:text-gray-300 dark:hover:text-coral-500">{{ $t('header.home') }}</NuxtLink>
+        <NuxtLink @click.prevent="goToCarResults" class="text-gray-700 hover:text-coral-600 dark:text-gray-300 dark:hover:text-coral-500 cursor-pointer">{{ $t('header.car') }}</NuxtLink>
+        <NuxtLink @click.prevent="goToBusResults" class="text-gray-700 hover:text-coral-600 dark:text-gray-300 dark:hover:text-coral-500 cursor-pointer">{{ $t('header.bus') }}</NuxtLink>
+        <NuxtLink to="/about" class="text-gray-700 hover:text-coral-600 dark:text-gray-300 dark:hover:text-coral-500">{{ $t('header.about') }}</NuxtLink>
+        <NuxtLink to="/contact" class="text-gray-700 hover:text-coral-600 dark:text-gray-300 dark:hover:text-coral-500">{{ $t('header.contact') }}</NuxtLink>
         <!-- <LanguageSwitcher /> -->
+        <ThemeSwitch />
       </div>
 
       <!-- Mobile Menu Button -->
       <div class="md:hidden flex items-center gap-3">
         <!-- <LanguageSwitcher /> -->
+        <ThemeSwitch />
         <button 
           @click="isMenuOpen = !isMenuOpen" 
-          class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+          class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-800"
         >
           <Menu v-if="!isMenuOpen" class="h-6 w-6" />
           <X v-else class="h-6 w-6" />
@@ -39,13 +41,13 @@
       leave-from-class="transform translate-y-0 opacity-100"
       leave-to-class="transform -translate-y-8 opacity-0"
     >
-      <div v-if="isMenuOpen" class="md:hidden bg-white border-t shadow-md">
+      <div v-if="isMenuOpen" class="md:hidden bg-white dark:bg-gray-900 border-t dark:border-gray-800 shadow-md">
         <div class="container mx-auto px-4 py-2 space-y-1">
-          <NuxtLink to="/" class="block text-gray-700 hover:text-red-600 py-2">{{ $t('header.home') }}</NuxtLink>
-          <span @click="goToCarResults" class="block text-gray-700 hover:text-red-600 py-2 cursor-pointer">{{ $t('header.car') }}</span>
-          <span @click="goToBusResults" class="block text-gray-700 hover:text-red-600 py-2 cursor-pointer">{{ $t('header.bus') }}</span>
-          <NuxtLink to="/about" class="block text-gray-700 hover:text-red-600 py-2">{{ $t('header.about') }}</NuxtLink>
-          <NuxtLink to="/contact" class="block text-gray-700 hover:text-red-600 py-2">{{ $t('header.contact') }}</NuxtLink>
+          <NuxtLink to="/" class="block text-gray-700 hover:text-red-600 dark:text-gray-300 dark:hover:text-coral-500 py-2">{{ $t('header.home') }}</NuxtLink>
+          <span @click="goToCarResults" class="block text-gray-700 hover:text-red-600 dark:text-gray-300 dark:hover:text-coral-500 py-2 cursor-pointer">{{ $t('header.car') }}</span>
+          <span @click="goToBusResults" class="block text-gray-700 hover:text-red-600 dark:text-gray-300 dark:hover:text-coral-500 py-2 cursor-pointer">{{ $t('header.bus') }}</span>
+          <NuxtLink to="/about" class="block text-gray-700 hover:text-red-600 dark:text-gray-300 dark:hover:text-coral-500 py-2">{{ $t('header.about') }}</NuxtLink>
+          <NuxtLink to="/contact" class="block text-gray-700 hover:text-red-600 dark:text-gray-300 dark:hover:text-coral-500 py-2">{{ $t('header.contact') }}</NuxtLink>
         </div>
       </div>
     </Transition>
@@ -55,6 +57,7 @@
 <script setup>
 import { Menu, X } from 'lucide-vue-next'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import ThemeSwitch from '../components/ThemeSwitch.vue'
 
 const searchStore = useSearchStore();
 

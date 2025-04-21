@@ -43,14 +43,14 @@
       <div class="mt-16 rounded-2xl overflow-hidden shadow-xl">
         <div class="relative pb-[56.25%] h-0">
           <img 
-            src="/images/how-it-works.jpg" 
+            src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=2068&auto=format&fit=crop" 
             alt="Comment ça marche" 
             class="absolute inset-0 w-full h-full object-cover"
             onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=2069&auto=format&fit=crop'; this.onerror=null;"
           />
           
           <!-- Bouton de lecture vidéo -->
-          <div class="absolute inset-0 flex items-center justify-center">
+          <div class="absolute inset-0 flex items-center justify-center dark:text-white">
             <button 
               class="w-16 h-16 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-lg transform transition-transform duration-300 hover:scale-110"
               @click="playVideo"

@@ -1,6 +1,6 @@
 <template>
   <div class="route-stops-container">
-    <div v-if="stops.length === 0" class="empty-stops">
+    <div v-if="stops.length === 0" class="empty-stops dark:text-gray-400">
       Aucun arrêt disponible
     </div>
     <div v-else class="relative space-y-4">
@@ -16,7 +16,7 @@
       >
         <!-- Point représentant l'arrêt -->
         <div 
-          class="absolute left-0 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white border-2 flex items-center justify-center transition-colors"
+          class="absolute left-0 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white dark:bg-gray-800 border-2 flex items-center justify-center transition-colors"
           :class="{ 'border-blue-600': highlightedStop === index }"
           :style="{ borderColor: highlightedStop === index ? routeColor : routeColor + '40' }"
         >
@@ -28,8 +28,8 @@
         
         <!-- Informations sur l'arrêt -->
         <div class="py-1">
-          <p class="font-medium text-gray-900 text-sm">{{ stop.name }}</p>
-          <p v-if="stop.description" class="text-xs text-gray-500">{{ stop.description }}</p>
+          <p class="font-medium text-gray-900 dark:text-white text-sm">{{ stop.name }}</p>
+          <p v-if="stop.description" class="text-xs text-gray-500 dark:text-gray-400">{{ stop.description }}</p>
         </div>
       </div>
     </div>

@@ -1,9 +1,9 @@
 <template>
   <div class="container mx-auto px-4 -mt-24 relative z-20 search-form-section">
     <div class="max-w-4xl mx-auto">
-      <div class="rounded-2xl bg-white shadow-xl p-8 transform transition-all duration-500 hover:shadow-2xl">
+      <div class="rounded-2xl bg-white dark:bg-gray-800 shadow-xl p-8 transform transition-all duration-500 hover:shadow-2xl">
         <!-- Onglets de type de transport -->
-        <div class="flex mb-6 border-b border-gray-200">
+        <div class="flex mb-6 border-b border-gray-200 dark:border-gray-700">
           <button 
             v-for="(tab, index) in tabs" 
             :key="index"
@@ -11,8 +11,8 @@
             class="px-4 py-3 text-sm font-medium transition-all duration-300 relative"
             :class="[
               activeTab === tab.value 
-                ? 'text-primary-600' 
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'text-primary-600 dark:text-primary-400' 
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
             ]"
           >
             <div class="flex items-center gap-2">
@@ -21,7 +21,7 @@
             </div>
             <div 
               v-if="activeTab === tab.value"
-              class="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600 transform transition-transform duration-300"
+              class="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600 dark:bg-primary-400 transform transition-transform duration-300"
             ></div>
           </button>
         </div>
@@ -29,7 +29,7 @@
         <!-- Formulaire de recherche de voiture (affiché uniquement quand activeTab === 'car') -->
         <form v-if="activeTab === 'car'" class="grid grid-cols-1 sm:grid-cols-3 gap-4" @submit.prevent="handleSearch">
           <div class="group">
-            <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('search.departureCity') }}</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ $t('search.departureCity') }}</label>
             <div class="relative">
               <!-- <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <MapPinIcon class="h-5 w-5 text-gray-400 group-hover:text-primary-600 transition-colors duration-300" />
@@ -44,7 +44,7 @@
           </div>
           
           <div class="group">
-            <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('search.arrivalCity') }}</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ $t('search.arrivalCity') }}</label>
             <div class="relative">
               <!-- <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <MapPinIcon class="h-5 w-5 text-gray-400 group-hover:text-primary-600 transition-colors duration-300" />
@@ -72,7 +72,7 @@
         <!-- Formulaire de recherche de bus (affiché uniquement quand activeTab === 'bus') -->
         <form v-if="activeTab === 'bus'" class="space-y-6" @submit.prevent="handleBusSearch">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('busSearch.busNumber') }}</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ $t('busSearch.busNumber') }}</label>
             <div class="flex gap-2 align-center items-center justify-center">
               <div class="w-3/4">
                 <input
@@ -96,14 +96,14 @@
         </form>
         
         <!-- Suggestions populaires (uniquement pour la recherche de voiture) -->
-        <div v-if="activeTab === 'car'" class="mt-6 pt-4 border-t border-gray-100">
-          <p class="text-sm text-gray-500 mb-2">{{ $t('search.popularSearches') }}</p>
+        <div v-if="activeTab === 'car'" class="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
+          <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">{{ $t('search.popularSearches') }}</p>
           <div class="flex flex-wrap gap-2">
             <button 
               v-for="(city, index) in popularCities" 
               :key="index"
               @click="quickSearch(city)"
-              class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full hover:bg-primary-50 hover:text-primary-600 transition-colors duration-300"
+              class="px-3 py-1 text-xs rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-300"
             >
               {{ city }}
             </button>

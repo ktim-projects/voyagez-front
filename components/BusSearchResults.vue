@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-[calc(100vh-4rem)] relative">
+  <div class="min-h-[calc(100vh-4rem)] relative dark:bg-gray-950">
     <div class="grid grid-cols-1 md:grid-cols-12 h-full">
       <!-- Mobile Header -->
       <div class="bg-primary-600 md:hidden fixed top-0 left-0 right-0 z-40">
@@ -33,16 +33,16 @@
       </div>
       
       <!-- Left Panel -->
-      <div class="md:col-span-5 lg:col-span-4 bg-white border-r border-gray-200 overflow-y-auto h-[calc(100vh-4rem)] mt-12 md:mt-0">
+      <div class="md:col-span-5 lg:col-span-4 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto h-[calc(100vh-4rem)] mt-12 md:mt-0">
         <!-- Search Form (visible on desktop or mobile when no results) -->
-        <div class="p-6 border-b border-gray-200" :class="{'hidden md:block': routes.length > 0}">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700" :class="{'hidden md:block': routes.length > 0}">
           <form @submit.prevent="searchRoute" class="space-y-6">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('busSearch.busNumber') }}</label>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ $t('busSearch.busNumber') }}</label>
                 <input
                   v-model="busNumber"
                   type="text"
-                  class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
+                  class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
                   :placeholder="$t('busSearch.busNumberPlaceholder')"
                 />
               </div>
@@ -54,27 +54,27 @@
         <div class="p-6">
           <div v-if="loading" class="text-center py-8">
             <BusLoader />
-            <p class="text-gray-500 mt-2">{{ $t('busSearch.searchingMessage') }}</p>
+            <p class="text-gray-500 dark:text-gray-400 mt-2">{{ $t('busSearch.searchingMessage') }}</p>
           </div>
 
           <template v-else>
             <!-- Affichage des itinéraires -->
-            <div v-if="routes.length > 0" class="bg-white rounded-lg p-4">
-              <h3 class="text-lg font-semibold mb-4 text-gray-800">
+            <div v-if="routes.length > 0" class="bg-white dark:bg-gray-800 rounded-lg p-4">
+              <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">
                 {{ $t('busSearch.line') }} {{ busNumber }}
-                <span v-if="selectedRoute && selectedRoute.isExpress" class="ml-2 text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full hidden md:inline-block">
+                <span v-if="selectedRoute && selectedRoute.isExpress" class="ml-2 text-xs bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300 px-2 py-0.5 rounded-full hidden md:inline-block">
                   {{ $t('busSearch.express') }}
                 </span>
-                <span v-if="lineTags.charge" class="ml-2 text-sm bg-coral-100 text-coral-700 px-2 py-0.5 rounded-full">
+                <span v-if="lineTags.charge" class="ml-2 text-sm bg-coral-100 dark:bg-coral-900 text-coral-700 dark:text-coral-300 px-2 py-0.5 rounded-full">
                   {{ lineTags.charge }}
                 </span>
               </h3>
               <!-- Informations sur l'itinéraire sélectionné -->
-              <div v-if="selectedRoute" class="mb-4 p-3 bg-gray-50 rounded-lg">
-                <h4 class="font-medium text-gray-800">
+              <div v-if="selectedRoute" class="mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <h4 class="font-medium text-gray-800 dark:text-white">
                   {{ selectedRoute.name }}
                 </h4>
-                <div class="mt-2 text-sm text-gray-600">
+                <div class="mt-2 text-sm text-gray-600 dark:text-gray-300">
                   <div v-if="selectedRoute.stops.length > 0" class="flex items-center">
                     <span class="font-medium mr-1">{{ $t('busSearch.routeInfo.origin') }}:</span> 
                     {{ selectedRoute.stops[0].name }}
@@ -90,7 +90,7 @@
                   <div v-if="selectedRoute.duration" class="mt-1 flex items-center">
                     <span class="font-medium mr-1">{{ $t('busSearch.routeInfo.duration') }}:</span>
                     <div class="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 dark:text-gray-400 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       {{ formatDuration(selectedRoute.duration) }}
@@ -100,12 +100,12 @@
               </div>
               <!-- Sélection d'itinéraire s'il y en a plusieurs -->
               <div v-if="routes.length > 1" class="mb-6">
-                <p class="text-sm text-gray-600 mb-2">{{ $t('busSearch.selectRoute') }}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">{{ $t('busSearch.selectRoute') }}</p>
                 <div class="relative">
                   <select 
                     v-model="selectedRouteId" 
                     @change="handleRouteChange"
-                    class="w-full px-4 py-2 pr-10 rounded-md text-sm font-normal bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent appearance-none truncate"
+                    class="w-full px-4 py-2 pr-10 rounded-md text-sm font-normal bg-white dark:bg-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent appearance-none truncate"
                   >
                     <option 
                       v-for="route in routes" 
@@ -115,7 +115,7 @@
                       {{ route.name }}
                     </option>
                   </select>
-                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300">
                     <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                       <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
                     </svg>
@@ -126,7 +126,7 @@
               <div v-if="selectedRoute" class="mt-4">
                 <div class="flex items-center mb-4">
                   <div class="w-3 h-3 rounded-full mr-2" :style="{ backgroundColor: selectedRoute.color }"></div>
-                  <h4 class="text-md font-medium text-gray-800">{{ $t('busSearch.stops') }}</h4>
+                  <h4 class="text-md font-medium text-gray-800 dark:text-white">{{ $t('busSearch.stops') }}</h4>
                 </div>
                 <BusRouteStopsList 
                   :stops="selectedRoute.stops" 
@@ -139,6 +139,7 @@
               :title="$t('busSearch.noResults')"
               :description="$t('busSearch.noResultsDescription')"
               image="/images/empty-search.svg"
+              class="dark:text-white"
             />
           </template>
         </div>

@@ -1,8 +1,8 @@
 <template>
-  <div class="container mx-auto px-4 py-20 popular-destinations-section">
+  <div class="container mx-auto px-4 py-16  popular-destinations-section">
     <div class="text-center max-w-3xl mx-auto mb-12">
-      <h2 class="text-4xl font-bold text-gray-900 mb-4">{{ $t('home.destinations.title') }}</h2>
-      <p class="text-gray-600 text-lg">{{ $t('home.destinations.subtitle') }}</p>
+      <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">{{ $t('home.destinations.title') }}</h2>
+      <p class="text-gray-600 dark:text-gray-400 text-lg">{{ $t('home.destinations.subtitle') }}</p>
     </div>
     
     <!-- Desktop View -->
@@ -33,22 +33,22 @@
         <!-- Contenu -->
         <div class="absolute bottom-0 left-0 right-0 p-6 transform transition-transform duration-500 group-hover:translate-y-0">
           <div class="flex flex-col items-start">
-            <h3 class="text-2xl font-bold text-white mb-2 group-hover:text-coral-300 transition-colors duration-300">
+            <h3 class="text-2xl font-bold text-white dark:text-gray-200 mb-2 group-hover:text-coral-300 transition-colors duration-300">
               {{ destination.name }}
             </h3>
-            <div class="flex items-center mb-3">
+            <!-- <div class="flex items-center mb-3">
               <div class="flex text-yellow-400">
                 <StarIcon v-for="i in 5" :key="i" class="h-4 w-4" :class="i <= destination.rating ? 'text-yellow-400' : 'text-gray-400'" />
               </div>
-              <span class="text-white text-sm ml-2">{{ destination.rating }}/5</span>
-            </div>
-            <p class="text-white text-sm mb-4">{{ destination.description }}</p>
+              <span class="text-white dark:text-gray-400 text-sm ml-2">{{ destination.rating }}/5</span>
+            </div> -->
+            <p class="text-white dark:text-gray-400 text-sm mb-4">{{ destination.description }}</p>
             <div class="flex items-center justify-between w-full">
-              <p class="text-white font-medium">
+              <p class="text-white dark:text-gray-400 font-medium">
                 <span class="text-coral-300">{{ $t('home.destinations.priceFrom') }}</span> 
                 {{ destination.price }} FCFA
               </p>
-              <span class="text-white text-sm flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+              <span class="text-white dark:text-gray-400 text-sm flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                 {{ $t('home.destinations.exploreButton') }}
                 <ArrowRightIcon class="h-4 w-4 transform group-hover:translate-x-1 transition-transform duration-300" />
               </span>
@@ -95,17 +95,17 @@
             <!-- Contenu -->
             <div class="absolute bottom-0 left-0 right-0 p-6">
               <div class="flex flex-col items-start">
-                <h3 class="text-xl font-bold text-white mb-2">
+                <h3 class="text-xl font-bold text-white dark:text-gray-200 mb-2">
                   {{ destination.name }}
                 </h3>
                 <div class="flex items-center mb-3">
                   <div class="flex text-yellow-400">
                     <StarIcon v-for="i in 5" :key="i" class="h-4 w-4" :class="i <= destination.rating ? 'text-yellow-400' : 'text-gray-400'" />
                   </div>
-                  <span class="text-white text-sm ml-2">{{ destination.rating }}/5</span>
+                  <span class="text-white dark:text-gray-400 text-sm ml-2">{{ destination.rating }}/5</span>
                 </div>
-                <p class="text-white text-sm mb-4 line-clamp-2">{{ destination.description }}</p>
-                <p class="text-white font-medium">
+                <p class="text-white dark:text-gray-400 text-sm mb-4 line-clamp-2">{{ destination.description }}</p>
+                <p class="text-white dark:text-gray-400 font-medium">
                   <span class="text-coral-300">{{ $t('home.destinations.priceFrom') }}</span> 
                   {{ destination.price }} FCFA
                 </p>
@@ -120,7 +120,7 @@
     <div class="text-center mt-12">
       <button 
         @click="router.push('/destinations')"
-        class="inline-flex items-center px-6 py-3 border border-primary-600 text-primary-600 rounded-full hover:bg-primary-600 hover:text-white transition-colors duration-300 font-medium"
+        class="inline-flex items-center px-6 py-3 border border-primary-600 text-primary-600 rounded-full hover:bg-primary-600 hover:text-white transition-colors duration-300 font-medium dark:text-white dark:bg-primary-700 dark:hover:text-white"
       >
         {{ $t('home.destinations.viewAllButton') }}
         <ArrowRightIcon class="ml-2 h-5 w-5" />

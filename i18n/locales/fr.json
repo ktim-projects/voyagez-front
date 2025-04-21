@@ -6,7 +6,9 @@
     "showMore": "Voir plus",
     "departure": "Départ",
     "arrival": "Arrivée",
-    "availability": "Disponibilité"
+    "availability": "Disponibilité",
+    "darkMode": "Mode sombre",
+    "lightMode": "Mode clair"
   },
   "header": {
     "home": "Accueil",

@@ -1,29 +1,29 @@
 <template>
   <div 
-    class="bg-white rounded-xl p-5 transition-all duration-300 cursor-pointer hover:shadow-md hover:scale-[1.01] group result-card"
+    class="bg-white dark:bg-gray-800 rounded-xl p-5 transition-all duration-300 cursor-pointer hover:shadow-md hover:scale-[1.01] group result-card"
     @click="$emit('click', departure)"
   >
     <div class="flex flex-col">
       <!-- En-tête avec opérateur et prix -->
       <div class="flex justify-between items-center mb-4">
         <div class="flex items-center">
-          <div class="relative h-8 w-8 mr-2 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+          <div class="relative h-8 w-8 mr-2 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
             <img 
               v-if="departure.company?.logo_url"
               :src="departure.company.logo_url" 
               :alt="departure.company.name" 
               class="h-8 w-8 object-contain"
             />
-            <span v-else class="text-sm font-bold text-primary-600">
+            <span v-else class="text-sm font-bold text-primary-600 dark:text-primary-400">
               {{ getInitials(departure.company?.name) }}
             </span>
           </div>
-          <h3 class="text-base font-semibold text-gray-800 group-hover:text-primary-600 transition-colors duration-300">
+          <h3 class="text-base font-semibold text-gray-800 dark:text-gray-200 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300">
             {{ departure.company?.name }}
           </h3>
         </div>
         <div class="hidden sm:block">
-          <p class="text-lg font-bold text-primary-600 group-hover:text-coral-500 transition-colors duration-300">
+          <p class="text-lg font-bold text-primary-600 dark:text-primary-400 group-hover:text-coral-500 dark:group-hover:text-coral-400 transition-colors duration-300">
             {{ departure.price.toLocaleString() }} <span class="text-sm">FCFA</span>
           </p>
         </div>
@@ -35,48 +35,48 @@
         <div class="col-span-5">
           <div class="flex items-center">
             <!-- <div class="h-3 w-3 rounded-full bg-primary-600 mr-2"></div> -->
-            <p class="font-medium text-sm">{{ formatTime(departure.departure_time) }}</p>
+            <p class="font-medium text-sm dark:text-gray-200">{{ formatTime(departure.departure_time) }}</p>
           </div>
-          <p class="text-xs text-gray-600">{{ departure.origin }}</p>
-          <p class="text-xs text-gray-400">{{ departure.departure_station }}</p>
+          <p class="text-xs text-gray-600 dark:text-gray-400">{{ departure.origin }}</p>
+          <p class="text-xs text-gray-400 dark:text-gray-500">{{ departure.departure_station }}</p>
         </div>
         
         <!-- Durée -->
         <div class="col-span-2 flex flex-col items-center justify-center">
-          <p class="text-xs text-gray-500">{{ formatDuration(departure.duration) }}</p>
-          <div class="w-full h-px bg-gray-200 my-1"></div>
-          <ClockIcon class="h-3 w-3 text-gray-400" />
+          <p class="text-xs text-gray-500 dark:text-gray-400">{{ formatDuration(departure.duration) }}</p>
+          <div class="w-full h-px bg-gray-200 dark:bg-gray-700 my-1"></div>
+          <ClockIcon class="h-3 w-3 text-gray-400 dark:text-gray-500" />
         </div>
         
         <!-- Arrivée -->
         <div class="col-span-5 text-right">
           <div class="flex items-center justify-end">
-            <p class="font-medium text-sm">{{ formatTime(departure.arrival_time) }}</p>
+            <p class="font-medium text-sm dark:text-gray-200">{{ formatTime(departure.arrival_time) }}</p>
             <!-- <div class="h-3 w-3 rounded-full bg-coral-500 ml-2"></div> -->
           </div>
-          <p class="text-xs text-gray-600">{{ departure.destination }}</p>
+          <p class="text-xs text-gray-600 dark:text-gray-400">{{ departure.destination }}</p>
         </div>
       </div>
 
       <!-- Informations supplémentaires -->
-      <div class="flex justify-between items-center border-t border-gray-100 pt-3">
+      <div class="flex justify-between items-center border-t border-gray-100 dark:border-gray-700 pt-3">
         <div class="flex items-center space-x-3">
-          <div class="flex items-center text-xs text-gray-500">
-            <WifiIcon v-if="hasWifi" class="h-3 w-3 mr-1 text-gray-400" />
+          <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+            <WifiIcon v-if="hasWifi" class="h-3 w-3 mr-1 text-gray-400 dark:text-gray-500" />
           </div>
-          <div class="flex items-center text-xs text-gray-500">
-            <AirVent v-if="hasAirVent" class="h-3 w-3 mr-1 text-gray-400" />
+          <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+            <AirVent v-if="hasAirVent" class="h-3 w-3 mr-1 text-gray-400 dark:text-gray-500" />
           </div>
-          <div class="flex items-center text-xs text-gray-500">
-            <Toilet v-if="hasToilet" class="h-3 w-3 mr-1 text-gray-400" />
+          <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+            <Toilet v-if="hasToilet" class="h-3 w-3 mr-1 text-gray-400 dark:text-gray-500" />
           </div>
-          <div class="flex items-center text-xs text-gray-500">
-            <UtensilsCrossed v-if="hasBreakfast" class="h-3 w-3 mr-1 text-gray-400" />
+          <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+            <UtensilsCrossed v-if="hasBreakfast" class="h-3 w-3 mr-1 text-gray-400 dark:text-gray-500" />
           </div>
         </div>
         
         <div class="block sm:hidden">
-          <p class="text-base font-bold text-primary-600">
+          <p class="text-base font-bold text-primary-600 dark:text-primary-400">
             {{ departure.price.toLocaleString() }} <span class="text-xs">FCFA</span>
           </p>
         </div>

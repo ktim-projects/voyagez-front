@@ -1,5 +1,5 @@
 <template>
-  <main class="min-h-screen">
+  <main class="min-h-screen dark:bg-gray-950">
     <HomeHeroSection />
     <HomeSearchForm />
     <HomeAdvantages />

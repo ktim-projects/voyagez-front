@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen flex flex-col">
+  <div class="min-h-screen flex flex-col dark:bg-gray-950">
     <!-- Fixed Search Form -->
-    <div class="bg-white md:bg-white sticky top-0 md:top-16 z-40">
+    <div class="bg-white md:bg-white dark:bg-gray-900 dark:md:bg-gray-900 sticky top-0 md:top-16 z-40">
       
       <!-- Mobile Header -->
       <div class="bg-primary-600 md:hidden">
@@ -36,7 +36,7 @@
         <div class="container mx-auto px-4 py-4">
           <form @submit.prevent="handleSearch" class="grid gap-2 md:grid-cols-4">
             <div>
-              <label class="block text-sm font-medium text-gray-600 mb-2">{{ $t('common.departure') }}</label>
+              <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">{{ $t('common.departure') }}</label>
               <CityAutocomplete
                 v-model="fromCity"
                 @select="handleFromSelect"
@@ -45,7 +45,7 @@
             </div>
             
             <div>
-              <label class="block text-sm font-medium text-gray-600 mb-2">{{ $t('common.arrival') }}</label>
+              <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">{{ $t('common.arrival') }}</label>
               <CityAutocomplete
                 v-model="toCity"
                 @select="handleToSelect"
@@ -54,8 +54,8 @@
             </div>
             
             <div>
-              <label class="block text-sm font-medium text-gray-600 mb-2">{{ $t('common.availability') }}</label>
-              <div class="w-full p-3 bg-green-50 border border-green-200 rounded-md text-sm text-green-700 flex items-center">
+              <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">{{ $t('common.availability') }}</label>
+              <div class="w-full p-3 bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-800 rounded-md text-sm text-green-700 dark:text-green-300 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
@@ -77,11 +77,11 @@
       </div>
 
       <!-- Mobile Search Form (visible when no results) -->
-      <div v-if="!loading && departures.length === 0" class="md:hidden p-4 bg-white">
-        <h2 class="text-lg font-medium text-gray-900 mb-4">{{ $t('search.title') }}</h2>
+      <div v-if="!loading && departures.length === 0" class="md:hidden p-4 bg-white dark:bg-gray-900">
+        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">{{ $t('search.title') }}</h2>
         <form @submit.prevent="handleSearch" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-600 mb-2">{{ $t('common.departure') }}</label>
+            <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">{{ $t('common.departure') }}</label>
             <CityAutocomplete
               v-model="fromCity"
               @select="handleFromSelect"
@@ -90,7 +90,7 @@
           </div>
           
           <div>
-            <label class="block text-sm font-medium text-gray-600 mb-2">{{ $t('common.arrival') }}</label>
+            <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">{{ $t('common.arrival') }}</label>
             <CityAutocomplete
               v-model="toCity"
               @select="handleToSelect"
@@ -109,7 +109,7 @@
         </form>
       </div>
 
-      <div class="border-b border-gray-200 hidden md:block"></div>
+      <div class="border-b border-gray-200 dark:border-gray-800 hidden md:block"></div>
     </div>
 
     <!-- Search Form Modal -->
@@ -152,7 +152,7 @@
               <!-- Loading State -->
               <div v-if="loading" class="text-center py-8">
                 <CarLoader />
-                <p class="text-gray-500">{{ $t('results.searchingTrips') }}</p>
+                <p class="text-gray-500 dark:text-gray-400">{{ $t('results.searchingTrips') }}</p>
               </div>
 
               <!-- Results List -->
@@ -169,7 +169,7 @@
                   <button 
                     @click="loadMoreResults"
                     :disabled="loadingMore"
-                    class="px-6 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all duration-200"
+                    class="px-6 py-2.5 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-lg text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all duration-200"
                   >
                     <RefreshCcwIcon v-if="loadingMore" class="w-4 h-4 animate-spin" />
                     <span>{{ loadingMore ? $t('common.loading') : $t('common.showMore') }}</span>
@@ -189,10 +189,10 @@
 
           <!-- Map Section - Hidden on Mobile -->
           <div class="hidden lg:block col-span-12 lg:col-span-5">
-            <div class="bg-white rounded-xl shadow-light p-4 sticky" style="top: calc(var(--header-height, 64px) + var(--form-height, 88px) + 1.5rem);">
-              <div class="aspect-[3/4] bg-gray-100 rounded-lg">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-light p-4 sticky" style="top: calc(var(--header-height, 64px) + var(--form-height, 88px) + 1.5rem);">
+              <div class="aspect-[3/4] bg-gray-100 dark:bg-gray-700 rounded-lg">
                 <!-- Ici viendra la carte -->
-                <div class="w-full h-full flex items-center justify-center text-gray-400">
+                <div class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
                   <div class="text-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
@@ -511,6 +511,11 @@ const handleMobileSearch = () => {
 
 .result-card {
   background-color: rgb(255, 255, 255);
+  box-shadow: rgba(19, 41, 104, 0.2) 0px 2px 5px 0px;
+}
+
+.dark .result-card {
+  background-color: #2f2f2f;
   box-shadow: rgba(19, 41, 104, 0.2) 0px 2px 5px 0px;
 }
 </style>

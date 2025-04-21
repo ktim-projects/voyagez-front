@@ -1,30 +1,30 @@
 <template>
   <div class="container mx-auto px-4 py-16">
-    <h2 class="text-3xl font-bold text-center mb-12">{{ $t('home.faq.title') }}</h2>
+    <h2 class="text-3xl font-bold text-center mb-12 text-gray-900 dark:text-white">{{ $t('home.faq.title') }}</h2>
     <div class="max-w-3xl mx-auto space-y-4">
       <div
         v-for="(item, index) in faqs"
         :key="index"
-        class="border-b bg-white rounded-md overflow-hidden"
+        class="border-b dark:border-gray-700 bg-white dark:bg-gray-800 rounded-md overflow-hidden"
       >
         <button
           @click="toggle(index)"
-          class="w-full flex justify-between items-center px-5 py-5 text-left text-gray-700 font-medium transition-all hover:text-coral-600 hover:bg-coral-50"
+          class="w-full flex justify-between items-center px-5 py-5 text-left text-gray-700 dark:text-gray-300 font-medium transition-all hover:text-coral-600 dark:hover:text-coral-500 hover:bg-coral-50 dark:hover:bg-gray-700"
         >
           <span class="flex items-center">
-            <component :is="item.icon" class="w-5 h-5 mr-3 text-coral-600" />
+            <component :is="item.icon" class="w-5 h-5 mr-3 text-coral-600 dark:text-coral-500" />
             {{ $t(item.titleKey) }}
           </span>
           <ChevronDown
             :class="[
               'w-5 h-5 transform transition-transform duration-300',
-              openIndex === index ? 'rotate-180 text-coral-600' : 'rotate-0'
+              openIndex === index ? 'rotate-180 text-coral-600 dark:text-coral-500' : 'rotate-0'
             ]"
           />
         </button>
         <div
           v-if="openIndex === index"
-          class="px-5 pb-5 bg-gray-50 text-gray-600 leading-relaxed"
+          class="px-5 pb-5 bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 leading-relaxed"
         >
           <p>{{ $t(item.introKey) }}</p>
           <ul class="list-disc ml-6 mt-2 space-y-2">
