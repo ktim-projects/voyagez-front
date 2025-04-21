@@ -3,6 +3,7 @@
     <HomeHeroSection />
     <HomeSearchForm />
     <HomeAdvantages />
+    <!-- <HomeHowItWorks /> -->
     <HomePopularDestinations />
     <HomePartners />
     <HomeFAQ />

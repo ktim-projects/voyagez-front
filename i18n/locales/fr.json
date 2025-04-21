@@ -23,7 +23,13 @@
     "departurePlaceholder": "Ville de départ",
     "arrivalPlaceholder": "Ville d'arrivée",
     "searchButton": "Rechercher",
-    "dailyDepartures": "Départs tous les jours"
+    "dailyDepartures": "Départs tous les jours",
+    "tabs": {
+      "car": "Car",
+      "bus": "Bus",
+      "train": "Train"
+    },
+    "popularSearches": "Recherches populaires"
   },
   "results": {
     "searchTitle": "Recherche",
@@ -47,27 +53,67 @@
   "home": {
     "hero": {
       "title": "Voyagez à travers la Côte d'Ivoire",
-      "subtitle": "Réservez vos billets de transport en toute simplicité pour voyager dans tout le pays"
+      "titleHighlight": "Découvrez",
+      "subtitle": "Réservez vos billets de transport en toute simplicité pour voyager dans tout le pays",
+      "primaryButton": "Réserver maintenant",
+      "secondaryButton": "Découvrir les destinations"
     },
     "advantages": {
       "title": "Pourquoi nous choisir ?",
       "subtitle": "Nous vous offrons la meilleure expérience de voyage possible",
       "timeGain": {
         "title": "Gain de temps",
-        "description": "Trouvez rapidement le meilleur trajet sans passer des heures à comparer."
+        "description": "Trouvez rapidement le meilleur trajet sans passer des heures à comparer.",
+        "point1": "Recherche instantanée des meilleurs itinéraires",
+        "point2": "Comparaison facile entre différentes options",
+        "point3": "Réservation en moins de 2 minutes"
       },
       "bestPrices": {
         "title": "Meilleurs prix",
-        "description": "Comparez les prix et choisissez l'option la plus économique."
+        "description": "Comparez les prix et choisissez l'option la plus économique.",
+        "point1": "Garantie du meilleur tarif disponible",
+        "point2": "Promotions exclusives toute l'année",
+        "point3": "Pas de frais cachés"
       },
       "reliability": {
         "title": "Fiabilité",
-        "description": "Des informations à jour et vérifiées pour voyager en toute tranquillité."
+        "description": "Des informations à jour et vérifiées pour voyager en toute tranquillité.",
+        "point1": "Partenaires de transport sélectionnés",
+        "point2": "Informations en temps réel",
+        "point3": "Support client disponible 24/7"
+      },
+      "cta": {
+        "title": "Prêt à partir à l'aventure ?",
+        "description": "Trouvez votre prochain voyage en quelques clics",
+        "button": "Rechercher un trajet"
+      }
+    },
+    "howItWorks": {
+      "title": "Comment ça marche",
+      "subtitle": "Réserver votre voyage en 4 étapes simples",
+      "step1": {
+        "title": "Recherchez",
+        "description": "Indiquez votre point de départ, votre destination et votre date de voyage"
+      },
+      "step2": {
+        "title": "Comparez",
+        "description": "Consultez toutes les options disponibles et choisissez celle qui vous convient"
+      },
+      "step3": {
+        "title": "Réservez",
+        "description": "Sélectionnez votre trajet et procédez au paiement en toute sécurité"
+      },
+      "step4": {
+        "title": "Voyagez",
+        "description": "Recevez votre billet par email et préparez-vous pour votre voyage"
       }
     },
     "destinations": {
       "title": "Destinations Populaires",
-      "priceFrom": "À partir de"
+      "subtitle": "Découvrez les destinations les plus prisées en Côte d'Ivoire",
+      "priceFrom": "À partir de",
+      "exploreButton": "Explorer",
+      "viewAllButton": "Voir toutes les destinations"
     },
     "partners": {
       "title": "Toutes les options de voyage sur une seule plateforme",

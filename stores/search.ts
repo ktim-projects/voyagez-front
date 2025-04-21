@@ -7,6 +7,7 @@ interface SearchState {
   date: string | null
   passengers: number
   searchResults: any[]
+  busNumber: string | null
 }
 
 export const useSearchStore = defineStore('search', {
@@ -16,7 +17,8 @@ export const useSearchStore = defineStore('search', {
     to: null,
     date: null,
     passengers: 1,
-    searchResults: []
+    searchResults: [],
+    busNumber: null
   }),
 
   actions: {
@@ -35,6 +37,7 @@ export const useSearchStore = defineStore('search', {
       this.date = null
       this.passengers = 1
       this.searchResults = []
+      this.busNumber = null
     }
   },
 

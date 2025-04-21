@@ -23,7 +23,13 @@
     "departurePlaceholder": "Departure city",
     "arrivalPlaceholder": "Arrival city",
     "searchButton": "Search",
-    "dailyDepartures": "Departures every day"
+    "dailyDepartures": "Departures every day",
+    "tabs": {
+      "car": "Car",
+      "bus": "Bus",
+      "train": "Train"
+    },
+    "popularSearches": "Popular searches"
   },
   "results": {
     "searchTitle": "Search",
@@ -47,27 +53,67 @@
   "home": {
     "hero": {
       "title": "Travel across Ivory Coast",
-      "subtitle": "Book your transportation tickets easily to travel throughout the country"
+      "titleHighlight": "Discover",
+      "subtitle": "Book your transportation tickets easily to travel throughout the country",
+      "primaryButton": "Book now",
+      "secondaryButton": "Discover destinations"
     },
     "advantages": {
       "title": "Why choose us?",
       "subtitle": "We offer you the best travel experience possible",
       "timeGain": {
         "title": "Time saving",
-        "description": "Quickly find the best route without spending hours comparing."
+        "description": "Quickly find the best route without spending hours comparing.",
+        "point1": "Instant search for the best routes",
+        "point2": "Easy comparison between different options",
+        "point3": "Booking in less than 2 minutes"
       },
       "bestPrices": {
         "title": "Best prices",
-        "description": "Compare prices and choose the most economical option."
+        "description": "Compare prices and choose the most economical option.",
+        "point1": "Best available rate guarantee",
+        "point2": "Exclusive promotions all year round",
+        "point3": "No hidden fees"
       },
       "reliability": {
         "title": "Reliability",
-        "description": "Up-to-date and verified information for worry-free travel."
+        "description": "Up-to-date and verified information for worry-free travel.",
+        "point1": "Selected transportation partners",
+        "point2": "Real-time information",
+        "point3": "Customer support available 24/7"
+      },
+      "cta": {
+        "title": "Ready for adventure?",
+        "description": "Find your next trip in just a few clicks",
+        "button": "Search for a trip"
+      }
+    },
+    "howItWorks": {
+      "title": "How it works",
+      "subtitle": "Book your trip in 4 simple steps",
+      "step1": {
+        "title": "Search",
+        "description": "Enter your departure point, destination and travel date"
+      },
+      "step2": {
+        "title": "Compare",
+        "description": "View all available options and choose the one that suits you"
+      },
+      "step3": {
+        "title": "Book",
+        "description": "Select your trip and proceed to secure payment"
+      },
+      "step4": {
+        "title": "Travel",
+        "description": "Receive your ticket by email and prepare for your journey"
       }
     },
     "destinations": {
       "title": "Popular Destinations",
-      "priceFrom": "From"
+      "subtitle": "Discover the most popular destinations in Ivory Coast",
+      "priceFrom": "From",
+      "exploreButton": "Explore",
+      "viewAllButton": "View all destinations"
     },
     "partners": {
       "title": "All travel options on a single platform",

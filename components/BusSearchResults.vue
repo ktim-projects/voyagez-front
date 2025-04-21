@@ -165,9 +165,12 @@ import { LineData } from '~/modules/bus/models/line_data';
 import { getAllRoutesInfo } from '~/modules/bus/utils/route-utils';
 import { displayRouteMap } from '~/modules/bus/utils/map-utils';
 import { ChevronLeft, X as XIcon } from 'lucide-vue-next';
+import { useSearchStore } from '~/stores/search';
+
+const searchStore = useSearchStore();
 
 const lines = ref<BusLine[]>([]);
-const busNumber = ref('');
+const busNumber = ref(searchStore.busNumber || '');
 const modalBusNumber = ref('');
 const loading = ref(false);
 const lastSearchedBusNumber = ref(''); // Pour suivre le dernier numéro de bus recherché
@@ -356,6 +359,11 @@ const handleModalSearch = () => {
 // Initialiser la carte au montage du composant
 onMounted(() => {
   initDefaultMap();
+  
+  // Déclencher automatiquement la recherche si un numéro de bus est fourni dans le store
+  if (searchStore.busNumber) {
+    searchRoute();
+  }
 });
 
 // Observer les changements de l'itinéraire sélectionné pour mettre à jour la carte
