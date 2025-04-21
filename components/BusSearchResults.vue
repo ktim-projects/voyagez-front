@@ -33,7 +33,7 @@
       </div>
       
       <!-- Left Panel -->
-      <div class="md:col-span-5 lg:col-span-4 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto h-[calc(100vh-4rem)] md:mt-0">
+      <div class="md:col-span-5 lg:col-span-4 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto h-[calc(100vh-4rem)] pt-14 md:pt-0">
         <!-- Search Form (visible on desktop or mobile when no results) -->
         <div class="p-6 border-b border-gray-200 dark:border-gray-700" :class="{'hidden md:block': routes.length > 0}">
           <form @submit.prevent="searchRoute" class="space-y-6">
@@ -51,7 +51,7 @@
         </div>
 
         <!-- Results -->
-        <div class="p-6">
+        <div class="p-6 pb-20">
           <div v-if="loading" class="text-center py-8">
             <BusLoader />
             <p class="text-gray-500 dark:text-gray-400 mt-2">{{ $t('busSearch.searchingMessage') }}</p>
