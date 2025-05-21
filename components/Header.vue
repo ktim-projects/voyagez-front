@@ -10,8 +10,6 @@
       <!-- Desktop Menu -->
       <div class="hidden md:flex space-x-8 items-center">
         <NuxtLink to="/" class="text-gray-700 hover:text-coral-600 dark:text-gray-300 dark:hover:text-coral-500">{{ $t('header.home') }}</NuxtLink>
-        <NuxtLink @click.prevent="goToCarResults" class="text-gray-700 hover:text-coral-600 dark:text-gray-300 dark:hover:text-coral-500 cursor-pointer">{{ $t('header.car') }}</NuxtLink>
-        <NuxtLink @click.prevent="goToBusResults" class="text-gray-700 hover:text-coral-600 dark:text-gray-300 dark:hover:text-coral-500 cursor-pointer">{{ $t('header.bus') }}</NuxtLink>
         <NuxtLink to="/about" class="text-gray-700 hover:text-coral-600 dark:text-gray-300 dark:hover:text-coral-500">{{ $t('header.about') }}</NuxtLink>
         <NuxtLink to="/contact" class="text-gray-700 hover:text-coral-600 dark:text-gray-300 dark:hover:text-coral-500">{{ $t('header.contact') }}</NuxtLink>
         <!-- <LanguageSwitcher /> -->
@@ -44,8 +42,6 @@
       <div v-if="isMenuOpen" class="md:hidden bg-white dark:bg-gray-900 border-t dark:border-gray-800 shadow-md">
         <div class="container mx-auto px-4 py-2 space-y-1">
           <NuxtLink @click="closeMenu" to="/" class="block text-gray-700 hover:text-red-600 dark:text-gray-300 dark:hover:text-coral-500 py-2">{{ $t('header.home') }}</NuxtLink>
-          <span @click="goToCarResultsAndCloseMenu" class="block text-gray-700 hover:text-red-600 dark:text-gray-300 dark:hover:text-coral-500 py-2 cursor-pointer">{{ $t('header.car') }}</span>
-          <span @click="goToBusResultsAndCloseMenu" class="block text-gray-700 hover:text-red-600 dark:text-gray-300 dark:hover:text-coral-500 py-2 cursor-pointer">{{ $t('header.bus') }}</span>
           <NuxtLink @click="closeMenu" to="/about" class="block text-gray-700 hover:text-red-600 dark:text-gray-300 dark:hover:text-coral-500 py-2">{{ $t('header.about') }}</NuxtLink>
           <NuxtLink @click="closeMenu" to="/contact" class="block text-gray-700 hover:text-red-600 dark:text-gray-300 dark:hover:text-coral-500 py-2">{{ $t('header.contact') }}</NuxtLink>
         </div>
@@ -56,14 +52,10 @@
 
 <script setup>
 import { Menu, X } from 'lucide-vue-next'
-import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 import ThemeSwitch from '../components/ThemeSwitch.vue'
-
-const searchStore = useSearchStore();
 
 const isMenuOpen = ref(false)
 const route = useRoute()
-const router = useRouter()
 
 
 const isSearchResults = computed(() => route.path === '/results')
@@ -73,36 +65,4 @@ const closeMenu = () => {
   isMenuOpen.value = false
 }
 
-const goToBusResultsAndCloseMenu = async () => {
-  await goToBusResults()
-  closeMenu()
-}
-
-const goToCarResultsAndCloseMenu = async () => {
-  await goToCarResults()
-  closeMenu()
-}
-
-const goToBusResults = async () => {
-
-  searchStore.setSearchParams({
-    type: 'bus',
-    from: '',
-    to: '',
-    date: null
-  });
-
-  await router.push('/results');
-}
-
-const goToCarResults = async () => {
-  searchStore.setSearchParams({
-    type: 'car',
-    from: '',
-    to: '',
-    date: null
-  });
-
-  await router.push('/results');
-}
 </script>
