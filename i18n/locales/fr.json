@@ -54,9 +54,9 @@
   },
   "home": {
     "hero": {
-      "title": "Voyagez à travers la Côte d'Ivoire",
-      "titleHighlight": "Découvrez",
-      "subtitle": "Réservez vos billets de transport en toute simplicité pour voyager dans tout le pays",
+      "title": "Voyagez, Déplacez vous plus facilement en Côte d'Ivoire et vers la sous région",
+      "titleHighlight": "Voyagez",
+      "subtitle": "Horaires, prix de tickets de vos compagnies de transport et de la SOTRA à portée de clic",
       "primaryButton": "Réserver maintenant",
       "secondaryButton": "Découvrir les destinations"
     },
@@ -65,28 +65,28 @@
       "subtitle": "Nous vous offrons la meilleure expérience de voyage possible",
       "timeGain": {
         "title": "Gain de temps",
-        "description": "Trouvez rapidement le meilleur trajet sans passer des heures à comparer.",
-        "point1": "Recherche instantanée des meilleurs itinéraires",
-        "point2": "Comparaison facile entre différentes options",
-        "point3": "Réservation en moins de 2 minutes"
+        "description": "Trouver facilement les heures de départ des différentes compagnies.",
+        "point1": "Différentes heures de départ",
+        "point2": "Recherche selon la période de journée",
+        "point3": "Heure approximative d'arrivée"
       },
       "bestPrices": {
         "title": "Meilleurs prix",
-        "description": "Comparez les prix et choisissez l'option la plus économique.",
-        "point1": "Garantie du meilleur tarif disponible",
-        "point2": "Promotions exclusives toute l'année",
-        "point3": "Pas de frais cachés"
+        "description": "Prix de ticket de vos différentes destinations.",
+        "point1": "Prix des départs ordinaires ou VIP",
+        "point2": "Filtre selon prix du ticket",
+        "point3": "Nous vous l'offrons gratuitement"
       },
       "reliability": {
         "title": "Fiabilité",
         "description": "Des informations à jour et vérifiées pour voyager en toute tranquillité.",
-        "point1": "Partenaires de transport sélectionnés",
-        "point2": "Informations en temps réel",
-        "point3": "Support client disponible 24/7"
+        "point1": "Informations recueillies auprès des différentes compagnies",
+        "point2": "Données régulièrement mises à jour",
+        "point3": "Informations fiables"
       },
       "cta": {
-        "title": "Prêt à partir à l'aventure ?",
-        "description": "Trouvez votre prochain voyage en quelques clics",
+        "title": "Vous voulez voyager en car ou vous déplacer en bus ?",
+        "description": "Nous vous offrons les informations sur les différentes compagnies de transport en car, de même que les informations sur les différentes lignes de la SOTRA",
         "button": "Rechercher un trajet"
       }
     },
@@ -111,11 +111,15 @@
       }
     },
     "destinations": {
-      "title": "Destinations Populaires",
+      "title": "DESTINATIONS POPULAIRES",
       "subtitle": "Découvrez les destinations les plus prisées en Côte d'Ivoire",
       "priceFrom": "À partir de",
       "exploreButton": "Explorer",
-      "viewAllButton": "Voir toutes les destinations"
+      "viewAllButton": "Voir toutes les destinations",
+      "abidjanYamoussoukro": "Abidjan - Yamoussoukro, À partir de 4500",
+      "abidjanBouake": "Abidjan - Bouaké, À partir de 6100",
+      "abidjanSanPedro1": "Abidjan - San-Pedro, À partir de 5500",
+      "abidjanSanPedro2": "Abidjan - San-Pedro, À partir de 6100"
     },
     "partners": {
       "title": "Toutes les options de voyage sur une seule plateforme",
@@ -123,29 +127,18 @@
       "button": "J'en profite"
     },
     "faq": {
-      "title": "Questions Fréquentes",
-      "howToBook": {
-        "title": "Comment réserver un billet ?",
-        "intro": "La réservation se fait en quelques étapes simples :",
-        "step1": "Choisissez votre ville de départ et d'arrivée",
-        "step2": "Sélectionnez votre date de voyage",
-        "step3": "Choisissez vos options de voyage",
-        "step4": "Procédez au paiement sécurisé"
+      "title": "QUESTIONS FREQUENTES (FAQ)",
+      "transportCompany": {
+        "title": "Vous êtes une compagnie de transport ?",
+        "description": "Nous ne sommes pas une compagnie de transport. Notre service vous permet de voyager plus facilement. Avec nous vous trouvez les horaires de départs, destination et gares des différentes compagnies de transport."
       },
-      "paymentMethods": {
-        "title": "Quels sont les moyens de paiement acceptés ?",
-        "intro": "Nous acceptons plusieurs moyens de paiement :",
-        "method1": "Cartes bancaires (Visa, Mastercard)",
-        "method2": "Mobile Money (Orange Money, MTN Money, Wave)",
-        "method3": "Paiement en espèces dans nos agences"
+      "ticketReservation": {
+        "title": "Possible de réserver un ticket avec vous ?",
+        "description": "Non pour le moment nous n'avons pas d'option vous permettant de réserver votre ticket. Cependant nous vous donnons les informations vous permettant de contacter directement une compagnie de transport ou une gare de celle-ci."
       },
-      "modifyBooking": {
-        "title": "Comment modifier ma réservation ?",
-        "intro": "Pour modifier votre réservation :",
-        "point1": "La modification est possible jusqu'à 24h avant le départ",
-        "point2": "Contactez notre service client disponible 24/7",
-        "point3": "Rendez-vous dans l'une de nos agences",
-        "point4": "Des frais peuvent s'appliquer selon le type de modification"
+      "publication": {
+        "title": "Comment publier sur votre site web ?",
+        "description": "La publication des différentes informations des compagnies est totalement gratuite. Pour publier vos informations il vous suffit de nous les envoyer par nos différents canaux, mail et WhatsApp."
       }
     },
     "newsletter": {

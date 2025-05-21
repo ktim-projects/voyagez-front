@@ -54,9 +54,9 @@
   },
   "home": {
     "hero": {
-      "title": "Travel across Ivory Coast",
-      "titleHighlight": "Discover",
-      "subtitle": "Book your transportation tickets easily to travel throughout the country",
+      "title": "Travel, Move more easily in Ivory Coast and to the sub-region",
+      "titleHighlight": "Travel",
+      "subtitle": "Schedules, ticket prices of your transport companies and SOTRA at your fingertips",
       "primaryButton": "Book now",
       "secondaryButton": "Discover destinations"
     },
@@ -65,28 +65,28 @@
       "subtitle": "We offer you the best travel experience possible",
       "timeGain": {
         "title": "Time saving",
-        "description": "Quickly find the best route without spending hours comparing.",
-        "point1": "Instant search for the best routes",
-        "point2": "Easy comparison between different options",
-        "point3": "Booking in less than 2 minutes"
+        "description": "Easily find departure times of different companies.",
+        "point1": "Different departure times",
+        "point2": "Search by time of day",
+        "point3": "Approximate arrival time"
       },
       "bestPrices": {
         "title": "Best prices",
-        "description": "Compare prices and choose the most economical option.",
-        "point1": "Best available rate guarantee",
-        "point2": "Exclusive promotions all year round",
-        "point3": "No hidden fees"
+        "description": "Ticket prices for your different destinations.",
+        "point1": "Prices for regular or VIP departures",
+        "point2": "Filter by ticket price",
+        "point3": "We offer it to you for free"
       },
       "reliability": {
         "title": "Reliability",
         "description": "Up-to-date and verified information for worry-free travel.",
-        "point1": "Selected transportation partners",
-        "point2": "Real-time information",
-        "point3": "Customer support available 24/7"
+        "point1": "Information collected from different companies",
+        "point2": "Regularly updated data",
+        "point3": "Reliable information"
       },
       "cta": {
-        "title": "Ready for adventure?",
-        "description": "Find your next trip in just a few clicks",
+        "title": "Want to travel by coach or move by bus?",
+        "description": "We provide information on different coach transport companies, as well as information on different SOTRA bus lines",
         "button": "Search for a trip"
       }
     },
@@ -111,11 +111,15 @@
       }
     },
     "destinations": {
-      "title": "Popular Destinations",
+      "title": "POPULAR DESTINATIONS",
       "subtitle": "Discover the most popular destinations in Ivory Coast",
       "priceFrom": "From",
       "exploreButton": "Explore",
-      "viewAllButton": "View all destinations"
+      "viewAllButton": "View all destinations",
+      "abidjanYamoussoukro": "Abidjan - Yamoussoukro, From 4500",
+      "abidjanBouake": "Abidjan - Bouaké, From 6100",
+      "abidjanSanPedro1": "Abidjan - San-Pedro, From 5500",
+      "abidjanSanPedro2": "Abidjan - San-Pedro, From 6100"
     },
     "partners": {
       "title": "All travel options on a single platform",
@@ -123,29 +127,18 @@
       "button": "Take advantage"
     },
     "faq": {
-      "title": "Frequently Asked Questions",
-      "howToBook": {
-        "title": "How to book a ticket?",
-        "intro": "Booking is done in a few simple steps:",
-        "step1": "Choose your departure and arrival city",
-        "step2": "Select your travel date",
-        "step3": "Choose your travel options",
-        "step4": "Proceed to secure payment"
+      "title": "FREQUENTLY ASKED QUESTIONS (FAQ)",
+      "transportCompany": {
+        "title": "Are you a transport company?",
+        "description": "We are not a transport company. Our service allows you to travel more easily. With us, you can find departure times, destinations, and stations of different transport companies."
       },
-      "paymentMethods": {
-        "title": "What payment methods are accepted?",
-        "intro": "We accept several payment methods:",
-        "method1": "Credit cards (Visa, Mastercard)",
-        "method2": "Mobile Money (Orange Money, MTN Money, Wave)",
-        "method3": "Cash payment at our agencies"
+      "ticketReservation": {
+        "title": "Is it possible to book a ticket with you?",
+        "description": "No, at the moment we don't have an option allowing you to book your ticket. However, we provide you with information allowing you to contact a transport company or one of their stations directly."
       },
-      "modifyBooking": {
-        "title": "How to modify my booking?",
-        "intro": "To modify your booking:",
-        "point1": "Modification is possible up to 24 hours before departure",
-        "point2": "Contact our customer service available 24/7",
-        "point3": "Visit one of our agencies",
-        "point4": "Fees may apply depending on the type of modification"
+      "publication": {
+        "title": "How to publish on your website?",
+        "description": "Publishing different company information is completely free. To publish your information, simply send it to us through our different channels, email and WhatsApp."
       }
     },
     "newsletter": {

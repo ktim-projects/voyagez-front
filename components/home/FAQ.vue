@@ -24,14 +24,9 @@
         </button>
         <div
           v-if="openIndex === index"
-          class="px-5 pb-5 bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 leading-relaxed"
+          class="p-5 bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 leading-relaxed"
         >
-          <p>{{ $t(item.introKey) }}</p>
-          <ul class="list-disc ml-6 mt-2 space-y-2">
-            <li v-for="(stepKey, stepIndex) in item.steps" :key="stepIndex">
-              {{ $t(stepKey) }}
-            </li>
-          </ul>
+          <p>{{ $t(item.descriptionKey) }}</p>
         </div>
       </div>
     </div>
@@ -40,46 +35,29 @@
 
 <script setup>
 import { ref } from 'vue'
-import { ChevronDown, Ticket, Wallet, Calendar } from 'lucide-vue-next'
+import { ChevronDown, Building, Ticket, FileText } from 'lucide-vue-next'
 
 const openIndex = ref(null)
 const toggle = (index) => {
   openIndex.value = openIndex.value === index ? null : index
 }
 
-// 👇 Chaque FAQ contient un composant d'icône, un titre et un contenu HTML
+// 👇 Chaque FAQ contient un composant d'icône, un titre et une description
 const faqs = [
   {
-    titleKey: 'home.faq.howToBook.title',
-    introKey: 'home.faq.howToBook.intro',
-    steps: [
-      'home.faq.howToBook.step1',
-      'home.faq.howToBook.step2',
-      'home.faq.howToBook.step3',
-      'home.faq.howToBook.step4'
-    ],
+    titleKey: 'home.faq.transportCompany.title',
+    descriptionKey: 'home.faq.transportCompany.description',
+    icon: Building
+  },
+  {
+    titleKey: 'home.faq.ticketReservation.title',
+    descriptionKey: 'home.faq.ticketReservation.description',
     icon: Ticket
   },
   {
-    titleKey: 'home.faq.paymentMethods.title',
-    introKey: 'home.faq.paymentMethods.intro',
-    steps: [
-      'home.faq.paymentMethods.method1',
-      'home.faq.paymentMethods.method2',
-      'home.faq.paymentMethods.method3'
-    ],
-    icon: Wallet
-  },
-  {
-    titleKey: 'home.faq.modifyBooking.title',
-    introKey: 'home.faq.modifyBooking.intro',
-    steps: [
-      'home.faq.modifyBooking.point1',
-      'home.faq.modifyBooking.point2',
-      'home.faq.modifyBooking.point3',
-      'home.faq.modifyBooking.point4'
-    ],
-    icon: Calendar
+    titleKey: 'home.faq.publication.title',
+    descriptionKey: 'home.faq.publication.description',
+    icon: FileText
   }
 ]
 </script>

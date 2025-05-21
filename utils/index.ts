@@ -1,11 +1,3 @@
-/**
- * Supprime les accents d'une chaîne.
- * @param input - La chaîne d'entrée.
- * @returns La chaîne sans accents.
- */
-export const removeAccents = (input: string): string => {
-    return input.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-}
 
 export const formatTime = (time: string): string => {
     const [hour, minute] = time.split(':');
