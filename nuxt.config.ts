@@ -56,8 +56,8 @@ export default defineNuxtConfig({
 
   supabase: {
     redirect: false,
-    url: 'https://xgzetswtddvvgedpxzbx.supabase.co',
-    key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhnemV0c3d0ZGR2dmdlZHB4emJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzUwNjYyMDUsImV4cCI6MjA1MDY0MjIwNX0.Y59zSkr369-5-8dv11pKveMuG0aVQrYVvHY8_Yo16cM'
+    url: process.env.SUPABASE_URL,
+    key: process.env.SUPABASE_ANON_KEY
   },
 
   devtools: { enabled: true },
