@@ -3,6 +3,14 @@
 export default defineNuxtConfig({
   ssr: false,
 
+  // Configuration des variables d'environnement runtime
+  runtimeConfig: {
+    public: {
+      supabaseUrl: process.env.SUPABASE_URL,
+      supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
+    }
+  },
+
   modules: [
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
@@ -46,7 +54,7 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    preset: 'node-server'
+    preset: 'vercel'
   },
 
   typescript: {

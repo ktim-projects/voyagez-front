@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
   
   let query = client
-    .from('departure_duplicate')
+    .from('departure')
     .select(`
       *,
       company (
