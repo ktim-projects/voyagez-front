@@ -15,6 +15,7 @@
     "@nuxtjs/i18n": "10.0.0-beta.2",
     "@pinia/nuxt": "^0.5.1",
     "@turf/turf": "^6.5.0",
+    "@vercel/analytics": "^1.5.0",
     "@vueuse/core": "^10.7.2",
     "eslint": "^9.24.0",
     "leaflet": "^1.9.4",
