@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto px-4 -mt-16 sm:-mt-24 relative z-20 search-form-section">
+  <div class="container mx-auto px-4  md:-mt-24 relative z-20 search-form-section">
     <div class="max-w-4xl mx-auto">
       <div class="rounded-2xl bg-white dark:bg-gray-800 shadow-xl p-8 transform transition-all duration-500 hover:shadow-2xl">
         <!-- Onglets de type de transport -->

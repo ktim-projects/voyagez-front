@@ -116,7 +116,8 @@ export default defineEventHandler(async (event) => {
         name,
         logo_url,
         contact,
-        email
+        email,
+        services
       )
     `, { count: 'exact' })
     .eq('origin', from)
@@ -134,9 +135,10 @@ export default defineEventHandler(async (event) => {
 
   if (departurePeriod) {
     const timeRanges = {
-      morning: { start: '05:00', end: '11:59' },
+      morning: { start: '06:00', end: '11:59' },
       afternoon: { start: '12:00', end: '17:59' },
-      evening: { start: '18:00', end: '23:59' }
+      evening: { start: '18:00', end: '23:59' },
+      night: { start: '00:00', end: '05:59' }
     };
 
     const range = timeRanges[departurePeriod as keyof typeof timeRanges];

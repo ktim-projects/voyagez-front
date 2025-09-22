@@ -18,7 +18,7 @@
         class="max-w-3xl mx-auto transform transition-all duration-700"
         :style="{ transform: `translateY(${Math.min(0, -scrollY * 0.1)}px)` }"
       >
-        <h1 class="text-5xl md:text-6xl font-bold tracking-tight text-white mb-2">
+        <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-white mb-2">
           <span class="block text-coral-500">{{ $t('home.hero.titleHighlight') }}</span>
           <span>{{ $t('home.hero.title') }}</span>
         </h1>
