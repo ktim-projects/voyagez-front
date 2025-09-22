@@ -14,7 +14,6 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
-    '@nuxtjs/color-mode',
     '@nuxtjs/supabase',
     '@nuxtjs/i18n',
   ],
@@ -23,10 +22,6 @@ export default defineNuxtConfig({
     '~/assets/styles/main.scss'
   ],
 
-  colorMode: {
-    classSuffix: ''
-  },
-
   build: {
     transpile: ['primevue']
   },
@@ -34,8 +29,8 @@ export default defineNuxtConfig({
   i18n: {
     defaultLocale: 'fr',
     locales: [
-      { code: 'en', name: 'English', file: 'en.json' },
-      { code: 'fr', name: 'Français', file: 'fr.json' }
+      { code: 'fr', name: 'Français', file: 'fr.json' },
+      { code: 'en', name: 'English', file: 'en.json' }
     ]
   },
 

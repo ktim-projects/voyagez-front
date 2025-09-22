@@ -127,7 +127,6 @@ const busNumber = ref('');
 const searchStore = useSearchStore();
 const activeTab = ref('car');
 
-// Onglets de type de transport
 const tabs = [
   { 
     label: 'search.tabs.car',
@@ -139,14 +138,8 @@ const tabs = [
     value: 'bus',
     icon: BusIcon
   },
-  // { 
-  //   label: 'search.tabs.train',
-  //   value: 'train',
-  //   icon: TrainIcon
-  // }
 ];
 
-// Villes populaires pour les recherches rapides
 const popularCities = ['Abidjan', 'Yamoussoukro', 'Bouaké', 'San Pedro', 'Korhogo'];
 
 const isSearchEnabled = computed(() => {
@@ -179,7 +172,11 @@ const handleSearch = async () => {
     date: null
   });
 
-  await router.push('/results');
+  // Naviguer vers la page de résultats avec les query params
+  await router.push({ 
+    path: '/results',
+    query: searchStore.getQueryParams()
+  });
 };
 
 const handleBusSearch = async () => {
@@ -193,8 +190,11 @@ const handleBusSearch = async () => {
     to: null
   });
 
-  // Rediriger vers la page de résultats
-  await router.push('/results');
+  // Rediriger vers la page de résultats avec les query params
+  await router.push({ 
+    path: '/results',
+    query: searchStore.getQueryParams()
+  });
 };
 
 const quickSearch = async (destination: string) => {
@@ -203,7 +203,11 @@ const quickSearch = async (destination: string) => {
     from: null,
     to: destination,
   });
-  await router.push('/results');
+  
+  await router.push({ 
+    path: '/results',
+    query: searchStore.getQueryParams()
+  });
 };
 
 onMounted(() => {

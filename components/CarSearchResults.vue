@@ -243,11 +243,11 @@ import { capitalizeWords } from '~/utils/string';
 import SearchFormModal from './SearchFormModal.vue';
 
 const router = useRouter();
+const route = useRoute();
 const sessionTimeout = 10 * 60 * 1000; // 10 minutes en millisecondes
 let sessionTimer: NodeJS.Timeout | null = null;
 const showSessionExpiredModal = ref(false);
 
-const route = useRoute();
 const searchStore = useSearchStore();
 const loading = ref(false);
 const departures = ref<Departure[]>([]);
@@ -316,6 +316,19 @@ const handleSearch = async () => {
 
   hasSearched.value = true; // Mark that a search has been performed
   
+  // Mettre à jour le store avec les nouvelles valeurs
+  searchStore.setSearchParams({
+    type: 'car',
+    from: fromCity.value,
+    to: toCity.value
+  });
+  
+  // Mettre à jour l'URL avec les nouveaux paramètres
+  await router.replace({ 
+    path: '/results',
+    query: searchStore.getQueryParams()
+  });
+  
   loading.value = true;
   departures.value = [];
   
@@ -380,7 +393,30 @@ const loadMoreResults = async () => {
 }
 
 // Trigger search on component mount
- onMounted(() => {
+onMounted(() => {
+  // Synchroniser le store avec les query params de l'URL
+  if (Object.keys(route.query).length > 0) {
+    // Convertir les query params en format attendu par le store
+    const queryParams: Record<string, string | string[]> = {};
+    Object.entries(route.query).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        if (Array.isArray(value)) {
+          // Filtrer les valeurs null dans les tableaux
+          const filteredArray = value.filter((v): v is string => v !== null && v !== undefined);
+          if (filteredArray.length > 0) {
+            queryParams[key] = filteredArray;
+          }
+        } else {
+          queryParams[key] = value;
+        }
+      }
+    });
+    
+    searchStore.syncFromQueryParams(queryParams);
+    fromCity.value = searchStore.from || '';
+    toCity.value = searchStore.to || '';
+  }
+  
   if (fromCity.value && toCity.value) {
     handleSearch();
   }
@@ -466,16 +502,184 @@ watch(() => currentSort.value, () => {
   debouncedFilterSearch();
 });
 
-// SEO
-useHead({
-  title: 'Recherche de Cars - VoyagezCi',
+// SEO dynamique basé sur les données de recherche
+const seoData = computed(() => {
+  const hasSearchData = fromCity.value && toCity.value;
+  const hasResults = departures.value.length > 0;
+  
+  if (hasSearchData) {
+    const baseTitle = `${fromCity.value} → ${toCity.value}`;
+    const resultCount = totalResults.value;
+    
+    return {
+      title: hasResults 
+        ? `${baseTitle} - ${resultCount} trajets disponibles | VoyagezCi`
+        : `${baseTitle} - Recherche de trajets en car | Geyavo`,
+      
+      description: hasResults
+        ? `Trouvez les meilleurs trajets en car de ${fromCity.value} à ${toCity.value}. ${resultCount} options disponibles avec horaires, prix et compagnies. Réservez votre voyage en Côte d'Ivoire.`
+        : `Recherchez des trajets en car de ${fromCity.value} à ${toCity.value}. Comparez les prix, horaires et compagnies de transport en Côte d'Ivoire sur VoyagezCi.`,
+      
+      keywords: `${fromCity.value}, ${toCity.value}, car, transport, voyage, Côte d'Ivoire, horaires, prix`,
+      
+      canonical: `/results?from=${encodeURIComponent(fromCity.value)}&to=${encodeURIComponent(toCity.value)}&type=car`,
+      
+      ogTitle: hasResults
+        ? `${resultCount} trajets ${baseTitle} disponibles`
+        : `Trajets en car ${baseTitle}`,
+      
+      ogDescription: hasResults
+        ? `Découvrez ${resultCount} options de voyage de ${fromCity.value} à ${toCity.value}. Comparez et réservez votre trajet.`
+        : `Recherchez et comparez les trajets en car de ${fromCity.value} à ${toCity.value} en Côte d'Ivoire.`,
+    };
+  }
+  
+  // Fallback pour les cas sans données de recherche
+  return {
+    title: 'Recherche de trajets en car - VoyagezCi',
+    description: 'Trouvez et comparez les meilleurs trajets en car en Côte d\'Ivoire. Réservez votre voyage avec les meilleures compagnies de transport.',
+    keywords: 'car, transport, voyage, Côte d\'Ivoire, réservation, trajets',
+    canonical: '/results',
+    ogTitle: 'Recherche de trajets en car en Côte d\'Ivoire',
+    ogDescription: 'Comparez et réservez vos trajets en car en Côte d\'Ivoire avec Geyavo.',
+  };
+});
+
+// Application du SEO avec données dynamiques
+useHead(() => ({
+  title: seoData.value.title,
   meta: [
+    // Description
     {
       name: 'description',
-      content: 'Résultats de recherche pour les trajets en car'
+      content: seoData.value.description
+    },
+    // Keywords
+    {
+      name: 'keywords',
+      content: seoData.value.keywords
+    },
+    // Robots
+    {
+      name: 'robots',
+      content: 'index, follow'
+    },
+    // Open Graph
+    {
+      property: 'og:title',
+      content: seoData.value.ogTitle
+    },
+    {
+      property: 'og:description',
+      content: seoData.value.ogDescription
+    },
+    {
+      property: 'og:type',
+      content: 'website'
+    },
+    {
+      property: 'og:site_name',
+      content: 'VoyagezCi'
+    },
+    {
+      property: 'og:locale',
+      content: 'fr_CI'
+    },
+    // Twitter Card
+    {
+      name: 'twitter:card',
+      content: 'summary'
+    },
+    {
+      name: 'twitter:title',
+      content: seoData.value.ogTitle
+    },
+    {
+      name: 'twitter:description',
+      content: seoData.value.ogDescription
+    },
+    // Geo tags pour la Côte d'Ivoire
+    {
+      name: 'geo.region',
+      content: 'CI'
+    },
+    {
+      name: 'geo.country',
+      content: 'Côte d\'Ivoire'
+    }
+  ],
+  link: [
+    // Canonical URL
+    {
+      rel: 'canonical',
+      href: `https://geyavo.com${seoData.value.canonical}`
+    }
+  ],
+  script: [
+    // Données structurées JSON-LD pour le SEO
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        name: seoData.value.title,
+        description: seoData.value.description,
+        url: `https://geyavo.com${seoData.value.canonical}`,
+        mainEntity: {
+          '@type': 'SearchResultsPage',
+          name: 'Résultats de recherche de trajets en car',
+          description: seoData.value.description,
+          ...(fromCity.value && toCity.value && {
+            about: {
+              '@type': 'Trip',
+              name: `Trajet ${fromCity.value} - ${toCity.value}`,
+              description: `Voyage en car de ${fromCity.value} à ${toCity.value}`,
+              departureLocation: {
+                '@type': 'Place',
+                name: fromCity.value,
+                addressCountry: 'CI'
+              },
+              arrivalLocation: {
+                '@type': 'Place',
+                name: toCity.value,
+                addressCountry: 'CI'
+              }
+            }
+          })
+        },
+        breadcrumb: {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            {
+              '@type': 'ListItem',
+              position: 1,
+              name: 'Accueil',
+              item: 'https://geyavo.com'
+            },
+            {
+              '@type': 'ListItem',
+              position: 2,
+              name: 'Recherche de trajets',
+              item: 'https://geyavo.com/results'
+            },
+            ...(fromCity.value && toCity.value ? [{
+              '@type': 'ListItem',
+              position: 3,
+              name: `${fromCity.value} → ${toCity.value}`,
+              item: `https://geyavo.com${seoData.value.canonical}`
+            }] : [])
+          ]
+        },
+        provider: {
+          '@type': 'Organization',
+          name: 'Geyavo',
+          url: 'https://geyavo.com',
+          description: 'Plateforme de réservation de trajets en car en Côte d\'Ivoire'
+        }
+      })
     }
   ]
-});
+}));
 
 // Types
 type DeparturePeriod = '' | 'morning' | 'afternoon' | 'evening';

@@ -27,7 +27,6 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
-    "@nuxtjs/color-mode": "^3.3.2",
     "@nuxtjs/supabase": "^1.4.5",
     "@nuxtjs/tailwindcss": "^6.8.0",
     "@types/leaflet": "^1.9.8",
