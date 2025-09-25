@@ -110,7 +110,7 @@ export default defineEventHandler(async (event) => {
       duration,
       price,
       date,
-      departure_station,
+      station,
       company:operator (
         id,
         name,
