@@ -76,39 +76,6 @@
         </div>
       </div>
 
-      <!-- Mobile Search Form (visible when no results) -->
-      <div v-if="!loading && departures.length === 0" class="md:hidden p-4 bg-white dark:bg-gray-900">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">{{ $t('search.title') }}</h2>
-        <form @submit.prevent="handleSearch" class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">{{ $t('common.departure') }}</label>
-            <CityAutocomplete
-              v-model="fromCity"
-              @select="handleFromSelect"
-              :placeholder="$t('search.departurePlaceholder')"
-            />
-          </div>
-          
-          <div>
-            <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">{{ $t('common.arrival') }}</label>
-            <CityAutocomplete
-              v-model="toCity"
-              @select="handleToSelect"
-              :placeholder="$t('search.arrivalPlaceholder')"
-            />
-          </div>
-          
-          <AppButton 
-            variant="coral" 
-            :label="$t('common.search')"
-            type="submit"
-            icon="Search"
-            :disabled="!fromCity || !toCity"
-            class="w-full"
-          />
-        </form>
-      </div>
-
       <div class="border-b border-gray-200 dark:border-gray-800 hidden md:block"></div>
     </div>
 
@@ -278,36 +245,36 @@ const filters = ref({
   departurePeriod: ''
 });
 
-const companies = computed(() => carCompanies);
+// const companies = computed(() => carCompanies);
 
-const hasActiveFilters = computed(() => {
-  return filters.value.maxPrice !== 50000 || 
-         filters.value.companies.length > 0 || 
-         filters.value.departurePeriod !== '';
-});
+// const hasActiveFilters = computed(() => {
+//   return filters.value.maxPrice !== 50000 || 
+//          filters.value.companies.length > 0 || 
+//          filters.value.departurePeriod !== '';
+// });
 
-const activeFiltersCount = computed(() => {
-  let count = 0;
-  if (filters.value.maxPrice !== 50000) count++;
-  if (filters.value.companies.length > 0) count++;
-  if (filters.value.departurePeriod !== '') count++;
-  return count;
-});
+// const activeFiltersCount = computed(() => {
+//   let count = 0;
+//   if (filters.value.maxPrice !== 50000) count++;
+//   if (filters.value.companies.length > 0) count++;
+//   if (filters.value.departurePeriod !== '') count++;
+//   return count;
+// });
 
-const resetFilters = () => {
-  filters.value = {
-    maxPrice: 50000,
-    companies: [],
-    departurePeriod: ''
-  };
-  // handleSearch();
-}
+// const resetFilters = () => {
+//   filters.value = {
+//     maxPrice: 50000,
+//     companies: [],
+//     departurePeriod: ''
+//   };
+//   // handleSearch();
+// }
 
 const debouncedFilterSearch = useDebounceFn(() => {
   page.value = 1;
   // currentSort.value = 'price_asc';
   handleSearch();
-}, 300);
+}, 500);
 
 const handleSearch = async () => {
   if (!fromCity.value || !toCity.value) {
@@ -345,10 +312,11 @@ const handleSearch = async () => {
         sort: currentSort.value
       }
     });
+    console.log(response);
     
     departures.value = response.departures || [];
-    totalResults.value = response.total || 0;
-    totalPages.value = Math.ceil((response.total || 0) / limit);
+    totalResults.value = response._meta.total || 0;
+    totalPages.value = Math.ceil((response._meta.total || 0) / limit);
     
   } catch (error) {
     console.error('Error searching departures:', error);
@@ -381,8 +349,8 @@ const loadMoreResults = async () => {
     });
     
     departures.value = [...departures.value, ...(response.departures || [])];
-    totalResults.value = response.total || 0;
-    totalPages.value = Math.ceil((response.total || 0) / limit);
+    totalResults.value = response._meta.total || 0;
+    totalPages.value = Math.ceil((response._meta.total || 0) / limit);
     
   } catch (error) {
     console.error('Error loading more results:', error);

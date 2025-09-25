@@ -1,11 +1,11 @@
 import { serverSupabaseClient } from '#supabase/server'
 import { createError } from 'h3'
 
-// 🚀 Cache en mémoire pour les compagnies
+// 🚀 Cache for companies
 const companyCache = new Map<string, { data: any; timestamp: number }>()
 const CACHE_TTL = 10 * 60 * 1000 // 10 minutes
 
-// 🎯 Cache pour les requêtes complètes (optionnel)
+// 🎯 Cache for queries (optional)
 const queryCache = new Map<string, { data: any; timestamp: number }>()
 const QUERY_CACHE_TTL = 2 * 60 * 1000 // 2 minutes
 
@@ -14,7 +14,7 @@ async function getCachedCompanies(client: any, operatorIds: string[]) {
   const uncachedIds: string[] = []
   const cachedCompanies: any[] = []
   
-  // Vérifier le cache
+  // Verify cache
   for (const id of operatorIds) {
     const cached = companyCache.get(id)
     if (cached && (now - cached.timestamp) < CACHE_TTL) {
@@ -24,14 +24,14 @@ async function getCachedCompanies(client: any, operatorIds: string[]) {
     }
   }
   
-  // Récupérer les données manquantes
+  // Get missing data
   if (uncachedIds.length > 0) {
     const { data: freshCompanies } = await client
       .from('company')
       .select('id, name, logo_url, contact, email')
       .in('id', uncachedIds)
     
-    // Mettre en cache
+    // Add to cache
     freshCompanies?.forEach((company: any) => {
       companyCache.set(company.id, {
         data: company,
@@ -63,7 +63,7 @@ export default defineEventHandler(async (event) => {
     from, 
     to, 
     page = 1,
-    limit = 25, // Pagination optimisée
+    limit = 25, // Pagination optimized
     maxPrice,
     companies,
     departurePeriod,
@@ -77,27 +77,30 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // 🚀 Vérifier le cache de requête
+  // 🚀 Verify query cache
   const cacheKey = generateCacheKey(queryFromApp)
   const now = Date.now()
   const cachedQuery = queryCache.get(cacheKey)
   
   if (cachedQuery && (now - cachedQuery.timestamp) < QUERY_CACHE_TTL) {
+    console.info('Cache infos:', {
+      cacheHit: true,
+      cacheAge: Math.round((now - cachedQuery.timestamp) / 1000)
+    })
+    
     return {
       ...cachedQuery.data,
-      cached: true,
-      cacheAge: Math.round((now - cachedQuery.timestamp) / 1000)
     }
   }
 
   const client = await serverSupabaseClient(event)
   
-  // 🎯 PAGINATION CÔTÉ DB - Calcul optimisé
+  // 🎯 Pagination DB
   const pageNum = Math.max(1, Number(page))
-  const limitNum = Math.min(100, Math.max(1, Number(limit))) // Limite max 100
+  const limitNum = Math.min(100, Math.max(1, Number(limit))) // Limit max 100
   const offset = (pageNum - 1) * limitNum
   
-  // 🚀 REQUÊTE OPTIMISÉE avec JOIN (si les données sont corrigées)
+  // 🚀 Optimized query with JOIN (if data is correct)
   let query = client
     .from('departure')
     .select(`
@@ -149,10 +152,10 @@ export default defineEventHandler(async (event) => {
     }
   }
   
-  // 🎯 PAGINATION CÔTÉ DB
+  // 🎯 Pagination DB
   query = query.range(offset, offset + limitNum - 1);
 
-  // 📈 Tri optimisé
+  // 📈 Sort
   switch (sort) {
     case 'price_asc':
       query = query.order('price', { ascending: true }).order('departure_time', { ascending: true });
@@ -170,7 +173,7 @@ export default defineEventHandler(async (event) => {
   const { data: departures, error, count } = await query
 
   if (error) {
-    // Si le JOIN échoue, fallback vers l'approche séparée
+    // If JOIN fails, fallback to separate queries
     console.warn('JOIN failed, falling back to separate queries:', error.message)
     
     const { data: fallbackDepartures, error: fallbackError, count: fallbackCount } = await client
@@ -185,7 +188,7 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusMessage: fallbackError.message })
     }
     
-    // Enrichir avec le cache
+    // Enrich with companies
     let enrichedDepartures: any = fallbackDepartures
     if (fallbackDepartures && fallbackDepartures.length > 0) {
       const operatorIds = [...new Set((fallbackDepartures as any[]).map((d: any) => d.operator).filter(Boolean))]
@@ -203,42 +206,45 @@ export default defineEventHandler(async (event) => {
     
     const result = {
       departures: enrichedDepartures,
-      total: fallbackCount || 0,
-      totalPages: Math.ceil((fallbackCount || 0) / limitNum),
-      currentPage: pageNum,
-      limit: limitNum,
-      hasNextPage: (fallbackCount || 0) > offset + limitNum,
-      hasPreviousPage: pageNum > 1,
-      performance: {
-        method: 'fallback_with_cache',
-        cacheHits: companyCache.size,
-        queryTime: 'optimized'
-      }
+      _meta: {
+        total: fallbackCount || 0,
+        limit: limitNum,
+        offset,
+      },
     }
+
+    console.info('Performance:',  {
+      method: 'fallback_with_cache',
+      cacheHits: companyCache.size,
+      queryTime: 'optimized'
+    })
     
-    // Mettre en cache le résultat
+    // Add to cache
     queryCache.set(cacheKey, { data: result, timestamp: now })
     
     return result
   }
+
+  console.log('join');
   
-  // ✅ Succès avec JOIN
+  // ✅ Success with JOIN
   const result = {
     departures,
-    total: count || 0,
-    totalPages: Math.ceil((count || 0) / limitNum),
-    currentPage: pageNum,
-    limit: limitNum,
-    hasNextPage: (count || 0) > offset + limitNum,
-    hasPreviousPage: pageNum > 1,
-    performance: {
-      method: 'optimized_join',
-      cacheHits: companyCache.size,
-      queryTime: 'fast'
-    }
+    _meta: {
+      total: count || 0,
+      limit: limitNum,
+      offset,
+      
+    },
   }
+
+  console.info('Performance:', {
+    method: 'optimized_join',
+    cacheHits: companyCache.size,
+    queryTime: 'fast'
+  })
   
-  // Mettre en cache le résultat
+  // Add to cache
   queryCache.set(cacheKey, { data: result, timestamp: now })
   
   return result

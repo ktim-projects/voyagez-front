@@ -3,7 +3,8 @@
     <nav class="container mx-auto px-4 h-16 flex items-center justify-between">
       <div class="flex items-center">
         <NuxtLink to="/" class="text-2xl font-bold text-coral-600 hover:text-coral-700 dark:text-coral-500 dark:hover:text-coral-400 transition-colors">
-          {{ $t('header.appName') }}
+          <!-- {{ $t('header.appName') }} -->
+          <img :src="logoPath" alt="Geyavo" class="h-10" />
         </NuxtLink>
       </div>
       
@@ -46,11 +47,12 @@
 
 <script setup>
 import { Menu, X } from 'lucide-vue-next'
-import ThemeSwitch from '../components/ThemeSwitch.vue'
 
 const isMenuOpen = ref(false)
 const route = useRoute()
 
+// Logo path
+const logoPath = computed(() => '/logos/geyavo_long.png')
 
 const isSearchResults = computed(() => route.path === '/results')
 
