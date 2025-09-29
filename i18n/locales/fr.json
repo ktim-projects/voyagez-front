@@ -54,10 +54,10 @@
   },
   "home": {
     "hero": {
-      "title": "Voyagez, Déplacez vous plus facilement en Côte d'Ivoire et vers la sous région",
+      "title": "plus facilement en Côte d'Ivoire et vers la sous région",
       "titleHighlight": "Voyagez",
-      "subtitle": "Horaires, prix de tickets de vos compagnies de transport et de la SOTRA à portée de clic",
-      "primaryButton": "Réserver maintenant",
+      "subtitle": "Rechercher rapidement vos horaires et prix de tickets",
+      "search_button": "Rechercher maintenant",
       "secondaryButton": "Découvrir les destinations"
     },
     "advantages": {
@@ -65,10 +65,10 @@
       "subtitle": "Nous vous offrons la meilleure expérience de voyage possible",
       "timeGain": {
         "title": "Gain de temps",
-        "description": "Trouver facilement les heures de départ des différentes compagnies.",
-        "point1": "Différentes heures de départ",
-        "point2": "Recherche selon la période de journée",
-        "point3": "Heure approximative d'arrivée"
+        "description": "Toutes les informations dont vous avez besoin sont réunies en un seul endroit.",
+        "point1": "Horaires & prix des tickets",
+        "point2": "Points de départ & contact des compagnies",
+        "point3": "Finis les longues recherches dispersées"
       },
       "bestPrices": {
         "title": "Meilleurs prix",
@@ -81,8 +81,7 @@
         "title": "Fiabilité",
         "description": "Des informations à jour et vérifiées pour voyager en toute tranquillité.",
         "point1": "Informations recueillies auprès des différentes compagnies",
-        "point2": "Données régulièrement mises à jour",
-        "point3": "Informations fiables"
+        "point2": "Données régulièrement mises à jour"
       },
       "cta": {
         "title": "Vous voulez voyager en car ou vous déplacer en bus ?",
@@ -122,9 +121,9 @@
       "abidjanSanPedro2": "Abidjan - San-Pedro, À partir de 6100"
     },
     "partners": {
-      "title": "Toutes les options de voyage sur une seule plateforme",
-      "description": "Plus de 1000 partenaires de transport pour vos trajets en train, bus, avion, ferry et vos transferts aéroportuaires pour profiter pleinement du voyage.",
-      "button": "J'en profite"
+      "title": "Toutes les compagnies de transport au même endroit",
+      "description": "Nous centralisons les informations des compagnies de cars et de bus en Côte d'Ivoire pour faciliter vos recherches.",
+      "button": "Nous rejoindre"
     },
     "faq": {
       "title": "QUESTIONS FREQUENTES (FAQ)",

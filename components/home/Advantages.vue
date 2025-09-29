@@ -89,12 +89,11 @@ const advantages = [
     points: [
       'home.advantages.reliability.point1',
       'home.advantages.reliability.point2',
-      'home.advantages.reliability.point3'
+      // 'home.advantages.reliability.point3'
     ]
   },
 ];
 
-// Fonction pour faire défiler jusqu'au formulaire de recherche
 const scrollToSearch = () => {
   const searchForm = document.querySelector('.search-form-section');
   if (searchForm) {

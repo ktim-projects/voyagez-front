@@ -32,7 +32,7 @@
             class="px-8 py-3 bg-coral-500 text-white rounded-full font-medium hover:bg-coral-600 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-coral-500/30"
             @click="scrollToSearch"
           >
-            {{ $t('home.hero.primaryButton') }}
+            {{ $t('home.hero.search_button') }}
           </button>
           <button 
             class="px-8 py-3 bg-white/10 backdrop-blur-sm text-white rounded-full font-medium border border-white/30 hover:bg-white/20 transition-all duration-300"
