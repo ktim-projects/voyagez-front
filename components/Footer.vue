@@ -3,14 +3,14 @@
     <div class="container mx-auto px-4 py-12">
       <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <h3 class="text-gray-900 dark:text-white text-lg font-semibold mb-4">Transport CI</h3>
-          <p class="text-gray-600 dark:text-gray-400">Votre partenaire de confiance pour voyager en Côte d'Ivoire.</p>
+          <h3 class="text-gray-900 dark:text-white text-lg font-semibold mb-4">Geyavo</h3>
+          <p class="text-gray-600 dark:text-gray-400">Comparez et trouvez les meilleurs itinéraires de bus et cars en Côte d'Ivoire</p>
         </div>
         <div>
           <h3 class="text-gray-900 dark:text-white text-lg font-semibold mb-4">Liens Rapides</h3>
           <ul class="space-y-2">
             <li><NuxtLink to="/" class="hover:text-red-600 dark:hover:text-red-500">Accueil</NuxtLink></li>
-            <li><NuxtLink to="/destinations" class="hover:text-red-600 dark:hover:text-red-500">Destinations</NuxtLink></li>
+            <li><NuxtLink @click="scrollToDestinations" class="hover:text-red-600 dark:hover:text-red-500">Destinations</NuxtLink></li>
             <li><NuxtLink to="/about" class="hover:text-red-600 dark:hover:text-red-500">À propos</NuxtLink></li>
             <li><NuxtLink to="/contact" class="hover:text-red-600 dark:hover:text-red-500">Contact</NuxtLink></li>
           </ul>
@@ -19,8 +19,8 @@
           <h3 class="text-gray-900 dark:text-white text-lg font-semibold mb-4">Contact</h3>
           <ul class="space-y-2">
             <li>Abidjan, Côte d'Ivoire</li>
-            <li>contact@transportci.com</li>
-            <li>+225 XX XX XX XX</li>
+            <li>contact@geyavo.com</li>
+            <li>+225 07 66 66 66 66</li>
           </ul>
         </div>
         <div>
@@ -46,3 +46,14 @@
     </div>
   </footer>
 </template>
+
+<script setup lang="ts">
+
+const scrollToDestinations = () => {
+  const destinations = document.querySelector('.popular-destinations-section');
+  if (destinations) {
+    destinations.scrollIntoView({ behavior: 'smooth' });
+  }
+};
+
+</script>

@@ -36,7 +36,7 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'VoyageCompare - Trouvez le meilleur itinéraire',
+      title: 'Geyavo - Trouvez le meilleur itinéraire',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
