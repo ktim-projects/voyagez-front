@@ -38,7 +38,7 @@
             <p class="font-medium text-sm dark:text-gray-200">{{ formatTime(departure.departure_time) }}</p>
           </div>
           <p class="text-xs text-gray-600 dark:text-gray-400">{{ departure.origin }}</p>
-          <p class="text-xs text-gray-400 dark:text-gray-500">{{ departure.departure_station }}</p>
+          <p class="text-xs text-gray-400 dark:text-gray-500">{{ departure.station }}</p>
         </div>
         
         <!-- Durée -->
@@ -105,7 +105,7 @@ interface Departure {
   duration: number;
   origin: string;
   destination: string;
-  departure_station: string;
+  station: string;
 
 }
 

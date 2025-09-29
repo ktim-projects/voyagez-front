@@ -64,7 +64,7 @@
                     <p class="text-sm text-gray-500">Départ</p>
                     <p class="font-medium">{{ formatTime(modelValue.departure_time) }}</p>
                     <p class="text-sm text-gray-600">{{ modelValue.origin }}</p>
-                    <p class="text-xs text-gray-400">{{ modelValue.departure_station }}</p>
+                    <p class="text-xs text-gray-400">{{ modelValue.station }}</p>
                   </div>
                   <div class="w-1/3 text-center">
                     <p class="text-sm text-gray-500">Durée</p>
@@ -142,7 +142,7 @@ interface Departure {
   duration: number;
   origin: string;
   destination: string;
-  departure_station: string;
+  station: string;
 }
 
 defineProps<{

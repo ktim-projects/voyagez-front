@@ -58,7 +58,7 @@ export interface Departure {
   price: number;
   date: string;
   company: CarCompany
-  departure_station: string
+  station: string
 }
 
 export interface BlogPost {
