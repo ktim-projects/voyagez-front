@@ -145,7 +145,13 @@
       "title": "Stay informed",
       "subtitle": "Receive our best offers and news",
       "placeholder": "Your email",
-      "button": "Subscribe"
+      "button": "Subscribe",
+      "sending": "Subscribing...",
+      "success": "Thank you! Your subscription has been confirmed.",
+      "error": "An error occurred. Please try again.",
+      "emailRequired": "Email address is required",
+      "invalidEmail": "Please enter a valid email address",
+      "alreadySubscribed": "This email address is already subscribed"
     }
   },
   "busSearch": {

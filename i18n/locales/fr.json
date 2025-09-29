@@ -144,7 +144,13 @@
       "title": "Restez informé",
       "subtitle": "Recevez nos meilleures offres et actualités",
       "placeholder": "Votre email",
-      "button": "S'abonner"
+      "button": "S'abonner",
+      "sending": "Inscription...",
+      "success": "Merci ! Votre inscription a été confirmée.",
+      "error": "Une erreur est survenue. Veuillez réessayer.",
+      "emailRequired": "L'adresse email est requise",
+      "invalidEmail": "Veuillez saisir une adresse email valide",
+      "alreadySubscribed": "Cette adresse email est déjà inscrite"
     }
   },
   "busSearch": {

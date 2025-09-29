@@ -57,7 +57,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
 
 // Images de fond pour le carrousel
 const backgroundImages = [
