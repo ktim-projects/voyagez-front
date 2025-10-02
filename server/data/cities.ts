@@ -42,8 +42,8 @@ const citiesData: City[] = [
   { name: 'Sinfra', region: 'Marahoué', latitude: 6.616740, longitude: -5.912900 },
   { name: 'Tabou', region: 'San-Pédro', latitude: 4.422700, longitude: -7.352200 },
   { name: 'Vavoua', region: 'Haut-Sassandra', latitude: 7.381870, longitude: -6.478076 },
-  { name: 'Zuénoula', region: 'Marahoué', latitude: 7.431050, longitude: -6.045820 }
+  { name: 'Zuénoula', region: 'Marahoué', latitude: 7.431050, longitude: -6.045820 },
+  { name: 'Grand-Lahou', region: 'Grands-Ponts', latitude: 5.325560, longitude: -4.376850 },
 ];
 
-// ✅ Tri alphabétique avant export
 export const cities = citiesData.sort((a, b) => a.name.localeCompare(b.name));

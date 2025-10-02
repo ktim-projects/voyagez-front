@@ -25,28 +25,42 @@
       </button>
     </div>
     
+    <!-- Virtual Scroll Container -->
     <div 
       v-if="showSuggestions && suggestions.length > 0" 
       ref="suggestionsRef"
-      class="absolute z-10 w-full mt-1 bg-white rounded-xl shadow-lg border border-gray-200 max-h-60 overflow-auto"
+      class="absolute z-10 w-full mt-1 bg-white rounded-xl shadow-lg border border-gray-200"
     >
-      <ul class="py-2">
-        <li 
-          v-for="(suggestion, index) in suggestions" 
-          :key="suggestion.name"
-          @click="handleSelect(suggestion)"
-          class="px-4 py-2 hover:bg-coral-50 cursor-pointer transition-colors"
-          :class="{
-            'bg-coral-50': index === selectedIndex,
-            'bg-coral-100': normalizeText(suggestion.name) === normalizeText(props.modelValue)
-          }"
-        >
-          <div class="flex items-center justify-between">
-            <span v-html="highlightMatch(suggestion.name)" class="text-gray-700 font-medium"></span>
-            <span class="text-gray-500 text-sm">{{ suggestion.region }}</span>
+      <div 
+        ref="scrollContainer"
+        class="max-h-60 overflow-auto"
+        @scroll="handleScroll"
+      >
+        <!-- Virtual scroll spacer top -->
+        <div :style="{ height: `${topSpacer}px` }"></div>
+        
+        <!-- Visible items -->
+        <div class="py-2">
+          <div 
+            v-for="(suggestion, index) in visibleSuggestions" 
+            :key="suggestion.name"
+            @click="handleSelect(suggestion)"
+            class="px-4 py-2 hover:bg-coral-50 cursor-pointer transition-colors"
+            :class="{
+              'bg-coral-50': suggestion.originalIndex === selectedIndex,
+              'bg-coral-100': normalizeText(suggestion.name) === normalizeText(props.modelValue)
+            }"
+          >
+            <div class="flex items-center justify-between">
+              <span v-html="highlightMatch(suggestion.name)" class="text-gray-700 font-medium"></span>
+              <span class="text-gray-500 text-sm">{{ suggestion.region }}</span>
+            </div>
           </div>
-        </li>
-      </ul>
+        </div>
+        
+        <!-- Virtual scroll spacer bottom -->
+        <div :style="{ height: `${bottomSpacer}px` }"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -74,11 +88,19 @@ const emit = defineEmits<{
 const showSuggestions = ref(false);
 const suggestions = ref<City[]>([]);
 const suggestionsRef = ref(null);
+const scrollContainer = ref(null);
 const searchValue = ref('');
 const inputRef = ref(null);
 const selectedIndex = ref(-1);
 const isSearching = ref(false);
 const lastValidValue = ref('');
+
+// Virtual scroll variables
+const itemHeight = 48; // Height of each suggestion item in pixels
+const visibleCount = 8; // Number of items to show at once
+const scrollTop = ref(0);
+const startIndex = ref(0);
+const endIndex = ref(visibleCount);
 
 const displayValue = computed(() => {
   if (isSearching.value) {
@@ -96,12 +118,12 @@ const normalizeText = (text: string): string => {
 }
 
 const filterCities = (value: string): City[] => {
-  if (!value) return cities.slice(0, 10);
+  if (!value) return cities; // Return all cities when no search value
   
   const normalizedValue = normalizeText(value);
   return cities.filter(city => 
     normalizeText(city.name).includes(normalizedValue)
-  ).slice(0, 10);
+  ); // Return all matching cities, no limit
 }
 
 const handleInput = (event: Event) => {
@@ -128,13 +150,14 @@ const handleFocus = () => {
     isSearching.value = true;
     suggestions.value = filterCities(props.modelValue);
   } else if (!isSearching.value) {
-    suggestions.value = cities.slice(0, 20);
+    suggestions.value = cities; // Show all cities
   } else {
     suggestions.value = filterCities(searchValue.value);
   }
   
   showSuggestions.value = true;
   selectedIndex.value = -1;
+  resetVirtualScroll();
 }
 
 const handleSelect = (city: City) => {
@@ -214,9 +237,10 @@ const clearSearch = () => {
   
   emit('update:modelValue', '');
   
-  suggestions.value = cities.slice(0, 20);
+  suggestions.value = cities; // Show all cities
   showSuggestions.value = true;
   selectedIndex.value = -1;
+  resetVirtualScroll();
   
   if (inputRef.value) {
     (inputRef.value as HTMLInputElement).focus();
@@ -265,11 +289,82 @@ onClickOutside(suggestionsRef, (event) => {
   }
 });
 
+// Virtual scroll computed properties
+const visibleSuggestions = computed(() => {
+  return suggestions.value
+    .slice(startIndex.value, endIndex.value)
+    .map((suggestion, index) => ({
+      ...suggestion,
+      originalIndex: startIndex.value + index
+    }));
+});
+
+const topSpacer = computed(() => startIndex.value * itemHeight);
+const bottomSpacer = computed(() => 
+  Math.max(0, (suggestions.value.length - endIndex.value) * itemHeight)
+);
+
+// Virtual scroll methods
+const handleScroll = () => {
+  if (!scrollContainer.value) return;
+  
+  scrollTop.value = (scrollContainer.value as HTMLElement).scrollTop;
+  const newStartIndex = Math.floor(scrollTop.value / itemHeight);
+  
+  startIndex.value = Math.max(0, newStartIndex);
+  endIndex.value = Math.min(
+    suggestions.value.length,
+    startIndex.value + visibleCount + 2 // Buffer for smooth scrolling
+  );
+};
+
+const resetVirtualScroll = () => {
+  scrollTop.value = 0;
+  startIndex.value = 0;
+  endIndex.value = Math.min(visibleCount, suggestions.value.length);
+  
+  nextTick(() => {
+    if (scrollContainer.value) {
+      (scrollContainer.value as HTMLElement).scrollTop = 0;
+    }
+  });
+};
+
+const scrollToIndex = (index: number) => {
+  if (!scrollContainer.value) return;
+  
+  const container = scrollContainer.value as HTMLElement;
+  const targetScrollTop = index * itemHeight;
+  const containerHeight = container.clientHeight;
+  const currentScrollTop = container.scrollTop;
+  
+  // Check if item is visible
+  if (targetScrollTop < currentScrollTop) {
+    // Scroll up to show item
+    container.scrollTop = targetScrollTop;
+  } else if (targetScrollTop + itemHeight > currentScrollTop + containerHeight) {
+    // Scroll down to show item
+    container.scrollTop = targetScrollTop - containerHeight + itemHeight;
+  }
+};
+
 watch(() => props.modelValue, (newValue) => {
   if (newValue && !isSearching.value) {
     lastValidValue.value = newValue;
   }
 }, { immediate: true });
+
+// Watch suggestions changes to reset virtual scroll
+watch(() => suggestions.value.length, () => {
+  resetVirtualScroll();
+});
+
+// Watch selectedIndex to scroll to selected item
+watch(() => selectedIndex.value, (newIndex) => {
+  if (newIndex >= 0) {
+    scrollToIndex(newIndex);
+  }
+});
 </script>
 
 <style>
