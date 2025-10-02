@@ -4,10 +4,10 @@
     <button 
       @click="isOpen = true" 
       :class="[
-        'min-w-[180px] px-4 py-2 rounded-lg flex items-center justify-between gap-2 transition-all duration-200 border text-sm',
+        'inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 border',
         isActive 
-          ? 'bg-gray-100 border-gray-300' 
-          : 'bg-white border-gray-200 hover:border-gray-300'
+          ? 'bg-primary-100 border-primary-300 text-primary-800 dark:bg-primary-900 dark:border-primary-700 dark:text-primary-200' 
+          : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600'
       ]"
     >
       <div class="flex items-center">
@@ -18,11 +18,14 @@
         />
         <div class="flex flex-col">
           <span class="font-medium text-gray-700">{{ title }}</span>
-          <span class="text-xs text-gray-500">{{ subtitle }}</span>
+          <!-- <span class="text-xs text-gray-500">{{ subtitle }}</span> -->
         </div>
       </div>
       <ChevronDown 
-        class="w-4 h-4 ml-2 text-gray-500"
+        :class="[
+          'w-4 h-4 ml-1.5 transition-transform duration-200',
+          isOpen ? 'rotate-180' : ''
+        ]"
       />
     </button>
 
@@ -53,7 +56,7 @@
     >
       <div 
         v-if="isOpen" 
-        class="absolute left-0 mt-2 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50"
+        class="absolute left-0 mt-10 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50"
         :class="{ 'w-80': !wide, 'w-96': wide }"
       >
         <div class="p-4">
