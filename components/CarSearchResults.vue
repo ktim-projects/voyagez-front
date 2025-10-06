@@ -532,6 +532,7 @@ const swapCities = () => {
   
   // Lancer une nouvelle recherche si les deux villes sont définies
   if (fromCity.value && toCity.value) {
+    showSearchModal.value = false;
     performSearch();
   }
 }
