@@ -10,8 +10,7 @@
           <h3 class="text-gray-900 dark:text-white text-lg font-semibold mb-4">Liens Rapides</h3>
           <ul class="space-y-2">
             <li><NuxtLink to="/" class="hover:text-red-600 dark:hover:text-red-500">Accueil</NuxtLink></li>
-            <li><NuxtLink @click="scrollToDestinations" class="hover:text-red-600 dark:hover:text-red-500">Destinations</NuxtLink></li>
-            <!-- <li><NuxtLink to="/about" class="hover:text-red-600 dark:hover:text-red-500">À propos</NuxtLink></li> -->
+            <li><NuxtLink @click="scrollToDestinations" class="hover:text-red-600 dark:hover:text-red-500 cursor-pointer">Destinations</NuxtLink></li>
             <li><NuxtLink to="/contact" class="hover:text-red-600 dark:hover:text-red-500">Contact</NuxtLink></li>
           </ul>
         </div>
