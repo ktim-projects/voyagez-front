@@ -1,6 +1,6 @@
 <template>
   <div 
-    class="bg-white dark:bg-gray-800 rounded-xl p-5 transition-all duration-300 cursor-pointer hover:shadow-md hover:scale-[1.01] group result-card"
+    class="bg-white dark:bg-gray-800 rounded-xl px-4 py-2 transition-all duration-300 cursor-pointer hover:shadow-md hover:scale-[1.01] group result-card"
     @click="$emit('click', departure)"
   >
     <div class="flex flex-col">
@@ -59,19 +59,23 @@
       </div>
 
       <!-- Informations supplémentaires -->
-      <div class="flex justify-between items-center border-t border-gray-100 dark:border-gray-700 pt-3">
-        <div class="flex items-center space-x-3">
-          <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
-            <WifiIcon v-if="hasWifi" class="h-3 w-3 mr-1 text-gray-400 dark:text-gray-500" />
-          </div>
-          <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
-            <AirVent v-if="hasAirVent" class="h-3 w-3 mr-1 text-gray-400 dark:text-gray-500" />
-          </div>
-          <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
-            <Toilet v-if="hasToilet" class="h-3 w-3 mr-1 text-gray-400 dark:text-gray-500" />
-          </div>
-          <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
-            <UtensilsCrossed v-if="hasBreakfast" class="h-3 w-3 mr-1 text-gray-400 dark:text-gray-500" />
+      <div class="flex justify-between items-center border-t border-gray-100 dark:border-gray-700 pt-1">
+        <!-- Comfort info -->
+        <div class="flex items-center space-x-2">
+          <div v-if="departure.comfort_info?.category" 
+               :class="getComfortChipClasses(departure.comfort_info.category)"
+               class="px-2 py-1 rounded-full text-xs font-medium cursor-help transition-all duration-200 hover:scale-105 relative"
+               @click.stop
+               @mouseenter="showTooltip = true"
+               @mouseleave="showTooltip = false">
+            {{ departure.comfort_info.category }}
+            
+            <!-- Tooltip personnalisée -->
+            <div v-show="showTooltip" class="absolute bottom-full mb-2 px-3 py-2 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-lg shadow-lg transition-opacity duration-200 pointer-events-none z-10 left-0 transform w-max" style="max-width: 400px;">
+              {{ departure.comfort_info.details }}
+              <!-- Flèche -->
+              <div class="absolute top-full left-4 border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
+            </div>
           </div>
         </div>
         
@@ -86,14 +90,12 @@
 </template>
 
 <script setup lang="ts">
-import { h, defineComponent } from 'vue';
 import { Clock as ClockIcon, Wifi as WifiIcon, AirVent, Toilet, UtensilsCrossed } from 'lucide-vue-next';
 
 interface Company {
   id: string;
   name: string;
   logo_url?: string;
-  services?: string[];
 }
 
 interface Departure {
@@ -106,16 +108,20 @@ interface Departure {
   origin: string;
   destination: string;
   station: string;
-
+  comfort_info?: {
+    category: string;
+    details: string;
+  }
 }
 
-const props = defineProps<{
+ defineProps<{
   departure: Departure;
 }>();
-
 defineEmits<{
   (e: 'click', departure: Departure): void;
 }>();
+
+const showTooltip = ref(false);
 
 
 const getInitials = (name?: string) => {
@@ -128,10 +134,31 @@ const getInitials = (name?: string) => {
     .substring(0, 2);
 };
 
-const hasToilet = computed(() => props.departure?.company?.services?.includes('toilette') || false);
-const hasWifi = computed(() => props.departure?.company?.services?.includes('wifi') || false);
-const hasAirVent = computed(() => props.departure?.company?.services?.includes('climatisation') || false);
-const hasBreakfast = computed(() => props.departure?.company?.services?.includes('petit dejeuner') || false);
+const getComfortChipClasses = (category: string) => {
+  let hash = 0;
+  for (let i = 0; i < category.length; i++) {
+    hash = category.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  
+  // Palette de couleurs douces et subtiles
+  const colorPalette = [
+    'bg-slate-50 text-slate-600 dark:bg-slate-800/50 dark:text-slate-300',
+    'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-300',
+    'bg-violet-50 text-violet-600 dark:bg-violet-900/20 dark:text-violet-300',
+    'bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-300',
+    'bg-sky-50 text-sky-600 dark:bg-sky-900/20 dark:text-sky-300',
+    'bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-300',
+    'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-300',
+    'bg-teal-50 text-teal-600 dark:bg-teal-900/20 dark:text-teal-300',
+    'bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-300',
+    'bg-cyan-50 text-cyan-600 dark:bg-cyan-900/20 dark:text-cyan-300',
+    'bg-lime-50 text-lime-600 dark:bg-lime-900/20 dark:text-lime-300',
+    'bg-fuchsia-50 text-fuchsia-600 dark:bg-fuchsia-900/20 dark:text-fuchsia-300'
+  ];
+  
+  const index = Math.abs(hash) % colorPalette.length;
+  return colorPalette[index];
+};
   
 </script>
 

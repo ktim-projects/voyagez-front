@@ -114,13 +114,13 @@ export default defineEventHandler(async (event) => {
       price,
       date,
       station,
+      comfort_info,
       company:operator (
         id,
         name,
         logo_url,
         contact,
-        email,
-        services
+        email
       )
     `, { count: 'exact' })
     .eq('origin', from)
@@ -178,7 +178,7 @@ export default defineEventHandler(async (event) => {
     
     const { data: fallbackDepartures, error: fallbackError, count: fallbackCount } = await client
       .from('departure')
-      .select('*', { count: 'exact' })
+      .select('*, comfort_info', { count: 'exact' })
       .eq('origin', from)
       .eq('destination', to)
       .range(offset, offset + limitNum - 1)
