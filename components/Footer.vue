@@ -16,6 +16,14 @@
           </ul>
         </div>
         <div>
+          <h3 class="text-gray-900 dark:text-white text-lg font-semibold mb-4">Légal</h3>
+          <ul class="space-y-2">
+            <li><NuxtLink to="/legal-notice" class="hover:text-red-600 dark:hover:text-red-500">Mentions légales</NuxtLink></li>
+            <li><NuxtLink to="/privacy-policy" class="hover:text-red-600 dark:hover:text-red-500">Politique de confidentialité</NuxtLink></li>
+            <li><NuxtLink to="/terms-of-service" class="hover:text-red-600 dark:hover:text-red-500">Conditions d'utilisation</NuxtLink></li>
+          </ul>
+        </div>
+        <div>
           <h3 class="text-gray-900 dark:text-white text-lg font-semibold mb-4">Contact</h3>
           <ul class="space-y-2">
             <li>Abidjan, Côte d'Ivoire</li>
@@ -40,6 +48,26 @@
                 <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
               </svg>
             </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer légal -->
+      <div class="border-t border-gray-200 dark:border-gray-700 mt-8 pt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            © {{ new Date().getFullYear() }} Geyavo. Tous droits réservés.
+          </div>
+          <div class="flex flex-wrap justify-center md:justify-end space-x-6 text-sm">
+            <NuxtLink to="/legal-notice" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+              Mentions légales
+            </NuxtLink>
+            <NuxtLink to="/privacy-policy" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+              Confidentialité
+            </NuxtLink>
+            <NuxtLink to="/terms-of-service" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+              CGU
+            </NuxtLink>
           </div>
         </div>
       </div>
