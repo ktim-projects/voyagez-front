@@ -140,7 +140,7 @@ const tabs = [
   },
 ];
 
-const popularCities = ['Abidjan', 'Yamoussoukro', 'Bouaké', 'San Pedro', 'Korhogo'];
+const popularCities = ['Abidjan', 'Yamoussoukro', 'Bouaké', 'San-Pedro', 'Korhogo'];
 
 const isSearchEnabled = computed(() => {
   return from.value && to.value;
