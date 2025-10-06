@@ -78,6 +78,32 @@
                 </div>
               </div>
 
+              <!-- Comfort Section -->
+              <div v-if="modelValue.comfort_info?.category" class="border border-gray-200 rounded-lg p-4">
+                <!-- Header with title and chip -->
+                <div class="flex items-center justify-between mb-3">
+                  <h4 class="font-medium text-gray-900">Catégorie de confort</h4>
+                  <span 
+                    :class="getComfortChipClasses(modelValue.comfort_info.category)"
+                    class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium"
+                  >
+                    {{ modelValue.comfort_info.category }}
+                  </span>
+                </div>
+                
+                <!-- Comfort Details as bullet points -->
+                <ul class="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li 
+                    v-for="detail in parseComfortDetails(modelValue.comfort_info.details)" 
+                    :key="detail"
+                    class="flex items-start"
+                  >
+                    <span class="inline-block w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 mr-2 flex-shrink-0"></span>
+                    <span>{{ detail }}</span>
+                  </li>
+                </ul>
+              </div>
+
               <!-- Contact Section -->
               <div class="border border-gray-200 rounded-lg p-4">
                 <h4 class="font-medium text-gray-900 mb-3">Contact</h4>
@@ -123,6 +149,7 @@
 
 <script setup lang="ts">
 import { XIcon, PhoneIcon, MapPinIcon } from 'lucide-vue-next';
+import { getComfortChipClasses, parseComfortDetails } from '~/utils/comfort';
 
 interface Company {
   id: string;
@@ -143,6 +170,10 @@ interface Departure {
   origin: string;
   destination: string;
   station: string;
+  comfort_info?: {
+    category: string;
+    details: string;
+  };
 }
 
 defineProps<{

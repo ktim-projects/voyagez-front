@@ -90,40 +90,20 @@
 </template>
 
 <script setup lang="ts">
-import { Clock as ClockIcon, Wifi as WifiIcon, AirVent, Toilet, UtensilsCrossed } from 'lucide-vue-next';
+import type { Departure } from '~/server/data';
+import { getComfortChipClasses } from '~/utils/comfort';
+import { Clock as ClockIcon } from 'lucide-vue-next';
 
-interface Company {
-  id: string;
-  name: string;
-  logo_url?: string;
-}
 
-interface Departure {
-  id: string;
-  company?: Company;
-  price: number;
-  departure_time: string;
-  arrival_time: string;
-  duration: number;
-  origin: string;
-  destination: string;
-  station: string;
-  comfort_info?: {
-    category: string;
-    details: string;
-  }
-}
-
- defineProps<{
+const props = defineProps<{
   departure: Departure;
 }>();
-defineEmits<{
-  (e: 'click', departure: Departure): void;
+
+const emit = defineEmits<{
+  click: [departure: Departure];
 }>();
 
 const showTooltip = ref(false);
-
-
 const getInitials = (name?: string) => {
   if (!name) return '';
   return name
@@ -132,32 +112,6 @@ const getInitials = (name?: string) => {
     .join('')
     .toUpperCase()
     .substring(0, 2);
-};
-
-const getComfortChipClasses = (category: string) => {
-  let hash = 0;
-  for (let i = 0; i < category.length; i++) {
-    hash = category.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  
-  // Palette de couleurs douces et subtiles
-  const colorPalette = [
-    'bg-slate-50 text-slate-600 dark:bg-slate-800/50 dark:text-slate-300',
-    'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-300',
-    'bg-violet-50 text-violet-600 dark:bg-violet-900/20 dark:text-violet-300',
-    'bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-300',
-    'bg-sky-50 text-sky-600 dark:bg-sky-900/20 dark:text-sky-300',
-    'bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-300',
-    'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-300',
-    'bg-teal-50 text-teal-600 dark:bg-teal-900/20 dark:text-teal-300',
-    'bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-300',
-    'bg-cyan-50 text-cyan-600 dark:bg-cyan-900/20 dark:text-cyan-300',
-    'bg-lime-50 text-lime-600 dark:bg-lime-900/20 dark:text-lime-300',
-    'bg-fuchsia-50 text-fuchsia-600 dark:bg-fuchsia-900/20 dark:text-fuchsia-300'
-  ];
-  
-  const index = Math.abs(hash) % colorPalette.length;
-  return colorPalette[index];
 };
   
 </script>
