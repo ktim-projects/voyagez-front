@@ -115,17 +115,6 @@
         </SwiperSlide>
       </Swiper>
     </div>
-    
-    <!-- Bouton "Voir plus" -->
-    <div class="text-center mt-12">
-      <button 
-        @click="router.push('/destinations')"
-        class="inline-flex items-center px-6 py-3 border border-primary-600 text-primary-600 rounded-full hover:bg-primary-600 hover:text-white transition-colors duration-300 font-medium dark:text-white dark:bg-primary-700 dark:hover:text-white"
-      >
-        {{ $t('home.destinations.viewAllButton') }}
-        <ArrowRightIcon class="ml-2 h-5 w-5" />
-      </button>
-    </div>
   </div>
 </template>
 
