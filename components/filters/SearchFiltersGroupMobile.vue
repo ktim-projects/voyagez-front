@@ -106,6 +106,28 @@
                 <option value="night">Nuit (00h - 6h)</option>
               </select>
             </div>
+
+            <!-- Comfort Categories Filter -->
+            <div v-if="comfortCategories.length > 0">
+              <label class="block text-sm font-medium text-gray-600 mb-2">
+                Catégorie
+              </label>
+              <div class="space-y-2">
+                <label 
+                  v-for="category in comfortCategories" 
+                  :key="category"
+                  class="flex items-center"
+                >
+                  <input
+                    type="checkbox"
+                    v-model="filters.comfortCategories"
+                    :value="category"
+                    class="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                  >
+                  <span class="ml-2 text-sm text-gray-700">{{ category }}</span>
+                </label>
+              </div>
+            </div>
           </div>
 
           <button 
@@ -133,11 +155,13 @@ interface Filters {
   maxPrice: number;
   companies: string[];
   departurePeriod: string;
+  comfortCategories: string[];
 }
 
 const props = defineProps<{
   modelValue: Filters;
   companies: Company[];
+  comfortCategories: string[];
 }>();
 
 const emit = defineEmits<{
@@ -149,13 +173,15 @@ const showModal = ref(false);
 const filters = ref<Filters>({
   maxPrice: props.modelValue.maxPrice,
   companies: [...props.modelValue.companies],
-  departurePeriod: props.modelValue.departurePeriod
+  departurePeriod: props.modelValue.departurePeriod,
+  comfortCategories: [...props.modelValue.comfortCategories]
 });
 
 const hasActiveFilters = computed(() => {
   return filters.value.maxPrice !== 50000 || 
          filters.value.companies.length > 0 || 
-         filters.value.departurePeriod !== '';
+         filters.value.departurePeriod !== '' ||
+         filters.value.comfortCategories.length > 0;
 });
 
 const activeFiltersCount = computed(() => {
@@ -163,6 +189,7 @@ const activeFiltersCount = computed(() => {
   if (filters.value.maxPrice !== 50000) count++;
   if (filters.value.companies.length > 0) count++;
   if (filters.value.departurePeriod !== '') count++;
+  if (filters.value.comfortCategories.length > 0) count++;
   return count;
 });
 
@@ -175,7 +202,8 @@ const resetFilters = () => {
   filters.value = {
     maxPrice: 50000,
     companies: [],
-    departurePeriod: ''
+    departurePeriod: '',
+    comfortCategories: []
   };
   emitUpdate();
 };

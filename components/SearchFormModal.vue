@@ -28,7 +28,7 @@
               </DialogTitle>
 
               <form @submit.prevent="handleSubmit" class="space-y-4">
-                <div>
+                <div class="relative">
                   <label class="block text-sm font-medium text-gray-600 mb-2">Départ</label>
                   <CityAutocomplete
                     :model-value="fromCity"
@@ -36,6 +36,17 @@
                     @select="handleFromSelect"
                     placeholder="Ville de départ"
                   />
+                  
+                  <!-- Swap Cities Button -->
+                  <button
+                    type="button"
+                    @click="$emit('swapCities')"
+                    :disabled="!fromCity || !toCity"
+                    class="absolute -bottom-9 left-1/2 transform -translate-x-1/2 z-1000 p-2 bg-white border border-gray-300 rounded-full shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                    title="Inverser les villes"
+                  >
+                    <ArrowLeftRight class="w-4 h-4 text-gray-600 rotate-90" />
+                  </button>
                 </div>
                 
                 <div>
@@ -65,6 +76,7 @@
                     type="submit"
                     icon="Search"
                     :fullWidth="true"
+                    :disabled="searchDisabled"
                   />
                 </div>
               </form>
@@ -78,12 +90,14 @@
 
 <script setup lang="ts">
 import { Dialog, DialogPanel, DialogTitle, TransitionRoot, TransitionChild } from '@headlessui/vue'
+import { ArrowLeftRight } from 'lucide-vue-next'
 import type { City } from '../types'
 
 const props = defineProps<{
   show: boolean
   fromCity: string
   toCity: string
+  searchDisabled: boolean
 }>()
 
 const emit = defineEmits<{
@@ -93,6 +107,7 @@ const emit = defineEmits<{
   'fromSelect': [value: City]
   'toSelect': [value: City]
   'submit': []
+  'swapCities': []
 }>()
 
 const handleFromSelect = (city: City) => {

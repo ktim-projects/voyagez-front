@@ -53,6 +53,7 @@ function generateCacheKey(params: any): string {
     maxPrice: params.maxPrice,
     companies: params.companies,
     departurePeriod: params.departurePeriod,
+    comfortCategories: params.comfortCategories,
     sort: params.sort
   })
 }
@@ -67,6 +68,7 @@ export default defineEventHandler(async (event) => {
     maxPrice,
     companies,
     departurePeriod,
+    comfortCategories,
     sort = 'departure_time'
   } = queryFromApp; 
   
@@ -151,6 +153,15 @@ export default defineEventHandler(async (event) => {
         .lte('departure_time', range.end);
     }
   }
+
+  if (comfortCategories) {
+    const categoryList = Array.isArray(comfortCategories) ? comfortCategories : [comfortCategories]
+    if (categoryList.length > 0) {
+      // Filtrer par catégorie de confort en utilisant l'opérateur JSONB
+      const categoryFilters = categoryList.map(category => `comfort_info->>category.eq.${category}`).join(',')
+      query = query.or(categoryFilters)
+    }
+  }
   
   // 🎯 Pagination DB
   query = query.range(offset, offset + limitNum - 1);
@@ -176,11 +187,47 @@ export default defineEventHandler(async (event) => {
     // If JOIN fails, fallback to separate queries
     console.warn('JOIN failed, falling back to separate queries:', error.message)
     
-    const { data: fallbackDepartures, error: fallbackError, count: fallbackCount } = await client
+    let fallbackQuery = client
       .from('departure')
       .select('*, comfort_info', { count: 'exact' })
       .eq('origin', from)
       .eq('destination', to)
+
+    // Apply same filters as main query
+    if (maxPrice) {
+      fallbackQuery = fallbackQuery.lte('price', Number(maxPrice))
+    }
+
+    if (companies) {
+      const companyList = Array.isArray(companies) ? companies : [companies]
+      fallbackQuery = fallbackQuery.in('operator', companyList)
+    }
+
+    if (departurePeriod) {
+      const timeRanges = {
+        morning: { start: '06:00', end: '11:59' },
+        afternoon: { start: '12:00', end: '17:59' },
+        evening: { start: '18:00', end: '23:59' },
+        night: { start: '00:00', end: '05:59' }
+      };
+
+      const range = timeRanges[departurePeriod as keyof typeof timeRanges];
+      if (range) {
+        fallbackQuery = fallbackQuery
+          .gte('departure_time', range.start)
+          .lte('departure_time', range.end);
+      }
+    }
+
+    if (comfortCategories) {
+      const categoryList = Array.isArray(comfortCategories) ? comfortCategories : [comfortCategories]
+      if (categoryList.length > 0) {
+        const categoryFilters = categoryList.map(category => `comfort_info->>category.eq.${category}`).join(',')
+        fallbackQuery = fallbackQuery.or(categoryFilters)
+      }
+    }
+
+    const { data: fallbackDepartures, error: fallbackError, count: fallbackCount } = await fallbackQuery
       .range(offset, offset + limitNum - 1)
       .order('departure_time', { ascending: true })
     

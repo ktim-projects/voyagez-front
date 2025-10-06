@@ -35,13 +35,23 @@
       <div class="hidden md:block">
         <div class="container mx-auto px-4 py-4">
           <form @submit.prevent="handleSearch" class="grid gap-2 md:grid-cols-4">
-            <div>
+            <div class="relative">
               <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">{{ $t('common.departure') }}</label>
               <CityAutocomplete
                 v-model="fromCity"
                 @select="handleFromSelect"
                 :placeholder="$t('search.departurePlaceholder')"
               />
+              
+              <!-- Swap Cities Button -->
+              <button
+                type="button"
+                @click="swapCities"
+                :disabled="!fromCity || !toCity"
+                class="absolute -right-5 top-9 z-10 p-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              >
+                <ArrowLeftRight class="w-4 h-4 text-gray-600 dark:text-gray-300" />
+              </button>
             </div>
             
             <div>
@@ -69,7 +79,7 @@
                 :label="$t('common.search')"
                 type="submit"
                 icon="Search"
-                :disabled="!fromCity || !toCity"
+                :disabled="isSearchDisabled"
               />
             </div>
           </form>
@@ -84,20 +94,23 @@
       v-model:show="showSearchModal"
       v-model:fromCity="fromCity"
       v-model:toCity="toCity"
+      :search-disabled="isSearchDisabled"
       @from-select="handleFromSelect"
       @to-select="handleToSelect"
       @submit="handleSearch"
+      @swap-cities="swapCities"
     />
 
     <!-- Main Content -->
     <div class="flex-1 mt-12 md:mt-0">
       <div class="container mx-auto px-4 py-6">
         <!-- Mobile Filters Modal -->
-        <div v-if="hasSearched && (departures.length > 0 || (fromCity && toCity))" class="lg:hidden">
+        <div v-if="hasSearched && departures.length > 0" class="lg:hidden">
           <SearchFiltersGroupMobile
             v-model:show-modal="showFiltersModal"
             v-model="filters"
             :companies="carCompanies"
+            :comfort-categories="comfortCategories"
             @update:modelValue="debouncedFilterSearch"
           />
         </div>
@@ -108,9 +121,10 @@
           <div class="col-span-12 lg:col-span-7">
             <!-- Desktop Filters Section -->
             <SearchFiltersGroup
-              v-if="hasSearched && (departures.length > 0 || (fromCity && toCity))"
+              v-if="hasSearched && departures.length > 0"
               v-model="filters"
               :companies="carCompanies"
+              :comfort-categories="comfortCategories"
               @update:modelValue="debouncedFilterSearch"
             />
 
@@ -190,7 +204,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { FilterIcon, RefreshCcw as RefreshCcwIcon, X as XIcon, ChevronLeft } from 'lucide-vue-next';
+import { FilterIcon, RefreshCcw as RefreshCcwIcon, X as XIcon, ChevronLeft, ArrowLeftRight } from 'lucide-vue-next';
 import SearchFiltersGroup from './filters/SearchFiltersGroup.vue';
 import SearchFiltersGroupMobile from './filters/SearchFiltersGroupMobile.vue';
 import CityAutocomplete from './CityAutocomplete.vue';
@@ -239,13 +253,31 @@ const toCity = ref(searchStore.to || '');
 const hasSearched = ref(false); // Variable for tracking if a search has been performed
 const showSearchModal = ref(false);
 
+// Variables pour tracker la dernière recherche effectuée
+const lastSearchFrom = ref('');
+const lastSearchTo = ref('');
+
 const filters = ref({
   maxPrice: 50000,
   companies: [] as string[],
-  departurePeriod: ''
+  departurePeriod: '',
+  comfortCategories: [] as string[]
 });
 
 // const companies = computed(() => carCompanies);
+
+// Liste statique des catégories de confort disponibles
+const comfortCategories = ref(['Ordinaire', 'VIP', 'VVIP']);
+
+// Computed pour vérifier si la recherche actuelle est différente de la précédente
+const isSearchChanged = computed(() => {
+  return fromCity.value !== lastSearchFrom.value || toCity.value !== lastSearchTo.value;
+});
+
+// Computed pour l'état du bouton de recherche
+const isSearchDisabled = computed(() => {
+  return !fromCity.value || !toCity.value || fromCity.value === toCity.value || (!isSearchChanged.value && hasSearched.value) || loading.value;
+});
 
 // const hasActiveFilters = computed(() => {
 //   return filters.value.maxPrice !== 50000 || 
@@ -277,11 +309,20 @@ const debouncedFilterSearch = useDebounceFn(() => {
 }, 500);
 
 const handleSearch = async () => {
-  if (!fromCity.value || !toCity.value) {
+  if (!fromCity.value || !toCity.value || fromCity.value === toCity.value) {
+    return;
+  }
+
+  // Vérifier si la recherche est différente de la précédente
+  if (!isSearchChanged.value && hasSearched.value) {
     return;
   }
 
   hasSearched.value = true; // Mark that a search has been performed
+  
+  // Sauvegarder les villes de la recherche actuelle
+  lastSearchFrom.value = fromCity.value;
+  lastSearchTo.value = toCity.value;
   
   // Mettre à jour le store avec les nouvelles valeurs
   searchStore.setSearchParams({
@@ -309,6 +350,7 @@ const handleSearch = async () => {
         maxPrice: filters.value.maxPrice,
         companies: [...filters.value.companies],
         departurePeriod: filters.value.departurePeriod,
+        comfortCategories: [...filters.value.comfortCategories],
         sort: currentSort.value
       }
     });
@@ -344,6 +386,7 @@ const loadMoreResults = async () => {
         maxPrice: filters.value.maxPrice,
         companies: [...filters.value.companies],
         departurePeriod: filters.value.departurePeriod,
+        comfortCategories: [...filters.value.comfortCategories],
         sort: currentSort.value
       }
     });
@@ -386,6 +429,9 @@ onMounted(() => {
   }
   
   if (fromCity.value && toCity.value) {
+    // Initialiser les dernières valeurs de recherche
+    lastSearchFrom.value = fromCity.value;
+    lastSearchTo.value = toCity.value;
     handleSearch();
   }
   
@@ -449,6 +495,26 @@ const handleToSelect = (city: any) => {
   searchStore.setSearchParams({
     to: city.name
   });
+}
+
+// Fonction pour inverser les villes de départ et d'arrivée
+const swapCities = () => {
+  const tempFrom = fromCity.value;
+  const tempTo = toCity.value;
+  
+  fromCity.value = tempTo;
+  toCity.value = tempFrom;
+  
+  // Mettre à jour le store
+  // searchStore.setSearchParams({
+  //   from: tempTo,
+  //   to: tempFrom
+  // });
+  
+  // // Lancer une nouvelle recherche si les deux villes sont définies
+  // if (fromCity.value && toCity.value) {
+  //   handleSearch();
+  // }
 }
 
 // Surveiller les changements dans le store

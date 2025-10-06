@@ -75,12 +75,39 @@
         </label>
       </div>
     </FilterMenu>
+
+    <!-- Comfort Categories Filter -->
+    <FilterMenu
+      v-if="comfortCategories.length > 0"
+      title="Catégorie"
+      :icon="Star"
+      :is-active="modelValue.comfortCategories.length > 0"
+      @apply="emitUpdate"
+      @reset="resetComfortCategoriesFilter"
+      class="inline-flex"
+    >
+      <div class="space-y-2">
+        <label 
+          v-for="category in comfortCategories" 
+          :key="category"
+          class="flex items-center"
+        >
+          <input
+            type="checkbox"
+            v-model="filters.comfortCategories"
+            :value="category"
+            class="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+          >
+          <span class="ml-2 text-sm text-gray-700">{{ category }}</span>
+        </label>
+      </div>
+    </FilterMenu>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { Euro, Building, Clock } from 'lucide-vue-next';
+import { Euro, Building, Clock, Star } from 'lucide-vue-next';
 import FilterMenu from './FilterMenu.vue';
 
 interface Company {
@@ -92,11 +119,13 @@ interface Filters {
   maxPrice: number;
   companies: string[];
   departurePeriod: string;
+  comfortCategories: string[];
 }
 
 const props = defineProps<{
   modelValue: Filters;
   companies: Company[];
+  comfortCategories: string[];
 }>();
 
 const emit = defineEmits<{
@@ -113,14 +142,16 @@ const departurePeriods = {
 const filters = ref<Filters>({
   maxPrice: props.modelValue.maxPrice,
   companies: [...props.modelValue.companies],
-  departurePeriod: props.modelValue.departurePeriod
+  departurePeriod: props.modelValue.departurePeriod,
+  comfortCategories: [...props.modelValue.comfortCategories]
 });
 
 watch(() => props.modelValue, (newValue) => {
   filters.value = {
     maxPrice: newValue.maxPrice,
     companies: [...newValue.companies],
-    departurePeriod: newValue.departurePeriod
+    departurePeriod: newValue.departurePeriod,
+    comfortCategories: [...newValue.comfortCategories]
   };
 }, { deep: true });
 
@@ -140,6 +171,11 @@ const resetCompaniesFilter = () => {
 
 const resetDepartureTimeFilter = () => {
   filters.value.departurePeriod = '';
+  emitUpdate();
+};
+
+const resetComfortCategoriesFilter = () => {
+  filters.value.comfortCategories = [];
   emitUpdate();
 };
 </script>

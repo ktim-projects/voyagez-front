@@ -22,7 +22,7 @@
             {{ departure.company?.name }}
           </h3>
         </div>
-        <div class="hidden sm:block">
+        <div>
           <p class="text-lg font-bold text-primary-600 dark:text-primary-400 group-hover:text-coral-500 dark:group-hover:text-coral-400 transition-colors duration-300">
             {{ departure.price.toLocaleString() }} <span class="text-sm">FCFA</span>
           </p>
@@ -59,7 +59,7 @@
       </div>
 
       <!-- Informations supplémentaires -->
-      <div class="flex justify-between items-center border-t border-gray-100 dark:border-gray-700 pt-1">
+      <div class="flex justify-between items-center pt-1" :class="departure.comfort_info?.category ? 'border-t border-gray-100 dark:border-gray-700' : ''">
         <!-- Comfort info -->
         <div class="flex items-center space-x-2">
           <div v-if="departure.comfort_info?.category" 
@@ -79,11 +79,11 @@
           </div>
         </div>
         
-        <div class="block sm:hidden">
+        <!-- <div class="block sm:hidden">
           <p class="text-base font-bold text-primary-600 dark:text-primary-400">
             {{ departure.price.toLocaleString() }} <span class="text-xs">FCFA</span>
           </p>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>

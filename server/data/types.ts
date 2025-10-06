@@ -58,7 +58,11 @@ export interface Departure {
   price: number;
   date: string;
   company: CarCompany
-  station: string
+  station: string;
+  comfort_info?: {
+    category: string;
+    details: string;
+  }
 }
 
 export interface BlogPost {
