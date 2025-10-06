@@ -105,7 +105,7 @@
     <div class="flex-1 mt-12 md:mt-0">
       <div class="container mx-auto px-4 py-6">
         <!-- Mobile Filters Modal -->
-        <div v-if="hasSearched && departures.length > 0" class="lg:hidden">
+        <div v-if="shouldShowFilters" class="lg:hidden">
           <SearchFiltersGroupMobile
             v-model:show-modal="showFiltersModal"
             v-model="filters"
@@ -121,7 +121,7 @@
           <div class="col-span-12 lg:col-span-7">
             <!-- Desktop Filters Section -->
             <SearchFiltersGroup
-              v-if="hasSearched && departures.length > 0"
+              v-if="shouldShowFilters"
               v-model="filters"
               :companies="carCompanies"
               :comfort-categories="comfortCategories"
@@ -257,6 +257,9 @@ const showSearchModal = ref(false);
 const lastSearchFrom = ref('');
 const lastSearchTo = ref('');
 
+// Variable pour tracker si on est en train de filtrer
+const isFiltering = ref(false);
+
 const filters = ref({
   maxPrice: 50000,
   companies: [] as string[],
@@ -277,6 +280,11 @@ const isSearchChanged = computed(() => {
 // Computed pour l'état du bouton de recherche
 const isSearchDisabled = computed(() => {
   return !fromCity.value || !toCity.value || fromCity.value === toCity.value || (!isSearchChanged.value && hasSearched.value) || loading.value;
+});
+
+// Computed pour déterminer si les filtres doivent être affichés
+const shouldShowFilters = computed(() => {
+  return hasSearched.value && (departures.value.length > 0 || isFiltering.value);
 });
 
 // const hasActiveFilters = computed(() => {
@@ -303,22 +311,34 @@ const isSearchDisabled = computed(() => {
 // }
 
 const debouncedFilterSearch = useDebounceFn(() => {
+  isFiltering.value = true; // Marquer qu'on est en train de filtrer
   page.value = 1;
   // currentSort.value = 'price_asc';
-  handleSearch();
+  performSearch(true); // Passer true pour indiquer que c'est un filtrage
 }, 500);
 
+// Wrapper pour les formulaires (sans paramètres)
 const handleSearch = async () => {
+  await performSearch(false);
+};
+
+const performSearch = async (isFilteringParam = false) => {
   if (!fromCity.value || !toCity.value || fromCity.value === toCity.value) {
     return;
   }
 
   // Vérifier si la recherche est différente de la précédente
-  if (!isSearchChanged.value && hasSearched.value) {
+  // Permettre les recherches avec filtres même si les villes n'ont pas changé
+  if (!isSearchChanged.value && hasSearched.value && !isFilteringParam) {
     return;
   }
 
   hasSearched.value = true; // Mark that a search has been performed
+  
+  // Si ce n'est pas un filtrage, réinitialiser l'état de filtrage
+  if (!isFilteringParam) {
+    isFiltering.value = false;
+  }
   
   // Sauvegarder les villes de la recherche actuelle
   lastSearchFrom.value = fromCity.value;
@@ -354,7 +374,6 @@ const handleSearch = async () => {
         sort: currentSort.value
       }
     });
-    console.log(response);
     
     departures.value = response.departures || [];
     totalResults.value = response._meta.total || 0;
@@ -432,7 +451,7 @@ onMounted(() => {
     // Initialiser les dernières valeurs de recherche
     lastSearchFrom.value = fromCity.value;
     lastSearchTo.value = toCity.value;
-    handleSearch();
+    performSearch();
   }
   
   // Initialiser le timer
@@ -469,7 +488,7 @@ const resetSessionTimer = () => {
 // Fonction pour rafraîchir la recherche
 const refreshSearch = () => {
   showSessionExpiredModal.value = false;
-  handleSearch();
+  performSearch();
   resetSessionTimer();
 }
 
@@ -511,10 +530,10 @@ const swapCities = () => {
   //   to: tempFrom
   // });
   
-  // // Lancer une nouvelle recherche si les deux villes sont définies
-  // if (fromCity.value && toCity.value) {
-  //   handleSearch();
-  // }
+  // Lancer une nouvelle recherche si les deux villes sont définies
+  if (fromCity.value && toCity.value) {
+    performSearch();
+  }
 }
 
 // Surveiller les changements dans le store
@@ -726,7 +745,7 @@ const departurePeriods = {
 } as const;
 
 const handleMobileSearch = () => {
-  handleSearch();
+  performSearch();
   showSearchModal.value = false;
 }
 </script>
