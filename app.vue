@@ -1,4 +1,5 @@
 <template>
+  <SpeedInsights />
   <div class="min-h-screen dark:bg-gray-950">
     <Header />
     <Analytics />
@@ -10,4 +11,5 @@
 <script setup lang="ts">
 // App level setup
 import { Analytics } from '@vercel/analytics/nuxt';
+import { SpeedInsights } from '@vercel/speed-insights/vue';
 </script>
