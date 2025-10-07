@@ -3,7 +3,7 @@
  * Accessible uniquement avec une clé API admin
  */
 
-import { getSecurityStats } from '../../middleware/01.security'
+import { getSecurityStats } from '../../middleware/security'
 
 export default defineEventHandler(async (event) => {
   const apiKey = getHeader(event, 'x-api-key')

@@ -99,7 +99,7 @@ export default defineEventHandler(async (event) => {
   
   // 🎯 Pagination DB
   const pageNum = Math.max(1, Number(page))
-  const limitNum = Math.min(100, Math.max(1, Number(limit))) // Limit max 100
+  const limitNum = Math.min(25, Math.max(1, Number(limit))) // Limit max 25
   const offset = (pageNum - 1) * limitNum
   
   // 🚀 Optimized query with JOIN (if data is correct)

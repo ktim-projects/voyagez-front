@@ -212,7 +212,7 @@ function validateRequestParameters(event: any) {
       throw error
     }
     
-    if (query.limit && (isNaN(Number(query.limit)) || Number(query.limit) < 1 || Number(query.limit) > 100)) {
+    if (query.limit && (isNaN(Number(query.limit)) || Number(query.limit) < 1 || Number(query.limit) > 25)) {
       const error = createError({
         statusCode: 400,
         statusMessage: 'Invalid limit parameter'
