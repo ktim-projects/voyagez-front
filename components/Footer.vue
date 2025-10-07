@@ -9,17 +9,17 @@
         <div>
           <h3 class="text-gray-900 dark:text-white text-lg font-semibold mb-4">Liens Rapides</h3>
           <ul class="space-y-2">
-            <li><NuxtLink to="/" class="hover:text-red-600 dark:hover:text-red-500">Accueil</NuxtLink></li>
-            <li><NuxtLink @click="scrollToDestinations" class="hover:text-red-600 dark:hover:text-red-500 cursor-pointer">Destinations</NuxtLink></li>
-            <li><NuxtLink to="/contact" class="hover:text-red-600 dark:hover:text-red-500">Contact</NuxtLink></li>
+            <li><NuxtLink to="/" class="hover:text-corail-600 dark:hover:text-corail-500">Accueil</NuxtLink></li>
+            <li><NuxtLink @click="scrollToDestinations" class="hover:text-corail-600 dark:hover:text-corail-500 cursor-pointer">Destinations</NuxtLink></li>
+            <li><NuxtLink to="/contact" class="hover:text-corail-600 dark:hover:text-corail-500">Contact</NuxtLink></li>
           </ul>
         </div>
         <div>
           <h3 class="text-gray-900 dark:text-white text-lg font-semibold mb-4">Légal</h3>
           <ul class="space-y-2">
-            <li><NuxtLink to="/legal-notice" class="hover:text-red-600 dark:hover:text-red-500">Mentions légales</NuxtLink></li>
-            <li><NuxtLink to="/privacy-policy" class="hover:text-red-600 dark:hover:text-red-500">Politique de confidentialité</NuxtLink></li>
-            <li><NuxtLink to="/terms-of-service" class="hover:text-red-600 dark:hover:text-red-500">Conditions d'utilisation</NuxtLink></li>
+            <li><NuxtLink to="/legal-notice" class="hover:text-corail-600 dark:hover:text-corail-500">Mentions légales</NuxtLink></li>
+            <li><NuxtLink to="/privacy-policy" class="hover:text-corail-600 dark:hover:text-corail-500">Politique de confidentialité</NuxtLink></li>
+            <li><NuxtLink to="/terms-of-service" class="hover:text-corail-600 dark:hover:text-corail-500">Conditions d'utilisation</NuxtLink></li>
           </ul>
         </div>
         <div>

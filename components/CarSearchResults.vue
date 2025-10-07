@@ -75,7 +75,7 @@
 
             <div class="flex items-end">
               <AppButton 
-                variant="coral" 
+                variant="corail" 
                 :label="$t('common.search')"
                 type="submit"
                 icon="Search"

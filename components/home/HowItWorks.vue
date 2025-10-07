@@ -10,7 +10,7 @@
       <!-- Étapes -->
       <div class="relative">
         <!-- Ligne de connexion -->
-        <div class="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 via-coral-500 to-primary-500 transform -translate-y-1/2 z-0"></div>
+        <div class="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 via-corail-500 to-primary-500 transform -translate-y-1/2 z-0"></div>
         
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
           <div 
@@ -20,14 +20,14 @@
           >
             <!-- Numéro d'étape avec animation -->
             <div 
-              class="w-20 h-20 rounded-full bg-white flex items-center justify-center mb-6 shadow-xl border-4 border-gray-100 relative transform transition-all duration-500 hover:scale-110 hover:border-coral-500"
+              class="w-20 h-20 rounded-full bg-white flex items-center justify-center mb-6 shadow-xl border-4 border-gray-100 relative transform transition-all duration-500 hover:scale-110 hover:border-corail-500"
             >
-              <div class="w-16 h-16 rounded-full bg-gradient-to-br from-primary-500 to-coral-500 flex items-center justify-center text-white text-2xl font-bold">
+              <div class="w-16 h-16 rounded-full bg-gradient-to-br from-primary-500 to-corail-500 flex items-center justify-center text-white text-2xl font-bold">
                 {{ index + 1 }}
               </div>
               
               <!-- Icône -->
-              <div class="absolute -right-2 -bottom-2 w-8 h-8 rounded-full bg-coral-500 flex items-center justify-center shadow-md">
+              <div class="absolute -right-2 -bottom-2 w-8 h-8 rounded-full bg-corail-500 flex items-center justify-center shadow-md">
                 <component :is="step.icon" class="h-4 w-4 text-white" />
               </div>
             </div>
@@ -55,7 +55,7 @@
               class="w-16 h-16 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-lg transform transition-transform duration-300 hover:scale-110"
               @click="playVideo"
             >
-              <div class="w-0 h-0 border-t-[8px] border-t-transparent border-l-[16px] border-l-coral-500 border-b-[8px] border-b-transparent ml-1"></div>
+              <div class="w-0 h-0 border-t-[8px] border-t-transparent border-l-[16px] border-l-corail-500 border-b-[8px] border-b-transparent ml-1"></div>
             </button>
           </div>
         </div>

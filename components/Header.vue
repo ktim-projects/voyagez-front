@@ -2,7 +2,7 @@
   <header class="bg-white dark:bg-gray-900 shadow-sm sticky top-0 z-50" :class="{ 'md:block hidden': isSearchResults }">
     <nav class="container mx-auto px-4 h-16 flex items-center justify-between">
       <div class="flex items-center">
-        <NuxtLink to="/" class="text-2xl font-bold text-coral-600 hover:text-coral-700 dark:text-coral-500 dark:hover:text-coral-400 transition-colors">
+        <NuxtLink to="/" class="text-2xl font-bold text-corail-600 hover:text-corail-700 dark:text-corail-500 dark:hover:text-corail-400 transition-colors">
           <!-- {{ $t('header.appName') }} -->
           <img :src="logoPath" alt="Geyavo" class="h-10" />
         </NuxtLink>
@@ -10,7 +10,7 @@
       
       <!-- Desktop Menu -->
       <div class="hidden md:flex space-x-8 items-center">
-        <NuxtLink to="/contact" class="text-gray-700 hover:text-coral-600 dark:text-gray-300 dark:hover:text-coral-500">{{ $t('header.contact') }}</NuxtLink>
+        <NuxtLink to="/contact" class="text-gray-700 hover:text-corail-600 dark:text-gray-300 dark:hover:text-corail-500">{{ $t('header.contact') }}</NuxtLink>
         <!-- <ThemeSwitch /> -->
       </div>
 
@@ -38,7 +38,7 @@
     >
       <div v-if="isMenuOpen" class="md:hidden bg-white dark:bg-gray-900 border-t dark:border-gray-800 shadow-md">
         <div class="container mx-auto px-4 py-2 space-y-1">
-          <NuxtLink @click="closeMenu" to="/contact" class="block text-gray-700 hover:text-red-600 dark:text-gray-300 dark:hover:text-coral-500 py-2">{{ $t('header.contact') }}</NuxtLink>
+          <NuxtLink @click="closeMenu" to="/contact" class="block text-gray-700 hover:text-corail-600 dark:text-gray-300 dark:hover:text-corail-500 py-2">{{ $t('header.contact') }}</NuxtLink>
         </div>
       </div>
     </Transition>

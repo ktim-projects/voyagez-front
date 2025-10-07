@@ -23,7 +23,7 @@
           </h3>
         </div>
         <div>
-          <p class="text-lg font-bold text-primary-600 dark:text-primary-400 group-hover:text-coral-500 dark:group-hover:text-coral-400 transition-colors duration-300">
+          <p class="text-lg font-bold text-primary-600 dark:text-primary-400 group-hover:text-corail-500 dark:group-hover:text-corail-400 transition-colors duration-300">
             {{ departure.price.toLocaleString() }} <span class="text-sm">FCFA</span>
           </p>
         </div>
@@ -52,7 +52,7 @@
         <div class="col-span-5 text-right">
           <div class="flex items-center justify-end">
             <p class="font-medium text-sm dark:text-gray-200">{{ formatTime(departure.arrival_time) }}</p>
-            <!-- <div class="h-3 w-3 rounded-full bg-coral-500 ml-2"></div> -->
+            <!-- <div class="h-3 w-3 rounded-full bg-corail-500 ml-2"></div> -->
           </div>
           <p class="text-xs text-gray-600 dark:text-gray-400">{{ departure.destination }}</p>
         </div>

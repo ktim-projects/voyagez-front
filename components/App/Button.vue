@@ -12,9 +12,9 @@
           'bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800',
           disabled && 'bg-primary-200 opacity-60'
         ],
-        variant === 'coral' && [
-          'bg-coral-500 text-white hover:bg-coral-600 active:bg-coral-700',
-          disabled && 'bg-coral-200 opacity-60'
+        variant === 'corail' && [
+          'bg-corail-500 text-white hover:bg-corail-600 active:bg-corail-700',
+          disabled && 'bg-corail-200 opacity-60'
         ],
         variant === 'outline' && [
           'bg-transparent border-2 border-gray-300 text-gray-700 hover:bg-gray-50 active:bg-gray-100',
@@ -31,7 +31,7 @@
           :name="icon" 
           :class="[
             size === 'small' ? 'w-4 h-4' : 'w-5 h-5',
-            (variant === 'primary' || variant === 'coral') ? 'text-white' : 'text-current'
+            (variant === 'primary' || variant === 'corail') ? 'text-white' : 'text-current'
           ]" 
         />
         <slot>
@@ -45,7 +45,7 @@
 interface Props {
   label?: string
   disabled?: boolean
-  variant?: 'primary' | 'coral' | 'outline'
+  variant?: 'primary' | 'corail' | 'outline'
   type?: 'button' | 'submit' | 'reset'
   icon?: string
   fullWidth?: boolean

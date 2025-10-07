@@ -61,10 +61,10 @@
           <div class="flex flex-col justify-end">
             <AppButton 
               type="submit" 
-              variant="coral" 
+              variant="corail" 
               :label="$t('search.searchButton')" 
               :disabled="!isSearchEnabled"
-              class="h-[46px] rounded-xl transform hover:scale-105 transition-all duration-300 shadow-md hover:shadow-coral-500/30"
+              class="h-[46px] rounded-xl transform hover:scale-105 transition-all duration-300 shadow-md hover:shadow-corail-500/30"
             />
           </div>
         </form>
@@ -78,17 +78,17 @@
                 <input
                   v-model="busNumber"
                   type="text"
-                  class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
+                  class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-corail-500 focus:border-transparent"
                   :placeholder="$t('busSearch.busNumberPlaceholder')"
                 />
               </div>
               <div class="w-full sm:w-1/4 mt-3 sm:mt-0">
                 <AppButton 
                   type="submit" 
-                  variant="coral" 
+                  variant="corail" 
                   :label="$t('busSearch.searchButton')" 
                   :disabled="!isBusSearchEnabled"
-                  class="w-full h-[46px] rounded-xl transform hover:scale-105 transition-all duration-300 shadow-md hover:shadow-coral-500/30"
+                  class="w-full h-[46px] rounded-xl transform hover:scale-105 transition-all duration-300 shadow-md hover:shadow-corail-500/30"
                 />
               </div>
             </div>

@@ -19,7 +19,7 @@
         :style="{ transform: `translateY(${Math.min(0, -scrollY * 0.1)}px)` }"
       >
         <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-white mb-2">
-          <span class="block text-coral-500">{{ $t('home.hero.titleHighlight') }}</span>
+          <span class="block text-corail-500">{{ $t('home.hero.titleHighlight') }}</span>
           <span>{{ $t('home.hero.title') }}</span>
         </h1>
         <p class="mt-6 text-xl leading-8 text-gray-200 max-w-2xl mx-auto">
@@ -29,7 +29,7 @@
         <!-- Boutons d'action -->
         <div class="mt-10 mb-16 sm:mb-10 flex flex-col sm:flex-row gap-4 justify-center">
           <button 
-            class="px-8 py-3 bg-coral-500 text-white rounded-full font-medium hover:bg-coral-600 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-coral-500/30"
+            class="px-8 py-3 bg-corail-500 text-white rounded-full font-medium hover:bg-corail-600 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-corail-500/30"
             @click="scrollToSearch"
           >
             {{ $t('home.hero.search_button') }}

@@ -13,7 +13,7 @@
           <input
             v-model="localBusNumber"
             type="text"
-            class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
+            class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-corail-500 focus:border-transparent"
             placeholder="Ex: 81"
           />
         </div>
@@ -25,7 +25,7 @@
           >
             Annuler
           </button>
-          <AppButton type="submit" variant="coral" label="Rechercher" />
+          <AppButton type="submit" variant="corail" label="Rechercher" />
         </div>
       </form>
     </div>

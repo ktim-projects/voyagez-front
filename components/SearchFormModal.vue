@@ -71,7 +71,7 @@
 
                 <div class="mt-6">
                   <AppButton 
-                    variant="coral" 
+                    variant="corail" 
                     label="Rechercher"
                     type="submit"
                     icon="Search"

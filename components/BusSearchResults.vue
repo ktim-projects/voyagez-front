@@ -42,11 +42,11 @@
                 <input
                   v-model="busNumber"
                   type="text"
-                  class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
+                  class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-corail-500 focus:border-transparent"
                   :placeholder="$t('busSearch.busNumberPlaceholder')"
                 />
               </div>
-            <AppButton type="submit" variant="coral" :label="$t('busSearch.searchButton')" :disabled="!isFormValid" />
+            <AppButton type="submit" variant="corail" :label="$t('busSearch.searchButton')" :disabled="!isFormValid" />
           </form>
         </div>
 
@@ -65,7 +65,7 @@
                 <span v-if="selectedRoute && selectedRoute.isExpress" class="ml-2 text-xs bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300 px-2 py-0.5 rounded-full hidden md:inline-block">
                   {{ $t('busSearch.express') }}
                 </span>
-                <span v-if="lineTags.charge" class="ml-2 text-sm bg-coral-100 dark:bg-coral-900 text-coral-700 dark:text-coral-300 px-2 py-0.5 rounded-full">
+                <span v-if="lineTags.charge" class="ml-2 text-sm bg-corail-100 dark:bg-corail-900 text-corail-700 dark:text-corail-300 px-2 py-0.5 rounded-full">
                   {{ lineTags.charge }}
                 </span>
               </h3>
@@ -105,7 +105,7 @@
                   <select 
                     v-model="selectedRouteId" 
                     @change="handleRouteChange"
-                    class="w-full px-4 py-2 pr-10 rounded-md text-sm font-normal bg-white dark:bg-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent appearance-none truncate"
+                    class="w-full px-4 py-2 pr-10 rounded-md text-sm font-normal bg-white dark:bg-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-corail-500 focus:border-transparent appearance-none truncate"
                   >
                     <option 
                       v-for="route in routes" 

@@ -19,7 +19,7 @@
         <div v-if="pending" class="flex justify-center">
         <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
       </div>
-      <div v-else-if="error" class="text-center text-red-600">
+      <div v-else-if="error" class="text-center text-corail-600">
         Une erreur est survenue lors du chargement des actualités.
       </div>
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

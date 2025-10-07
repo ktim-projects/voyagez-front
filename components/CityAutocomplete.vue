@@ -10,7 +10,7 @@
       @click="handleClick"
       @keydown="handleKeydown"
       :placeholder="placeholder"
-      class="w-full px-4 py-3 pr-16 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
+      class="w-full px-4 py-3 pr-16 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-corail-500 focus:border-transparent"
       :class="{ 'cursor-pointer': !isSearching, 'cursor-text': isSearching }"
       autocomplete="off"
     />
@@ -45,10 +45,10 @@
             v-for="(suggestion, index) in visibleSuggestions" 
             :key="suggestion.name"
             @click="handleSelect(suggestion)"
-            class="px-4 py-2 hover:bg-coral-50 cursor-pointer transition-colors"
+            class="px-4 py-2 hover:bg-corail-50 cursor-pointer transition-colors"
             :class="{
-              'bg-coral-50': suggestion.originalIndex === selectedIndex,
-              'bg-coral-100': normalizeText(suggestion.name) === normalizeText(props.modelValue)
+              'bg-corail-50': suggestion.originalIndex === selectedIndex,
+              'bg-corail-100': normalizeText(suggestion.name) === normalizeText(props.modelValue)
             }"
           >
             <div class="flex items-center justify-between">
@@ -370,7 +370,7 @@ watch(() => selectedIndex.value, (newIndex) => {
 <style>
 .highlight {
   background-color: transparent;
-  color: #FA6B6B; /* Coral-500 */
+  color: #FA6B6B; /* corail-500 */
   font-weight: 500;
 }
 </style>

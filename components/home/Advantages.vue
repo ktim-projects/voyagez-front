@@ -16,7 +16,7 @@
         >
           <!-- Icône avec animation -->
           <div class="mb-6 relative">
-            <div class="w-16 h-16 bg-gradient-to-br from-coral-400 to-coral-600 rounded-2xl flex items-center justify-center shadow-lg transform rotate-3 hover:rotate-0 transition-transform duration-300">
+            <div class="w-16 h-16 bg-gradient-to-br from-corail-500 to-corail-600 rounded-2xl flex items-center justify-center shadow-lg transform rotate-3 hover:rotate-0 transition-transform duration-300">
               <!-- <component :is="advantage.icon" class="h-8 w-8 text-white" /> -->
               <AppIcon :name="advantage.icon" class="h-8 w-8 text-white" />
             </div>
@@ -29,7 +29,7 @@
           <!-- Liste de points forts -->
           <ul class="space-y-2 mt-4">
             <li v-for="(point, i) in advantage.points" :key="i" class="flex items-start">
-              <CheckIcon class="h-5 w-5 text-coral-500 mr-2 flex-shrink-0 mt-0.5" />
+              <CheckIcon class="h-5 w-5 text-corail-500 mr-2 flex-shrink-0 mt-0.5" />
               <span class="text-gray-700 dark:text-gray-300 text-sm">{{ $t(point) }}</span>
             </li>
           </ul>
