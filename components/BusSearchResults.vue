@@ -381,7 +381,7 @@ watch(showSearchModal, (newValue) => {
 
 // SEO
 useHead({
-  title: 'Recherche de Bus - VoyagezCi',
+  title: 'Recherche de Bus - Geyavo',
   meta: [
     {
       name: 'description',

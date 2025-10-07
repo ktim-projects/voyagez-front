@@ -5,9 +5,16 @@ export default defineNuxtConfig({
 
   // Configuration des variables d'environnement runtime
   runtimeConfig: {
+    // Variables côté serveur (privées)
+    apiKeyFrontend: process.env.API_KEY_FRONTEND,
+    apiKeyAdmin: process.env.API_KEY_ADMIN,
+    apiKeyStats: process.env.API_KEY_STATS,
+    
+    // Variables publiques (côté client)
     public: {
       supabaseUrl: process.env.SUPABASE_URL,
       supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
+      apiKeyFrontend: process.env.API_KEY_FRONTEND,
     }
   },
 

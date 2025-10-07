@@ -15,7 +15,7 @@ const searchStore = useSearchStore();
 
 // SEO
 useHead({
-  title: 'Résultats de recherche - VoyagezCi',
+  title: 'Résultats de recherche - Geyavo',
   meta: [
     {
       name: 'description',

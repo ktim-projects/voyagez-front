@@ -1,0 +1,1 @@
+node -p "['frontend'].map(t => 'API_KEY_' + t.toUpperCase() + '=gyv_' + t + '_' + require('crypto').randomBytes(32).toString('base64').replace(/[+/=]/g, c => ({'+':'-','/':'_','=':''})[c])).join('\n')"

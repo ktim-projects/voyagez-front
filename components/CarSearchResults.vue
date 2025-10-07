@@ -287,29 +287,6 @@ const shouldShowFilters = computed(() => {
   return hasSearched.value && (departures.value.length > 0 || isFiltering.value);
 });
 
-// const hasActiveFilters = computed(() => {
-//   return filters.value.maxPrice !== 50000 || 
-//          filters.value.companies.length > 0 || 
-//          filters.value.departurePeriod !== '';
-// });
-
-// const activeFiltersCount = computed(() => {
-//   let count = 0;
-//   if (filters.value.maxPrice !== 50000) count++;
-//   if (filters.value.companies.length > 0) count++;
-//   if (filters.value.departurePeriod !== '') count++;
-//   return count;
-// });
-
-// const resetFilters = () => {
-//   filters.value = {
-//     maxPrice: 50000,
-//     companies: [],
-//     departurePeriod: ''
-//   };
-//   // handleSearch();
-// }
-
 const debouncedFilterSearch = useDebounceFn(() => {
   isFiltering.value = true; // Marquer qu'on est en train de filtrer
   page.value = 1;
@@ -321,6 +298,8 @@ const debouncedFilterSearch = useDebounceFn(() => {
 const handleSearch = async () => {
   await performSearch(false);
 };
+
+const { searchCars } = useSecureApi()
 
 const performSearch = async (isFilteringParam = false) => {
   if (!fromCity.value || !toCity.value || fromCity.value === toCity.value) {
@@ -361,9 +340,8 @@ const performSearch = async (isFilteringParam = false) => {
   departures.value = [];
   
   try {
-    const response = await $fetch('/api/car/search', {
-      params: {
-        from: normalizeCity(fromCity.value),
+    const response = await searchCars({
+      from: normalizeCity(fromCity.value),
         to: normalizeCity(toCity.value),
         page: page.value,
         limit,
@@ -372,8 +350,7 @@ const performSearch = async (isFilteringParam = false) => {
         departurePeriod: filters.value.departurePeriod,
         comfortCategories: [...filters.value.comfortCategories],
         sort: currentSort.value
-      }
-    });
+    })
     
     departures.value = response.departures || [];
     totalResults.value = response._meta.total || 0;
@@ -396,9 +373,8 @@ const loadMoreResults = async () => {
   page.value++;
   
   try {
-    const response = await $fetch('/api/car/search', {
-      params: {
-        from: normalizeCity(fromCity.value),
+    const response = await searchCars({
+      from: normalizeCity(fromCity.value),
         to: normalizeCity(toCity.value),
         page: page.value,
         limit,
@@ -407,8 +383,7 @@ const loadMoreResults = async () => {
         departurePeriod: filters.value.departurePeriod,
         comfortCategories: [...filters.value.comfortCategories],
         sort: currentSort.value
-      }
-    });
+    })
     
     departures.value = [...departures.value, ...(response.departures || [])];
     totalResults.value = response._meta.total || 0;
@@ -567,12 +542,12 @@ const seoData = computed(() => {
     
     return {
       title: hasResults 
-        ? `${baseTitle} - ${resultCount} trajets disponibles | VoyagezCi`
+        ? `${baseTitle} - ${resultCount} trajets disponibles | Geyavo`
         : `${baseTitle} - Recherche de trajets en car | Geyavo`,
       
       description: hasResults
         ? `Trouvez les meilleurs trajets en car de ${fromCity.value} à ${toCity.value}. ${resultCount} options disponibles avec horaires, prix et compagnies. Réservez votre voyage en Côte d'Ivoire.`
-        : `Recherchez des trajets en car de ${fromCity.value} à ${toCity.value}. Comparez les prix, horaires et compagnies de transport en Côte d'Ivoire sur VoyagezCi.`,
+        : `Recherchez des trajets en car de ${fromCity.value} à ${toCity.value}. Comparez les prix, horaires et compagnies de transport en Côte d'Ivoire sur Geyavo.`,
       
       keywords: `${fromCity.value}, ${toCity.value}, car, transport, voyage, Côte d'Ivoire, horaires, prix`,
       
@@ -590,7 +565,7 @@ const seoData = computed(() => {
   
   // Fallback pour les cas sans données de recherche
   return {
-    title: 'Recherche de trajets en car - VoyagezCi',
+    title: 'Recherche de trajets en car - Geyavo',
     description: 'Trouvez et comparez les meilleurs trajets en car en Côte d\'Ivoire. Réservez votre voyage avec les meilleures compagnies de transport.',
     keywords: 'car, transport, voyage, Côte d\'Ivoire, réservation, trajets',
     canonical: '/results',
@@ -633,7 +608,7 @@ useHead(() => ({
     },
     {
       property: 'og:site_name',
-      content: 'VoyagezCi'
+      content: 'Geyavo'
     },
     {
       property: 'og:locale',
