@@ -192,19 +192,12 @@
     <DepartureDetailSidebar
       v-model="departureSelected"
     />
-
-    <!-- Session Expired Modal -->
-    <SessionExpiredModal
-      v-model="showSessionExpiredModal"
-      @refresh="refreshSearch"
-      @new-search="newSearch"
-    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { FilterIcon, RefreshCcw as RefreshCcwIcon, X as XIcon, ChevronLeft, ArrowLeftRight } from 'lucide-vue-next';
+import {  RefreshCcw as RefreshCcwIcon, ChevronLeft, ArrowLeftRight } from 'lucide-vue-next';
 import SearchFiltersGroup from './filters/SearchFiltersGroup.vue';
 import SearchFiltersGroupMobile from './filters/SearchFiltersGroupMobile.vue';
 import CityAutocomplete from './CityAutocomplete.vue';
@@ -214,25 +207,17 @@ import SearchEmptyState from './SearchEmptyState.vue';
 import DepartureDetailSidebar from './DepartureDetailSidebar.vue';
 import { carCompanies } from '~/server/data';
 import type { Departure } from '~/server/data';
-import { ChevronDownIcon, ChevronRightIcon, MapPinIcon, PhoneIcon, Megaphone, CheckCircleIcon } from 'lucide-vue-next';
-import SessionExpiredModal from './SessionExpiredModal.vue';
-import SortMenu from './SortMenu.vue';
-import { useIntersectionObserver, useDebounceFn } from '@vueuse/core';
+import {  useDebounceFn } from '@vueuse/core';
 import { useSearchStore } from '~/stores/search';
 import { useRouter } from 'vue-router';
-import { capitalizeWords } from '~/utils/string';
 import SearchFormModal from './SearchFormModal.vue';
 
 const router = useRouter();
 const route = useRoute();
-const sessionTimeout = 10 * 60 * 1000; // 10 minutes en millisecondes
-let sessionTimer: NodeJS.Timeout | null = null;
-const showSessionExpiredModal = ref(false);
 
 const searchStore = useSearchStore();
 const loading = ref(false);
 const departures = ref<Departure[]>([]);
-const expandedJourney = ref<string | null>(null);
 const showFiltersModal = ref(false);
 const departureSelected = ref<Departure | null>(null);
 const totalResults = ref(0);
@@ -428,56 +413,7 @@ onMounted(() => {
     lastSearchTo.value = toCity.value;
     performSearch();
   }
-  
-  // Initialiser le timer
-  resetSessionTimer();
-  
-  // Ajouter les écouteurs d'événements
-  window.addEventListener('mousemove', handleUserActivity);
-  window.addEventListener('keypress', handleUserActivity);
-  window.addEventListener('click', handleUserActivity);
-  window.addEventListener('scroll', handleUserActivity);
 })
-
-onUnmounted(() => {
-  // Nettoyer le timer et les écouteurs
-  if (sessionTimer) {
-    clearTimeout(sessionTimer);
-  }
-  window.removeEventListener('mousemove', handleUserActivity);
-  window.removeEventListener('keypress', handleUserActivity);
-  window.removeEventListener('click', handleUserActivity);
-  window.removeEventListener('scroll', handleUserActivity);
-})
-
-// Fonction pour réinitialiser le timer
-const resetSessionTimer = () => {
-  if (sessionTimer) {
-    clearTimeout(sessionTimer);
-  }
-  sessionTimer = setTimeout(() => {
-    showSessionExpiredModal.value = true;
-  }, sessionTimeout);
-}
-
-// Fonction pour rafraîchir la recherche
-const refreshSearch = () => {
-  showSessionExpiredModal.value = false;
-  performSearch();
-  resetSessionTimer();
-}
-
-// Fonction pour nouvelle recherche
-const newSearch = () => {
-  showSessionExpiredModal.value = false;
-  searchStore.$reset();
-  // router.push('/results');
-}
-
-// Écouter les interactions utilisateur pour réinitialiser le timer
-function handleUserActivity() {
-  resetSessionTimer();
-}
 
 const handleFromSelect = (city: any) => {
   searchStore.setSearchParams({
@@ -512,21 +448,6 @@ const swapCities = () => {
   }
 }
 
-// Surveiller les changements dans le store
-// watch(() => [searchStore.from, searchStore.to], ([newFrom, newTo]) => {
-//   fromCity.value =  newFrom || '';
-//   toCity.value =  newTo || '';
-//   if (fromCity.value && toCity.value) {
-//     debouncedFilterSearch();
-//   }
-// });
-
-// Surveiller les changements dans les filtres
-// watch(() => filters.value, () => {
-//   debouncedFilterSearch();
-// }, { deep: true });
-
-// surveiller le sort
 watch(() => currentSort.value, () => {
   debouncedFilterSearch();
 });
@@ -710,20 +631,6 @@ useHead(() => ({
   ]
 }));
 
-// Types
-type DeparturePeriod = '' | 'morning' | 'afternoon' | 'evening';
-
-const departurePeriods = {
-  '': 'Toute heure',
-  'morning': 'Matin (5h - 12h)',
-  'afternoon': 'Après-midi (12h - 18h)',
-  'evening': 'Soir (18h - 00h)'
-} as const;
-
-const handleMobileSearch = () => {
-  performSearch();
-  showSearchModal.value = false;
-}
 </script>
 
 <style>
@@ -738,9 +645,9 @@ const handleMobileSearch = () => {
   }
 }
 
-.shadow-light {
+/* .shadow-light {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-}
+} */
 
 .result-card {
   background-color: rgb(255, 255, 255);
