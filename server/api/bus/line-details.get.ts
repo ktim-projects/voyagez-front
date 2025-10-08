@@ -48,12 +48,23 @@ export default defineEventHandler(async (event) => {
 
     // Étape 1: Trouver l'ID de la ligne avec le numéro de référence
     const network = 'SOTRA'; // Valeur fixe pour le réseau
-    let lineSearchUrl = `https://overpass-api.de/api/interpreter?data=[out:json];relation[type=route_master]`;
+    let lineSearchUrl = `https://overpass-api.de/api/interpreter?data=[out:json][timeout:60];relation[type=route_master]`;
     lineSearchUrl += `[~"network|operator"~"${network}",i]`;
     lineSearchUrl += `["ref"~"^${formattedRef}$",i]`;
     lineSearchUrl += `;out tags;`;
     
-    const lineResponse = await fetch(lineSearchUrl);
+    // Ajouter un timeout côté client (45 secondes)
+    const controller1 = new AbortController();
+    const timeoutId1 = setTimeout(() => controller1.abort(), 45000);
+    
+    const lineResponse = await fetch(lineSearchUrl, {
+      signal: controller1.signal,
+      headers: {
+        'User-Agent': 'Geyavo-Bus-App/1.0'
+      }
+    });
+    
+    clearTimeout(timeoutId1);
     
     if (!lineResponse.ok) {
       throw createError({
@@ -75,9 +86,20 @@ export default defineEventHandler(async (event) => {
     const lineTags = lineData.elements[0].tags || {};
     
     // Étape 2: Récupérer les données détaillées de la ligne avec l'ID
-    const detailsUrl = `https://overpass-api.de/api/interpreter?data=[out:json][timeout:25];relation(${lineId});(._;>>;);out;`;
+    const detailsUrl = `https://overpass-api.de/api/interpreter?data=[out:json][timeout:60];relation(${lineId});(._;>>;);out;`;
     
-    const detailsResponse = await fetch(detailsUrl);
+    // Ajouter un timeout côté client (50 secondes)
+    const controller2 = new AbortController();
+    const timeoutId2 = setTimeout(() => controller2.abort(), 50000);
+    
+    const detailsResponse = await fetch(detailsUrl, {
+      signal: controller2.signal,
+      headers: {
+        'User-Agent': 'Geyavo-Bus-App/1.0'
+      }
+    });
+    
+    clearTimeout(timeoutId2);
     
     if (!detailsResponse.ok) {
       throw createError({
@@ -97,6 +119,23 @@ export default defineEventHandler(async (event) => {
     
   } catch (error: any) {
     console.error('Error in line-details API:', error);
+    
+    // Gestion spécifique des timeouts
+    if (error.name === 'AbortError') {
+      throw createError({
+        statusCode: 504,
+        statusMessage: `Request timeout: The Overpass API is taking too long to respond. Please try again in a few moments.`
+      });
+    }
+    
+    // Gestion des erreurs réseau
+    if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED') {
+      throw createError({
+        statusCode: 503,
+        statusMessage: `Service temporarily unavailable: Cannot reach Overpass API. Please try again later.`
+      });
+    }
+    
     throw createError({
       statusCode: error.statusCode || 500,
       statusMessage: error.message || 'Internal server error'

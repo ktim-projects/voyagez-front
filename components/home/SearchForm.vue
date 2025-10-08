@@ -198,7 +198,7 @@ const handleBusSearch = async () => {
   // Mettre à jour le store avec le type 'bus' et le numéro de bus
   searchStore.setSearchParams({
     type: 'bus',
-    busNumber: busNumber.value.trim(),
+    ref: busNumber.value.trim(),
     from: null,
     to: null
   });

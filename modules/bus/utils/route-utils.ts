@@ -50,7 +50,6 @@ export function getRouteInfo(trip: Trip): {
   duration?: number;
   isExpress: boolean;
 } {
-  console.log('Trip:', trip);
   // Récupérer la couleur de l'itinéraire ou utiliser une couleur par défaut
   const color = trip.tags?.colour || '#6C757D';
   

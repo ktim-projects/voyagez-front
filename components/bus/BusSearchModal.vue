@@ -11,7 +11,7 @@
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Numéro de bus</label>
           <input
-            v-model="localBusNumber"
+            v-model="localRef"
             type="text"
             class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-corail-500 focus:border-transparent"
             placeholder="Ex: 81"
@@ -41,29 +41,29 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  busNumber: {
+  ref: {
     type: String,
     default: ''
   }
 });
 
-const emit = defineEmits(['update:show', 'update:busNumber', 'search']);
+const emit = defineEmits(['update:show', 'update:ref', 'search']);
 
-const localBusNumber = ref(props.busNumber);
+const localRef = ref(props.ref);
 
 // Mettre à jour la valeur locale quand la prop change
-watch(() => props.busNumber, (newValue) => {
-  localBusNumber.value = newValue;
+watch(() => props.ref, (newValue) => {
+  localRef.value = newValue;
 });
 
 // Mettre à jour la prop quand la valeur locale change
-watch(localBusNumber, (newValue) => {
-  emit('update:busNumber', newValue);
+watch(localRef, (newValue) => {
+  emit('update:ref', newValue);
 });
 
 // Gérer la soumission du formulaire
 const handleSearch = () => {
-  if (localBusNumber.value.trim() !== '') {
+  if (localRef.value.trim() !== '') {
     emit('search');
     emit('update:show', false);
   }

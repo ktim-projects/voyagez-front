@@ -68,11 +68,35 @@ export const useSecureApi = () => {
       return cached.data
     }
     
-    const data = await secureApiFetch<ResponseBus>(`/api/bus/line-details?ref=${ref.trim()}`)
+    // Système de retry pour les timeouts
+    let lastError: any
+    const maxRetries = 2
     
-    busCache.set(cacheKey, { data, timestamp: now })
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const data = await secureApiFetch<ResponseBus>(`/api/bus/line-details?ref=${ref.trim()}`)
+        
+        // Mettre en cache seulement si succès
+        busCache.set(cacheKey, { data, timestamp: now })
+        
+        return data
+      } catch (error: any) {
+        lastError = error
+        
+        // Retry seulement pour les timeouts (504) et erreurs serveur (5xx)
+        if (attempt < maxRetries && (error.statusCode === 504 || (error.statusCode >= 500 && error.statusCode < 600))) {
+          console.warn(`Attempt ${attempt} failed, retrying in ${attempt * 2} seconds...`)
+          await new Promise(resolve => setTimeout(resolve, attempt * 2000))
+          continue
+        }
+        
+        // Si ce n'est pas une erreur retry-able ou si on a épuisé les tentatives
+        break
+      }
+    }
     
-    return data
+    // Relancer la dernière erreur
+    throw lastError
   }
 
   const subscribeNewsletter = async (email: string) => {

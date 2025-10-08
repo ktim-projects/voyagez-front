@@ -208,5 +208,9 @@
         "address": "contactvoyagez.fr"
       }
     }
+  },
+  "label": {
+    "list": "Liste",
+    "map": "Carte"
   }
 }

@@ -1,7 +1,6 @@
 <template>
   <div class="min-h-[calc(100vh-4rem)] relative dark:bg-gray-950">
     <div class="grid grid-cols-1 md:grid-cols-12 h-full">
-      <!-- Mobile Header -->
       <div class="bg-primary-600 md:hidden fixed top-0 left-0 right-0 z-50 shadow-md">
         <div class="container mx-auto px-4 py-3">
           <div class="flex items-center justify-between">
@@ -10,7 +9,7 @@
                 <ChevronLeft class="w-5 h-5" />
               </NuxtLink>
               <div v-if="selectedRoute" class="text-white font-medium">
-                {{ $t('busSearch.line') }} {{ busNumber }}
+                {{ $t('busSearch.line') }} {{ displayedBusNumber }}
                 <span v-if="selectedRoute.isExpress" class="ml-1 text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full">
                   {{ $t('busSearch.express') }}
                 </span>
@@ -19,23 +18,53 @@
                 {{ $t('busSearch.title') }}
               </div>
             </div>
-            <AppButton 
+              <AppButton 
               v-if="routes.length > 0"
-              variant="outline" 
-              size="small"
-              :label="$t('busSearch.modify')"
-              :fullWidth="false"
-              class="!text-white !border-white hover:!bg-white/10"
-              @click="showSearchModal = true"
-            />
+                variant="outline" 
+                size="small"
+                :label="$t('busSearch.modify')"
+                :fullWidth="false"
+                class="!text-white !border-white hover:!bg-white/10"
+                @click="showSearchModal = true"
+              />
+            </div>
+          </div>
+        </div>
+      
+      <div v-if="routes.length > 0" class="md:hidden fixed top-16 left-0 right-0 z-30 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4">
+        <div class="flex items-center justify-center">
+          <div class="flex items-center border border-primary-300 dark:border-primary-600 rounded-full p-1 bg-gray-50 dark:bg-gray-800">
+            <button
+              @click="showMapOnMobile = false"
+              :class="[
+                'flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
+                !showMapOnMobile 
+                  ? 'bg-primary-600 text-white shadow-sm' 
+                  : 'text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20'
+              ]"
+            >
+              <ListIcon class="w-4 h-4" />
+              <span>{{ $t('label.list') }}</span>
+            </button>
+            
+            <button
+              @click="showMapOnMobile = true"
+              :class="[
+                'flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
+                showMapOnMobile 
+                  ? 'bg-primary-600 text-white shadow-sm' 
+                  : 'text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20'
+              ]"
+            >
+              <MapIcon class="w-4 h-4" />
+              <span>{{ $t('label.map') }}</span>
+            </button>
           </div>
         </div>
       </div>
-      
-      <!-- Left Panel -->
-      <div class="md:col-span-5 lg:col-span-4 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto h-[calc(100vh-4rem)] pt-14 md:pt-0">
-        <!-- Search Form (visible on desktop or mobile when no results) -->
-        <div class="p-6 border-b border-gray-200 dark:border-gray-700" :class="{'hidden md:block': routes.length > 0}">
+ 
+      <div class="md:col-span-5 lg:col-span-4 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto h-[calc(100vh-4rem)] md:pt-0" :class="[{'hidden md:block': showMapOnMobile}, routes.length > 0 ? 'pt-28' : 'pt-14']">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700" :class="{'hidden md:block': routes.length > 0}" v-if="!loading">
           <form @submit.prevent="searchRoute" class="space-y-6">
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ $t('busSearch.busNumber') }}</label>
@@ -50,18 +79,16 @@
           </form>
         </div>
 
-        <!-- Results -->
-        <div class="p-6 pb-20">
+        <div class="p-6">
           <div v-if="loading" class="text-center py-8">
             <BusLoader />
             <p class="text-gray-500 dark:text-gray-400 mt-2">{{ $t('busSearch.searchingMessage') }}</p>
           </div>
 
           <template v-else>
-            <!-- Affichage des itinéraires -->
-            <div v-if="routes.length > 0" class="bg-white dark:bg-gray-800 rounded-lg p-4">
+            <div v-if="routes.length > 0" class="bg-white dark:bg-gray-800 rounded-lg pt-4">
               <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">
-                {{ $t('busSearch.line') }} {{ busNumber }}
+                {{ $t('busSearch.line') }} {{ displayedBusNumber }}
                 <span v-if="selectedRoute && selectedRoute.isExpress" class="ml-2 text-xs bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300 px-2 py-0.5 rounded-full hidden md:inline-block">
                   {{ $t('busSearch.express') }}
                 </span>
@@ -98,7 +125,6 @@
                   </div>
                 </div>
               </div>
-              <!-- Sélection d'itinéraire s'il y en a plusieurs -->
               <div v-if="routes.length > 1" class="mb-6">
                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">{{ $t('busSearch.selectRoute') }}</p>
                 <div class="relative">
@@ -122,7 +148,6 @@
                   </div>
                 </div>
               </div>
-              <!-- Affichage des arrêts de l'itinéraire sélectionné -->
               <div v-if="selectedRoute" class="mt-4">
                 <div class="flex items-center mb-4">
                   <div class="w-3 h-3 rounded-full mr-2" :style="{ backgroundColor: selectedRoute.color }"></div>
@@ -144,8 +169,11 @@
           </template>
         </div>
       </div>
-      <!-- Map (Desktop only) -->
-      <div class="hidden md:block md:col-span-7 lg:col-span-8 relative h-[calc(100vh-4rem)]">
+      <!-- Map (Desktop always, Mobile conditionally) -->
+      <div class="md:col-span-7 lg:col-span-8 relative" :class="[
+        showMapOnMobile ? 'block' : 'hidden md:block',
+        showMapOnMobile && routes.length > 0 ? 'h-[calc(100vh-9rem)] mt-20' : 'h-[calc(100vh-4rem)]'
+      ]">
         <div ref="mapContainer" class="absolute inset-0 z-0"></div>
       </div>
     </div>
@@ -153,7 +181,7 @@
   <!-- Search Form Modal -->
   <BusSearchModal
     v-model:show="showSearchModal"
-    v-model:busNumber="modalBusNumber"
+    v-model:ref="modalBusNumber"
     @search="handleModalSearch"
   />
 </template>
@@ -165,7 +193,7 @@ import type { BusLine } from '~/server/data/mockData';
 import { LineData } from '~/modules/bus/models/line_data';
 import { getAllRoutesInfo } from '~/modules/bus/utils/route-utils';
 import { displayRouteMap } from '~/modules/bus/utils/map-utils';
-import { ChevronLeft, X as XIcon } from 'lucide-vue-next';
+import { ChevronLeft, X as XIcon, Map as MapIcon, List as ListIcon } from 'lucide-vue-next';
 import { useSearchStore } from '~/stores/search';
 import type { Ref } from 'vue';
 
@@ -193,12 +221,15 @@ interface LineDetails {
 }
 
 const searchStore = useSearchStore();
+const route = useRoute();
+const router = useRouter();
 
 const lines = ref<BusLine[]>([]);
-const busNumber = ref(searchStore.busNumber || '');
+const busNumber = ref((route.query.ref as string) || searchStore.ref || '');
 const modalBusNumber = ref('');
 const loading = ref(false);
-const lastSearchedBusNumber = ref(''); // Pour suivre le dernier numéro de bus recherché
+const lastSearchedBusNumber = ref('');
+const displayedBusNumber = ref('');
 const isFormValid = computed(() => busNumber.value.trim() !== '' && busNumber.value !== lastSearchedBusNumber.value);
 const routes = ref<Route[]>([]);
 const selectedRouteId = ref<number | null>(null);
@@ -206,9 +237,10 @@ const mapContainer = ref<HTMLDivElement | null>(null);
 const map = ref<L.Map | null>(null);
 const lineTags = ref<Record<string, string>>({});
 const showSearchModal = ref(false);
+const showMapOnMobile = ref(false);
 
-// Centre d'Abidjan
 const ABIDJAN_CENTER: [number, number] = [5.3599, -4.0083];
+const IVORY_COAST_CENTER: [number, number] = [7.539989, -5.54708];
 
 const { searchBus } = useSecureApi()
 
@@ -221,10 +253,30 @@ const searchRoute = async () => {
     routes.value = [];
     selectedRouteId.value = null;
     
+    // Réinitialiser la vue mobile sur les résultats lors d'une nouvelle recherche
+    showMapOnMobile.value = false;
+    
+    // Mettre à jour l'URL avec le paramètre ref
+    await router.push({ 
+      query: { 
+        ...route.query, 
+        ref: busNumber.value.trim() 
+      } 
+    });
+    
     // Réinitialiser la carte si elle existe
     if (map.value) {
-      map.value.remove();
+      try {
+        map.value.remove();
+      } catch (error) {
+        console.warn('Erreur lors de la suppression de la carte:', error);
+      }
       map.value = null;
+    }
+    
+    // S'assurer que le conteneur est vide
+    if (mapContainer.value) {
+      mapContainer.value.innerHTML = '';
     }
 
     const data = await searchBus(busNumber.value)
@@ -235,7 +287,6 @@ const searchRoute = async () => {
       const lineData = new LineData();
       const result = lineData.initFromData(data.details, parseInt(data.lineId));
       
-      // Récupérer les informations sur les itinéraires
       const trips = lineData.getTrips();
       routes.value = getAllRoutesInfo(trips);
       
@@ -246,42 +297,52 @@ const searchRoute = async () => {
         });
       }
       
+      displayedBusNumber.value = busNumber.value;
+      
     } else {
       console.error('Incomplete data in the response');
     }
     
-    lastSearchedBusNumber.value = busNumber.value; // Mettre à jour le dernier numéro recherché
+    lastSearchedBusNumber.value = busNumber.value;
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error during search:', error);
+    
+    let errorMessage = 'An error occurred during the search.';
+    
+    if (error.statusCode === 504) {
+      errorMessage = 'The search takes longer than expected. Please try again in a few minutes.';
+    } else if (error.statusCode === 503) {
+      errorMessage = 'The service is temporarily unavailable. Please try again later.';
+    } else if (error.statusCode === 404) {
+      errorMessage = `No bus line found with the number "${busNumber.value}".`;
+    }
+    
+    console.warn('User-friendly error:', errorMessage);
+    
   } finally {
     loading.value = false;
   }
 }
 
-// Fonction pour gérer le changement d'itinéraire dans le menu déroulant
 const handleRouteChange = () => {
   if (selectedRouteId.value !== null) {
     selectRoute(selectedRouteId.value);
   }
 };
 
-// Sélectionner un itinéraire
 const selectRoute = (routeId: number) => {
   selectedRouteId.value = routeId;
-  // Mettre à jour la carte quand on change d'itinéraire
   nextTick(() => {
     updateMap();
   });
 }
 
-// Obtenir l'itinéraire sélectionné
 const selectedRoute = computed((): Route | null => {
   if (!selectedRouteId.value) return null;
   return routes.value.find(route => route.id === selectedRouteId.value) || null;
 });
 
-// Fonction pour formater la durée en heures et minutes
 const formatDuration = (minutes: number): string => {
   const hours = Math.floor(minutes / 60);
   const mins = minutes % 60;
@@ -293,13 +354,40 @@ const formatDuration = (minutes: number): string => {
   return `${mins} min`;
 };
 
+const calculateBounds = (stops: Stop[]): [[number, number], [number, number]] | null => {
+  const validCoordinates = stops
+    .map(stop => stop.coordinates)
+    .filter((coord): coord is [number, number] => coord !== null);
+  
+  if (validCoordinates.length === 0) return null;
+  
+  // Les coordonnées sont en format [lng, lat], mais Leaflet attend [lat, lng]
+  const lats = validCoordinates.map(coord => coord[1]); // latitude = index 1
+  const lngs = validCoordinates.map(coord => coord[0]); // longitude = index 0
+  
+  return [
+    [Math.min(...lats), Math.min(...lngs)], // Sud-Ouest [lat, lng]
+    [Math.max(...lats), Math.max(...lngs)]  // Nord-Est [lat, lng]
+  ];
+};
+
 // Mettre à jour la carte avec l'itinéraire sélectionné
 const updateMap = () => {
   if (!mapContainer.value) return;
   
   // Supprimer la carte existante si elle existe
   if (map.value) {
-    map.value.remove();
+    try {
+      map.value.remove();
+    } catch (error) {
+      console.warn('Error while deleting the map in updateMap:', error);
+    }
+    map.value = null;
+  }
+  
+  // S'assurer que le conteneur est propre
+  if (mapContainer.value) {
+    mapContainer.value.innerHTML = '';
   }
   
   if (selectedRoute.value) {
@@ -328,16 +416,49 @@ const updateMap = () => {
         }).filter((item): item is NonNullable<typeof item> => item !== null),
         route.color
       );
+      
+      // Centrer la carte sur les résultats
+      const bounds = calculateBounds(route.stops);
+      if (bounds && map.value) {
+        try {
+          map.value.fitBounds(bounds, {
+            padding: [20, 20], // Padding en pixels
+            maxZoom: 15 // Zoom maximum pour éviter d'être trop proche
+          });
+        } catch (error) {
+          console.warn('Error while centering the map, use default center:');
+          map.value.setView(ABIDJAN_CENTER, 12);
+        }
+      }
     }
   }
 }
 
 // Initialiser la carte par défaut
 const initDefaultMap = () => {
-  if (!mapContainer.value || map.value) return;
+  if (!mapContainer.value) return;
   
-  // Initialiser la carte centrée sur Abidjan
-  map.value = L.map(mapContainer.value as any).setView(ABIDJAN_CENTER, 12);
+  // Nettoyer le conteneur au cas où
+  if (map.value) {
+    try {
+      map.value.remove();
+    } catch (error) {
+      console.warn('Error while deleting the map:', error);
+    }
+    map.value = null;
+  }
+  
+  // S'assurer que le conteneur est vide
+  mapContainer.value.innerHTML = '';
+  
+  // Initialiser la carte centrée sur la Côte d'Ivoire (vue d'ensemble)
+  // Centre approximatif de la Côte d'Ivoire pour couvrir plus de villes
+  try {
+    map.value = L.map(mapContainer.value as any).setView(IVORY_COAST_CENTER, 8);
+  } catch (error) {
+    console.error('Error while initializing the map:', error);
+    return;
+  }
   
   // Ajouter la couche de tuiles OpenStreetMap
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -364,9 +485,26 @@ const handleModalSearch = () => {
 onMounted(() => {
   initDefaultMap();
   
-  // Déclencher automatiquement la recherche si un numéro de bus est fourni dans le store
-  if (searchStore.busNumber) {
+  // Synchroniser le store avec l'URL si nécessaire
+  if (route.query.ref && route.query.ref !== searchStore.ref) {
+    searchStore.setSearchParams({ ref: route.query.ref as string });
+  }
+  
+  // Déclencher automatiquement la recherche si un numéro de bus est fourni dans l'URL ou le store
+  if (route.query.ref || searchStore.ref) {
     searchRoute();
+  }
+});
+
+// Nettoyer la carte lors du démontage du composant
+onUnmounted(() => {
+  if (map.value) {
+    try {
+      map.value.remove();
+    } catch (error) {
+      console.warn('Error while deleting the map:', error);
+    }
+    map.value = null;
   }
 });
 
@@ -379,6 +517,49 @@ watch(selectedRoute, () => {
 watch(showSearchModal, (newValue: boolean) => {
   if (newValue) {
     modalBusNumber.value = busNumber.value;
+  }
+});
+
+// Watcher pour synchroniser avec les changements d'URL
+watch(() => route.query.ref, (newRef) => {
+  if (newRef && typeof newRef === 'string' && newRef !== busNumber.value) {
+    busNumber.value = newRef;
+    // Ne pas déclencher automatiquement la recherche pour éviter les boucles
+  }
+});
+
+// Watcher pour redimensionner la carte quand on bascule en mobile
+watch(showMapOnMobile, () => {
+  if (map.value) {
+    // Attendre que le DOM soit mis à jour
+    nextTick(() => {
+      try {
+        // Petit délai pour s'assurer que les transitions CSS sont terminées
+        setTimeout(() => {
+          map.value?.invalidateSize();
+          
+          // Si on bascule vers la carte et qu'il y a des résultats, recentrer sur les arrêts
+          if (showMapOnMobile.value && routes.value.length > 0) {
+            // Utiliser la route sélectionnée ou la première route disponible
+            const routeToShow = selectedRouteId.value !== null 
+              ? routes.value.find(r => r.id === selectedRouteId.value)
+              : routes.value[0];
+              
+            if (routeToShow) {
+              const bounds = calculateBounds(routeToShow.stops);
+              if (bounds && map.value) {
+                map.value.fitBounds(bounds, {
+                  padding: [20, 20],
+                  maxZoom: 15
+                });
+              }
+            }
+          }
+        }, 150); // Délai légèrement augmenté pour les transitions
+      } catch (error) {
+        console.warn('Erreur lors du redimensionnement de la carte:', error);
+      }
+    });
   }
 });
 

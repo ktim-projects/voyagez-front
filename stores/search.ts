@@ -8,7 +8,7 @@ interface SearchState {
   date: string | null
   passengers: number
   searchResults: any[]
-  busNumber: string | null
+  ref: string | null
 }
 
 export const useSearchStore = defineStore('search', {
@@ -19,7 +19,7 @@ export const useSearchStore = defineStore('search', {
     date: null,
     passengers: 1,
     searchResults: [],
-    busNumber: null
+    ref: null
   }),
 
   getters: {
@@ -32,7 +32,7 @@ export const useSearchStore = defineStore('search', {
       if (state.to) params.to = state.to
       if (state.date) params.date = state.date
       if (state.passengers !== 1) params.passengers = state.passengers.toString()
-      if (state.busNumber) params.busNumber = state.busNumber
+      if (state.ref) params.ref = state.ref
       
       return params
     },
@@ -40,7 +40,7 @@ export const useSearchStore = defineStore('search', {
     // Getter pour vérifier si une recherche est valide
     isValidSearch: (state): boolean => {
       if (state.type === 'bus') {
-        return !!state.busNumber
+        return !!state.ref
       }
       return !!(state.from && state.to)
     }
@@ -75,8 +75,8 @@ export const useSearchStore = defineStore('search', {
           this.passengers = passengers
         }
       }
-      if (queryParams.busNumber && typeof queryParams.busNumber === 'string') {
-        this.busNumber = queryParams.busNumber
+      if (queryParams.ref && typeof queryParams.ref === 'string') {
+        this.ref = queryParams.ref
       }
     },
 
@@ -89,7 +89,7 @@ export const useSearchStore = defineStore('search', {
       if (this.to) params.to = this.to
       if (this.date) params.date = this.date
       if (this.passengers !== 1) params.passengers = this.passengers.toString()
-      if (this.busNumber) params.busNumber = this.busNumber
+      if (this.ref) params.ref = this.ref
       
       return params
     },
@@ -101,7 +101,7 @@ export const useSearchStore = defineStore('search', {
       this.date = null
       this.passengers = 1
       this.searchResults = []
-      this.busNumber = null
+      this.ref = null
     }
   },
 
