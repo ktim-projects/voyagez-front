@@ -15,6 +15,10 @@ export type ResponseBus = {
   details: any;
 }
 
+// Cache simple en mémoire pour les recherches de bus
+const busCache = new Map<string, { data: any; timestamp: number }>()
+const CACHE_DURATION = 5 * 60 * 60 * 1000 // 5 heures en millisecondes
+
 export const useSecureApi = () => {
   const config = useRuntimeConfig()
   
@@ -30,9 +34,6 @@ export const useSecureApi = () => {
         headers
       })
 
-      console.log('response--', response);
-      
-      
       return response
     } catch (error: any) {
       if (error.statusCode === 401) {
@@ -57,8 +58,21 @@ export const useSecureApi = () => {
     })
   }
 
-  const searchBus = async (ref: string) => {
-    return await secureApiFetch<ResponseBus>(`/api/bus/line-details?ref=${ref.trim()}`)
+
+  const searchBus = async (ref: string): Promise<ResponseBus> => {
+    const cacheKey = `bus-${ref.trim()}`
+    const now = Date.now()
+    
+    const cached = busCache.get(cacheKey)
+    if (cached && (now - cached.timestamp) < CACHE_DURATION) {
+      return cached.data
+    }
+    
+    const data = await secureApiFetch<ResponseBus>(`/api/bus/line-details?ref=${ref.trim()}`)
+    
+    busCache.set(cacheKey, { data, timestamp: now })
+    
+    return data
   }
 
   const subscribeNewsletter = async (email: string) => {

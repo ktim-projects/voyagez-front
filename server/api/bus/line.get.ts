@@ -72,8 +72,6 @@ export default defineEventHandler(async (event) => {
     const data: OverpassResponse = await response.json()
 
     const {id, ...lineData} = data.elements[0]
-
-    console.log('lineData', id, lineData);
     
     // Return the data
     return {id, ...lineData}
