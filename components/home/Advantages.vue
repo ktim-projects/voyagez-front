@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Titre et sous-titre -->
       <div class="text-center max-w-3xl mx-auto mb-16">
-        <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">{{ $t('home.advantages.title') }}</h2>
+        <h2 class="title-poppins text-4xl text-gray-900 dark:text-white mb-4">{{ $t('home.advantages.title') }}</h2>
         <p class="text-gray-600 dark:text-gray-400 text-lg">{{ $t('home.advantages.subtitle') }}</p>
       </div>
       

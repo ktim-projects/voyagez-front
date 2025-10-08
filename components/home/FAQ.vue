@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto px-4 py-16">
-    <h2 class="text-3xl font-bold text-center mb-12 text-gray-900 dark:text-white">{{ $t('home.faq.title') }}</h2>
+    <h2 class="title-poppins text-3xl text-center mb-12 text-gray-900 dark:text-white">{{ $t('home.faq.title') }}</h2>
     <div class="max-w-3xl mx-auto space-y-4">
       <div
         v-for="(item, index) in faqs"

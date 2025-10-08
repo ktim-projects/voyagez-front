@@ -3,8 +3,13 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+  
   body {
-    /* @apply bg-gray-50; */
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 400;
   }
 }
 
@@ -17,5 +22,30 @@
   }
   .form-radio {
     @apply h-4 w-4 text-primary-600 border-gray-300 focus:ring-primary-500;
+  }
+  
+  /* Classes utilitaires Poppins - maintenant par défaut */
+  .title-poppins {
+    @apply font-bold;
+  }
+  .heading-poppins {
+    @apply font-medium;
+  }
+  .text-poppins-light {
+    @apply font-light;
+  }
+  .text-poppins-semibold {
+    @apply font-semibold;
+  }
+  
+  /* Classes simplifiées (recommandées) */
+  .title {
+    @apply font-bold text-gray-900 dark:text-white;
+  }
+  .heading {
+    @apply font-medium text-gray-800 dark:text-gray-200;
+  }
+  .text-light {
+    @apply font-light text-gray-600 dark:text-gray-400;
   }
 }

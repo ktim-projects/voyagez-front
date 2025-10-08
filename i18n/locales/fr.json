@@ -110,7 +110,7 @@
       }
     },
     "destinations": {
-      "title": "DESTINATIONS POPULAIRES",
+      "title": "Destinations Populaires",
       "subtitle": "Découvrez les destinations les plus prisées en Côte d'Ivoire",
       "priceFrom": "À partir de",
       "exploreButton": "Explorer",
@@ -126,7 +126,7 @@
       "button": "Nous rejoindre"
     },
     "faq": {
-      "title": "QUESTIONS FREQUENTES (FAQ)",
+      "title": "Questions Fréquentes (FAQ)",
       "transportCompany": {
         "title": "Vous êtes une compagnie de transport ?",
         "description": "Nous ne sommes pas une compagnie de transport. Notre service vous permet de voyager plus facilement. Avec nous vous trouvez les horaires de départs, destination et gares des différentes compagnies de transport."

@@ -1,13 +1,13 @@
 <template>
   <div class="container mx-auto px-4 py-16  popular-destinations-section">
     <div class="text-center max-w-3xl mx-auto mb-12">
-      <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">{{ $t('home.destinations.title') }}</h2>
+      <h2 class="title-poppins text-4xl font-bold text-gray-900 dark:text-white mb-4">{{ $t('home.destinations.title') }}</h2>
       <p class="text-gray-600 dark:text-gray-400 text-lg">{{ $t('home.destinations.subtitle') }}</p>
     </div>
     
     <!-- Desktop View -->
     <div class="hidden md:grid grid-cols-4 gap-8">
-      <div 
+      <div
         v-for="destination in destinations" 
         :key="destination.name" 
         class="group relative h-80 rounded-2xl overflow-hidden shadow-lg cursor-pointer"

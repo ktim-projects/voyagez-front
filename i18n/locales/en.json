@@ -111,7 +111,7 @@
       }
     },
     "destinations": {
-      "title": "POPULAR DESTINATIONS",
+      "title": "Popular Destinations",
       "subtitle": "Discover the most popular destinations in Ivory Coast",
       "priceFrom": "From",
       "exploreButton": "Explore",
@@ -127,7 +127,7 @@
       "button": "Take advantage"
     },
     "faq": {
-      "title": "FREQUENTLY ASKED QUESTIONS (FAQ)",
+      "title": "Frequently Asked Questions (FAQ)",
       "transportCompany": {
         "title": "Are you a transport company?",
         "description": "We are not a transport company. Our service allows you to travel more easily. With us, you can find departure times, destinations, and stations of different transport companies."
