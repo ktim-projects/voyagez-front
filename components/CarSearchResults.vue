@@ -227,6 +227,8 @@ const totalPages = ref(0);
 const page = ref(1);
 const limit = 25;
 
+const { searchCars } = useSecureApi()
+
 const hasMoreResults = computed(() => {
   return page.value < totalPages.value;
 });
@@ -283,8 +285,6 @@ const debouncedFilterSearch = useDebounceFn(() => {
 const handleSearch = async () => {
   await performSearch(false);
 };
-
-const { searchCars } = useSecureApi()
 
 const performSearch = async (isFilteringParam = false) => {
   if (!fromCity.value || !toCity.value || fromCity.value === toCity.value) {

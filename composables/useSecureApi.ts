@@ -1,6 +1,6 @@
 import type { Departure } from "~/server/data";
 
-type responseCar = {
+type ResponseCar = {
   departures: Departure[];
   _meta: {
     total: number;
@@ -8,6 +8,12 @@ type responseCar = {
     limit: number;
   };
 };
+
+export type ResponseBus = {
+  lineId: string;
+  lineTags: Record<string, string>;
+  details: any;
+}
 
 export const useSecureApi = () => {
   const config = useRuntimeConfig()
@@ -23,6 +29,9 @@ export const useSecureApi = () => {
         ...options,
         headers
       })
+
+      console.log('response--', response);
+      
       
       return response
     } catch (error: any) {
@@ -40,13 +49,17 @@ export const useSecureApi = () => {
       throw error
     }
   }
+
   
   const searchCars = async (searchParams: any) => {
-    return await secureApiFetch<responseCar>('/api/car/search', {
+    return await secureApiFetch<ResponseCar>('/api/car/search', {
       query: searchParams
     })
   }
-  
+
+  const searchBus = async (ref: string) => {
+    return await secureApiFetch<ResponseBus>(`/api/bus/line-details?ref=${ref.trim()}`)
+  }
 
   const subscribeNewsletter = async (email: string) => {
     return await secureApiFetch('/api/newsletter', {
@@ -58,6 +71,7 @@ export const useSecureApi = () => {
   return {
     secureApiFetch,
     searchCars,
+    searchBus,
     subscribeNewsletter
   }
 }

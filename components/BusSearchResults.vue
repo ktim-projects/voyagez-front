@@ -167,6 +167,30 @@ import { getAllRoutesInfo } from '~/modules/bus/utils/route-utils';
 import { displayRouteMap } from '~/modules/bus/utils/map-utils';
 import { ChevronLeft, X as XIcon } from 'lucide-vue-next';
 import { useSearchStore } from '~/stores/search';
+import type { Ref } from 'vue';
+
+// Types pour les données
+interface Stop {
+  id: string | number | undefined;
+  name: string;
+  coordinates: [number, number] | null;
+}
+
+interface Route {
+  id: number;
+  name: string;
+  color: string;
+  stops: Stop[];
+  shape: any;
+  isExpress?: boolean;
+  duration?: number;
+}
+
+interface LineDetails {
+  lineId: string;
+  lineTags: Record<string, string>;
+  details: any;
+}
 
 const searchStore = useSearchStore();
 
@@ -176,7 +200,7 @@ const modalBusNumber = ref('');
 const loading = ref(false);
 const lastSearchedBusNumber = ref(''); // Pour suivre le dernier numéro de bus recherché
 const isFormValid = computed(() => busNumber.value.trim() !== '' && busNumber.value !== lastSearchedBusNumber.value);
-const routes = ref<any[]>([]);
+const routes = ref<Route[]>([]);
 const selectedRouteId = ref<number | null>(null);
 const mapContainer = ref<HTMLDivElement | null>(null);
 const map = ref<L.Map | null>(null);
@@ -185,6 +209,8 @@ const showSearchModal = ref(false);
 
 // Centre d'Abidjan
 const ABIDJAN_CENTER: [number, number] = [5.3599, -4.0083];
+
+const { searchBus } = useSecureApi()
 
 // Fonction pour rechercher une ligne de bus
 const searchRoute = async () => {
@@ -200,30 +226,14 @@ const searchRoute = async () => {
       map.value.remove();
       map.value = null;
     }
-    
-    // Appel à l'API combinée qui récupère toutes les données en une seule requête
-    const response = await fetch(`/api/bus/line-details?ref=${busNumber.value.trim()}`);
-    
-    if (!response.ok) {
-      throw new Error(`Erreur lors de la recherche: ${response.statusText}`);
-    }
-    
-    const data = await response.json();
-    console.log('Réponse de l\'API combinée:', data);
-    
-    // Traiter les données directement
+
+    const data = await searchBus(busNumber.value)
+
     if (data && data.lineId && data.details) {
-      console.log('ID de la ligne:', data.lineId);
-      console.log('Tags de la ligne:', data.lineTags);
-      
-      // Stocker les tags de la ligne
       lineTags.value = data.lineTags || {};
       
-      // Utiliser la classe LineData pour le traitement des données
-      // en passant directement les données déjà récupérées
       const lineData = new LineData();
-      const result = lineData.initFromData(data.details, data.lineId);
-      console.log('Résultat de l\'initialisation:', result);
+      const result = lineData.initFromData(data.details, parseInt(data.lineId));
       
       // Récupérer les informations sur les itinéraires
       const trips = lineData.getTrips();
@@ -231,21 +241,19 @@ const searchRoute = async () => {
       
       if (routes.value.length > 0) {
         selectedRouteId.value = routes.value[0].id;
-        // Initialiser la carte avec le premier itinéraire
         nextTick(() => {
           updateMap();
         });
       }
       
-      console.log('Routes:', routes.value);
     } else {
-      console.error('Données incomplètes dans la réponse');
+      console.error('Incomplete data in the response');
     }
     
     lastSearchedBusNumber.value = busNumber.value; // Mettre à jour le dernier numéro recherché
     
   } catch (error) {
-    console.error('Erreur lors de la recherche:', error);
+    console.error('Error during search:', error);
   } finally {
     loading.value = false;
   }
@@ -268,17 +276,10 @@ const selectRoute = (routeId: number) => {
 }
 
 // Obtenir l'itinéraire sélectionné
-const selectedRoute = computed(() => {
+const selectedRoute = computed((): Route | null => {
   if (!selectedRouteId.value) return null;
   return routes.value.find(route => route.id === selectedRouteId.value) || null;
 });
-
-// Type pour les arrêts
-interface Stop {
-  id: string | number | undefined;
-  name: string;
-  coordinates: [number, number] | null;
-}
 
 // Fonction pour formater la durée en heures et minutes
 const formatDuration = (minutes: number): string => {
@@ -304,28 +305,30 @@ const updateMap = () => {
   if (selectedRoute.value) {
     // Afficher la nouvelle carte avec l'itinéraire sélectionné
     const route = selectedRoute.value;
-    map.value = displayRouteMap(
-      mapContainer.value,
-      route.shape,
-      route.stops.map((stop: Stop) => {
-        // Convertir les arrêts en format GeoJSON pour la carte
-        if (stop.coordinates) {
-          return {
-            id: stop.id,
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: stop.coordinates
-            },
-            properties: {
-              name: stop.name
-            }
-          };
-        }
-        return null;
-      }).filter(Boolean),
-      route.color
-    );
+    if (mapContainer.value) {
+      map.value = displayRouteMap(
+        mapContainer.value as any,
+        route.shape,
+        route.stops.map((stop: Stop) => {
+          // Convertir les arrêts en format GeoJSON pour la carte
+          if (stop.coordinates) {
+            return {
+              id: stop.id,
+              type: 'Feature' as const,
+              geometry: {
+                type: 'Point' as const,
+                coordinates: stop.coordinates
+              },
+              properties: {
+                name: stop.name
+              }
+            };
+          }
+          return null;
+        }).filter((item): item is NonNullable<typeof item> => item !== null),
+        route.color
+      );
+    }
   }
 }
 
@@ -334,16 +337,16 @@ const initDefaultMap = () => {
   if (!mapContainer.value || map.value) return;
   
   // Initialiser la carte centrée sur Abidjan
-  map.value = L.map(mapContainer.value).setView(ABIDJAN_CENTER, 12);
+  map.value = L.map(mapContainer.value as any).setView(ABIDJAN_CENTER, 12);
   
   // Ajouter la couche de tuiles OpenStreetMap
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     opacity: 0.7
-  }).addTo(map.value);
+  }).addTo(map.value as any);
   
   // Ajouter l'échelle
-  L.control.scale().addTo(map.value);
+  L.control.scale().addTo(map.value as any);
 }
 
 // Fonction pour gérer la recherche depuis la modal
@@ -373,7 +376,7 @@ watch(selectedRoute, () => {
 });
 
 // Lorsque la modal s'ouvre, initialiser le numéro de bus
-watch(showSearchModal, (newValue) => {
+watch(showSearchModal, (newValue: boolean) => {
   if (newValue) {
     modalBusNumber.value = busNumber.value;
   }
