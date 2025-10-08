@@ -4,7 +4,7 @@
       <div class="flex items-center">
         <NuxtLink to="/" class="text-2xl font-bold text-corail-600 hover:text-corail-700 dark:text-corail-500 dark:hover:text-corail-400 transition-colors">
           <!-- {{ $t('header.appName') }} -->
-          <img :src="logoPath" alt="Geyavo" class="h-10" />
+          <img :src="logoPath" alt="Geyavo" class="h-20" />
         </NuxtLink>
       </div>
       
@@ -52,7 +52,7 @@ const isMenuOpen = ref(false)
 const route = useRoute()
 
 // Logo path
-const logoPath = computed(() => '/logos/geyavo_long.png')
+const logoPath = computed(() => '/logos/geyavo_full.png')
 
 const isSearchResults = computed(() => route.path === '/results')
 
