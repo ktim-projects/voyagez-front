@@ -22,14 +22,6 @@
         <!-- Overlay dégradé -->
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300"></div>
         
-        <!-- Badge de promotion -->
-        <div 
-          v-if="destination.promotion" 
-          class="absolute top-4 right-4 bg-corail-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg transform rotate-3 group-hover:rotate-0 transition-transform duration-300"
-        >
-          {{ destination.promotion }}
-        </div>
-        
         <!-- Contenu -->
         <div class="absolute bottom-0 left-0 right-0 p-6 transform transition-transform duration-500 group-hover:translate-y-0">
           <div class="flex flex-col items-start">
@@ -77,14 +69,7 @@
             
             <!-- Overlay dégradé -->
             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
-            
-            <!-- Badge de promotion -->
-            <div 
-              v-if="destination.promotion" 
-              class="absolute top-4 right-4 bg-corail-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg"
-            >
-              {{ destination.promotion }}
-            </div>
+          
             
             <!-- Contenu -->
             <div class="absolute bottom-0 left-0 right-0 p-6">
@@ -92,12 +77,6 @@
                 <h3 class="text-xl font-bold text-white dark:text-gray-200 mb-2">
                   {{ destination.name }}
                 </h3>
-                <div class="flex items-center mb-3">
-                  <div class="flex text-yellow-400">
-                    <StarIcon v-for="i in 5" :key="i" class="h-4 w-4" :class="i <= destination.rating ? 'text-yellow-400' : 'text-gray-400'" />
-                  </div>
-                  <span class="text-white dark:text-gray-400 text-sm ml-2">{{ destination.rating }}/5</span>
-                </div>
                 <p class="text-white dark:text-gray-400 text-sm mb-4 line-clamp-2">{{ destination.description }}</p>
                 <p class="text-white dark:text-gray-400 font-medium">
                   <span class="text-corail-300">{{ $t('home.destinations.priceFrom') }}</span> 
