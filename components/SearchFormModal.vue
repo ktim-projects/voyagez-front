@@ -35,6 +35,7 @@
                     @update:model-value="$emit('update:fromCity', $event)"
                     @select="handleFromSelect"
                     placeholder="Ville de départ"
+                    :auto-focus="!fromCity"
                   />
                   
                   <!-- Swap Cities Button -->
@@ -56,6 +57,7 @@
                     @update:model-value="$emit('update:toCity', $event)"
                     @select="handleToSelect"
                     placeholder="Ville d'arrivée"
+                    :auto-focus="!toCity"
                   />
                 </div>
                 

@@ -78,6 +78,7 @@ interface City {
 const props = defineProps<{
   modelValue: string;
   placeholder?: string;
+  autoFocus?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -138,12 +139,29 @@ const handleInput = (event: Event) => {
 }
 
 const handleClick = () => {
+  // Si autoFocus est false et qu'il y a déjà une valeur, permettre le clic pour éditer
+  if (props.autoFocus === false && props.modelValue && !isSearching.value) {
+    searchValue.value = props.modelValue;
+    lastValidValue.value = props.modelValue;
+    isSearching.value = true;
+    suggestions.value = filterCities(props.modelValue);
+    showSuggestions.value = true;
+    selectedIndex.value = -1;
+    resetVirtualScroll();
+    return;
+  }
+  
   if (!showSuggestions.value) {
     handleFocus();
   }
 }
 
 const handleFocus = () => {
+  // Si autoFocus est false et qu'il y a déjà une valeur, ne pas afficher les suggestions
+  if (props.autoFocus === false && props.modelValue && !isSearching.value) {
+    return;
+  }
+  
   if (props.modelValue && !isSearching.value) {
     searchValue.value = props.modelValue;
     lastValidValue.value = props.modelValue;

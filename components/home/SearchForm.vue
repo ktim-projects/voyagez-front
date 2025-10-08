@@ -111,6 +111,18 @@
         </div>
       </div>
     </div>
+    
+    <!-- Search Form Modal -->
+    <SearchFormModal
+      v-model:show="showSearchModal"
+      v-model:fromCity="from"
+      v-model:toCity="to"
+      :search-disabled="!isSearchEnabled"
+      @from-select="handleFromSelect"
+      @to-select="handleToSelect"
+      @submit="handleModalSearch"
+      @swap-cities="swapCities"
+    />
   </div>
 </template>
 
@@ -126,6 +138,7 @@ const to = ref('');
 const busNumber = ref('');
 const searchStore = useSearchStore();
 const activeTab = ref('car');
+const showSearchModal = ref(false);
 
 const tabs = [
   { 
@@ -198,16 +211,50 @@ const handleBusSearch = async () => {
 };
 
 const quickSearch = async (destination: string) => {
+  const isMobile = window.innerWidth < 768;
+  
+  if (isMobile) {
+    to.value = destination;
+    searchStore.setSearchParams({
+      type: activeTab.value as 'car' | 'bus',
+      to: destination,
+    });
+    showSearchModal.value = true;
+  } else {
+    searchStore.setSearchParams({
+      type: activeTab.value as 'car' | 'bus',
+      from: null,
+      to: destination,
+    });
+    
+    await router.push({ 
+      path: '/results',
+      query: searchStore.getQueryParams()
+    });
+  }
+};
+
+const handleModalSearch = async () => {
+  if (!from.value || !to.value) return;
+
   searchStore.setSearchParams({
     type: activeTab.value as 'car' | 'bus',
-    from: null,
-    to: destination,
+    from: from.value,
+    to: to.value,
+    date: null
   });
-  
+
+  // Naviguer vers la page de résultats avec les query params
   await router.push({ 
     path: '/results',
     query: searchStore.getQueryParams()
   });
+};
+
+const swapCities = () => {
+  const tempFrom = from.value;
+  from.value = to.value;
+  to.value = tempFrom;
 };
 
 onMounted(() => {
