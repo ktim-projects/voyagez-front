@@ -26,8 +26,8 @@ const to = getCityFromSlug(toSlug);
 
 // Vérifier si les villes sont valides
 if (!from || !to) {
-  // Rediriger vers la page d'accueil si les villes sont invalides
-  navigateTo('/');
+  // Rediriger vers la page des destinations populaires si les villes sont invalides
+  navigateTo('/destinations-populaires');
 }
 
 // Synchroniser le store avec les noms de villes officiels (avec accents)

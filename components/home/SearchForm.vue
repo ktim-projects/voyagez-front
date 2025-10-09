@@ -2,7 +2,6 @@
   <div class="container mx-auto px-4  md:-mt-24 relative z-20 search-form-section">
     <div class="max-w-4xl mx-auto">
       <div class="rounded-2xl bg-white dark:bg-gray-800 shadow-xl p-8 transform transition-all duration-500 hover:shadow-2xl">
-        <!-- Onglets de type de transport -->
         <div class="flex mb-6 border-b border-gray-200 dark:border-gray-700">
           <button 
             v-for="(tab, index) in tabs" 
@@ -26,14 +25,10 @@
           </button>
         </div>
         
-        <!-- Formulaire de recherche de voiture (affiché uniquement quand activeTab === 'car') -->
         <form v-if="activeTab === 'car'" class="grid grid-cols-1 sm:grid-cols-3 gap-4" @submit.prevent="handleSearch">
           <div class="group">
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ $t('search.departureCity') }}</label>
             <div class="relative">
-              <!-- <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <MapPinIcon class="h-5 w-5 text-gray-400 group-hover:text-primary-600 transition-colors duration-300" />
-              </div> -->
               <CityAutocomplete
                 v-model="from"
                 @select="handleFromSelect"
@@ -46,9 +41,6 @@
           <div class="group">
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ $t('search.arrivalCity') }}</label>
             <div class="relative">
-              <!-- <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <MapPinIcon class="h-5 w-5 text-gray-400 group-hover:text-primary-600 transition-colors duration-300" />
-              </div> -->
               <CityAutocomplete
                 v-model="to"
                 @select="handleToSelect"
@@ -69,7 +61,6 @@
           </div>
         </form>
 
-        <!-- Formulaire de recherche de bus (affiché uniquement quand activeTab === 'bus') -->
         <form v-if="activeTab === 'bus'" class="space-y-6" @submit.prevent="handleBusSearch">
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ $t('busSearch.busNumber') }}</label>
@@ -95,7 +86,6 @@
           </div>
         </form>
         
-        <!-- Suggestions populaires (uniquement pour la recherche de voiture) -->
         <div v-if="activeTab === 'car'" class="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
           <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">{{ $t('search.popularSearches') }}</p>
           <div class="flex flex-wrap gap-2">
@@ -112,7 +102,6 @@
       </div>
     </div>
     
-    <!-- Search Form Modal -->
     <SearchFormModal
       v-model:show="showSearchModal"
       v-model:fromCity="from"
@@ -186,18 +175,15 @@ const handleSearch = async () => {
     date: null
   });
 
-  // Convertir les noms de villes en slugs pour l'URL
   const fromSlug = getSlugFromCity(from.value);
   const toSlug = getSlugFromCity(to.value);
 
-  // Naviguer vers la page de résultats avec les slugs
   await router.push(`/results/${fromSlug}/${toSlug}`);
 };
 
 const handleBusSearch = async () => {
   if (!busNumber.value.trim()) return;
   
-  // Mettre à jour le store avec le type 'bus' et le numéro de bus
   searchStore.setSearchParams({
     type: 'bus',
     ref: busNumber.value.trim(),
@@ -205,7 +191,6 @@ const handleBusSearch = async () => {
     to: null
   });
 
-  // Rediriger vers la page de résultats avec le param ref
   await router.push(`/results/bus/${encodeURIComponent(busNumber.value.trim())}`);
 };
 
@@ -220,8 +205,6 @@ const quickSearch = async (destination: string) => {
     });
     showSearchModal.value = true;
   } else {
-    // Pour desktop, on redirige vers la page d'accueil car il manque la ville de départ
-    // L'utilisateur devra compléter le formulaire
     to.value = destination;
     searchStore.setSearchParams({
       type: activeTab.value as 'car' | 'bus',
