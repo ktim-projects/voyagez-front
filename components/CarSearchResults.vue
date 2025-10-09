@@ -326,6 +326,9 @@ const performSearch = async (isFilteringParam = false) => {
   loading.value = true;
   departures.value = [];
   
+  // Remonter en haut de la page lors d'une nouvelle recherche
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  
   try {
     const response = await searchCars({
       from: getSlugFromCity(fromCity.value),
