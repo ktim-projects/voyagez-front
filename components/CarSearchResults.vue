@@ -211,6 +211,7 @@ import {  useDebounceFn } from '@vueuse/core';
 import { useSearchStore } from '~/stores/search';
 import { useRouter } from 'vue-router';
 import SearchFormModal from './SearchFormModal.vue';
+import { getSlugFromCity } from '~/utils/cities';
 
 const router = useRouter();
 const route = useRoute();
@@ -315,19 +316,20 @@ const performSearch = async (isFilteringParam = false) => {
     to: toCity.value
   });
   
-  // Mettre à jour l'URL avec les nouveaux paramètres
-  await router.replace({ 
-    path: '/results',
-    query: searchStore.getQueryParams()
-  });
+  // Convertir les noms de villes en slugs pour l'URL
+  const fromSlug = getSlugFromCity(fromCity.value);
+  const toSlug = getSlugFromCity(toCity.value);
+  
+  // Mettre à jour l'URL avec les slugs
+  await router.replace(`/results/${fromSlug}/${toSlug}`);
   
   loading.value = true;
   departures.value = [];
   
   try {
     const response = await searchCars({
-      from: normalizeCity(fromCity.value),
-        to: normalizeCity(toCity.value),
+      from: getSlugFromCity(fromCity.value),
+        to: getSlugFromCity(toCity.value),
         page: page.value,
         limit,
         maxPrice: filters.value.maxPrice,
@@ -359,8 +361,8 @@ const loadMoreResults = async () => {
   
   try {
     const response = await searchCars({
-      from: normalizeCity(fromCity.value),
-        to: normalizeCity(toCity.value),
+      from: getSlugFromCity(fromCity.value),
+        to: getSlugFromCity(toCity.value),
         page: page.value,
         limit,
         maxPrice: filters.value.maxPrice,
@@ -384,29 +386,8 @@ const loadMoreResults = async () => {
 
 // Trigger search on component mount
 onMounted(() => {
-  // Synchroniser le store avec les query params de l'URL
-  if (Object.keys(route.query).length > 0) {
-    // Convertir les query params en format attendu par le store
-    const queryParams: Record<string, string | string[]> = {};
-    Object.entries(route.query).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-        if (Array.isArray(value)) {
-          // Filtrer les valeurs null dans les tableaux
-          const filteredArray = value.filter((v): v is string => v !== null && v !== undefined);
-          if (filteredArray.length > 0) {
-            queryParams[key] = filteredArray;
-          }
-        } else {
-          queryParams[key] = value;
-        }
-      }
-    });
-    
-    searchStore.syncFromQueryParams(queryParams);
-    fromCity.value = searchStore.from || '';
-    toCity.value = searchStore.to || '';
-  }
-  
+  // Les valeurs from et to sont déjà synchronisées depuis le store
+  // (mis à jour par la page dynamique [from]/[to].vue)
   if (fromCity.value && toCity.value) {
     // Initialiser les dernières valeurs de recherche
     lastSearchFrom.value = fromCity.value;
@@ -472,7 +453,7 @@ const seoData = computed(() => {
       
       keywords: `${fromCity.value}, ${toCity.value}, car, transport, voyage, Côte d'Ivoire, horaires, prix`,
       
-      canonical: `/results?from=${encodeURIComponent(fromCity.value)}&to=${encodeURIComponent(toCity.value)}&type=car`,
+      canonical: `/results/${getSlugFromCity(fromCity.value)}/${getSlugFromCity(toCity.value)}`,
       
       ogTitle: hasResults
         ? `${resultCount} trajets ${baseTitle} disponibles`

@@ -225,7 +225,7 @@ const route = useRoute();
 const router = useRouter();
 
 const lines = ref<BusLine[]>([]);
-const busNumber = ref((route.query.ref as string) || searchStore.ref || '');
+const busNumber = ref(searchStore.ref || '');
 const modalBusNumber = ref('');
 const loading = ref(false);
 const lastSearchedBusNumber = ref('');
@@ -257,12 +257,7 @@ const searchRoute = async () => {
     showMapOnMobile.value = false;
     
     // Mettre à jour l'URL avec le paramètre ref
-    await router.push({ 
-      query: { 
-        ...route.query, 
-        ref: busNumber.value.trim() 
-      } 
-    });
+    await router.push(`/results/bus/${encodeURIComponent(busNumber.value.trim())}`);
     
     // Réinitialiser la carte si elle existe
     if (map.value) {
@@ -485,13 +480,12 @@ const handleModalSearch = () => {
 onMounted(() => {
   initDefaultMap();
   
-  // Synchroniser le store avec l'URL si nécessaire
-  if (route.query.ref && route.query.ref !== searchStore.ref) {
-    searchStore.setSearchParams({ ref: route.query.ref as string });
-  }
+  // Les valeurs sont déjà synchronisées depuis le store
+  // (mis à jour par la page dynamique bus/[ref].vue)
   
-  // Déclencher automatiquement la recherche si un numéro de bus est fourni dans l'URL ou le store
-  if (route.query.ref || searchStore.ref) {
+  // Déclencher automatiquement la recherche si un numéro de bus est fourni dans le store
+  if (searchStore.ref) {
+    busNumber.value = searchStore.ref;
     searchRoute();
   }
 });
@@ -520,8 +514,8 @@ watch(showSearchModal, (newValue: boolean) => {
   }
 });
 
-// Watcher pour synchroniser avec les changements d'URL
-watch(() => route.query.ref, (newRef) => {
+// Watcher pour synchroniser avec les changements de paramètres de route
+watch(() => route.params.ref, (newRef) => {
   if (newRef && typeof newRef === 'string' && newRef !== busNumber.value) {
     busNumber.value = newRef;
     // Ne pas déclencher automatiquement la recherche pour éviter les boucles

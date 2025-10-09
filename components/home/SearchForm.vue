@@ -130,6 +130,7 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { CarIcon, BusIcon, TrainIcon, MapPinIcon } from 'lucide-vue-next';
+import { getSlugFromCity } from '~/utils/cities';
 
 const router = useRouter();
 
@@ -185,11 +186,12 @@ const handleSearch = async () => {
     date: null
   });
 
-  // Naviguer vers la page de résultats avec les query params
-  await router.push({ 
-    path: '/results',
-    query: searchStore.getQueryParams()
-  });
+  // Convertir les noms de villes en slugs pour l'URL
+  const fromSlug = getSlugFromCity(from.value);
+  const toSlug = getSlugFromCity(to.value);
+
+  // Naviguer vers la page de résultats avec les slugs
+  await router.push(`/results/${fromSlug}/${toSlug}`);
 };
 
 const handleBusSearch = async () => {
@@ -203,11 +205,8 @@ const handleBusSearch = async () => {
     to: null
   });
 
-  // Rediriger vers la page de résultats avec les query params
-  await router.push({ 
-    path: '/results',
-    query: searchStore.getQueryParams()
-  });
+  // Rediriger vers la page de résultats avec le param ref
+  await router.push(`/results/bus/${encodeURIComponent(busNumber.value.trim())}`);
 };
 
 const quickSearch = async (destination: string) => {
@@ -221,15 +220,12 @@ const quickSearch = async (destination: string) => {
     });
     showSearchModal.value = true;
   } else {
+    // Pour desktop, on redirige vers la page d'accueil car il manque la ville de départ
+    // L'utilisateur devra compléter le formulaire
+    to.value = destination;
     searchStore.setSearchParams({
       type: activeTab.value as 'car' | 'bus',
-      from: null,
       to: destination,
-    });
-    
-    await router.push({ 
-      path: '/results',
-      query: searchStore.getQueryParams()
     });
   }
 };
@@ -244,11 +240,12 @@ const handleModalSearch = async () => {
     date: null
   });
 
-  // Naviguer vers la page de résultats avec les query params
-  await router.push({ 
-    path: '/results',
-    query: searchStore.getQueryParams()
-  });
+  // Convertir les noms de villes en slugs pour l'URL
+  const fromSlug = getSlugFromCity(from.value);
+  const toSlug = getSlugFromCity(to.value);
+
+  // Naviguer vers la page de résultats avec les slugs
+  await router.push(`/results/${fromSlug}/${toSlug}`);
 };
 
 const swapCities = () => {

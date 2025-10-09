@@ -63,7 +63,7 @@
                   <div class="w-1/3">
                     <p class="text-sm text-gray-500">Départ</p>
                     <p class="font-medium">{{ formatTime(modelValue.departure_time) }}</p>
-                    <p class="text-sm text-gray-600">{{ modelValue.origin }}</p>
+                    <p class="text-sm text-gray-600">{{ displayOrigin }}</p>
                     <p class="text-xs text-gray-400">{{ modelValue.station }}</p>
                   </div>
                   <div class="w-1/3 text-center">
@@ -73,7 +73,7 @@
                   <div class="w-1/3 text-right">
                     <p class="text-sm text-gray-500">Arrivée</p>
                     <p class="font-medium">{{ formatTime(modelValue.arrival_time) }}</p>
-                    <p class="text-sm text-gray-600">{{ modelValue.destination }}</p>
+                    <p class="text-sm text-gray-600">{{ displayDestination }}</p>
                   </div>
                 </div>
               </div>
@@ -150,6 +150,7 @@
 <script setup lang="ts">
 import { XIcon, PhoneIcon, MapPinIcon } from 'lucide-vue-next';
 import { getComfortChipClasses, parseComfortDetails } from '~/utils/comfort';
+import { getCityFromSlug } from '~/utils/cities';
 
 interface Company {
   id: string;
@@ -176,11 +177,21 @@ interface Departure {
   };
 }
 
-defineProps<{
+const props = defineProps<{
   modelValue: Departure | null;
 }>();
 
 defineEmits<{
   (e: 'update:modelValue', departure: Departure | null): void;
 }>();
+
+const displayOrigin = computed(() => {
+  if (!props.modelValue) return '';
+  return getCityFromSlug(props.modelValue.origin) || props.modelValue.origin;
+});
+
+const displayDestination = computed(() => {
+  if (!props.modelValue) return '';
+  return getCityFromSlug(props.modelValue.destination) || props.modelValue.destination;
+});
 </script>

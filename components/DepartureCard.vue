@@ -37,7 +37,7 @@
             <!-- <div class="h-3 w-3 rounded-full bg-primary-600 mr-2"></div> -->
             <p class="font-medium text-sm dark:text-gray-200">{{ formatTime(departure.departure_time) }}</p>
           </div>
-          <p class="text-xs text-gray-600 dark:text-gray-400">{{ departure.origin }}</p>
+          <p class="text-xs text-gray-600 dark:text-gray-400">{{ displayOrigin }}</p>
           <p class="text-xs text-gray-400 dark:text-gray-500">{{ departure.station }}</p>
         </div>
         
@@ -54,7 +54,7 @@
             <p class="font-medium text-sm dark:text-gray-200">{{ formatTime(departure.arrival_time) }}</p>
             <!-- <div class="h-3 w-3 rounded-full bg-corail-500 ml-2"></div> -->
           </div>
-          <p class="text-xs text-gray-600 dark:text-gray-400">{{ departure.destination }}</p>
+          <p class="text-xs text-gray-600 dark:text-gray-400">{{ displayDestination }}</p>
         </div>
       </div>
 
@@ -93,7 +93,7 @@
 import type { Departure } from '~/server/data';
 import { getComfortChipClasses } from '~/utils/comfort';
 import { Clock as ClockIcon } from 'lucide-vue-next';
-
+import { getCityFromSlug } from '~/utils/cities';
 
 const props = defineProps<{
   departure: Departure;
@@ -104,6 +104,15 @@ const emit = defineEmits<{
 }>();
 
 const showTooltip = ref(false);
+
+const displayOrigin = computed(() => {
+  return getCityFromSlug(props.departure.origin) || props.departure.origin;
+});
+
+const displayDestination = computed(() => {
+  return getCityFromSlug(props.departure.destination) || props.departure.destination;
+});
+
 const getInitials = (name?: string) => {
   if (!name) return '';
   return name
