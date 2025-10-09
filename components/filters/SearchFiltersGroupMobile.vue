@@ -207,4 +207,18 @@ const resetFilters = () => {
   };
   emitUpdate();
 };
+
+// Bloquer le scroll du body quand la modale est ouverte
+watch(showModal, (newValue) => {
+  if (newValue) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
+});
+
+// Nettoyer au démontage
+onUnmounted(() => {
+  document.body.style.overflow = '';
+});
 </script>

@@ -194,4 +194,18 @@ const displayDestination = computed(() => {
   if (!props.modelValue) return '';
   return getCityFromSlug(props.modelValue.destination) || props.modelValue.destination;
 });
+
+// Bloquer le scroll du body quand la modale est ouverte
+watch(() => props.modelValue, (newValue) => {
+  if (newValue) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
+});
+
+// Nettoyer au démontage
+onUnmounted(() => {
+  document.body.style.overflow = '';
+});
 </script>
