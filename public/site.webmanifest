@@ -1,0 +1,16 @@
+{
+  "name": "Geyavo - Transport en Côte d'Ivoire",
+  "short_name": "Geyavo",
+  "description": "Trouvez et comparez les meilleurs trajets en car et bus en Côte d'Ivoire",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#132968",
+  "theme_color": "#132968",
+  "orientation": "portrait-primary",
+  "icons": [],
+  "categories": ["travel", "transport", "navigation"],
+  "lang": "fr-CI",
+  "dir": "ltr",
+  "scope": "/",
+  "prefer_related_applications": false
+}
