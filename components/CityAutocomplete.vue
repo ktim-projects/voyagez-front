@@ -68,12 +68,10 @@
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core';
 import { X } from 'lucide-vue-next';
-import { cities } from '~/server/data';
+import type { City } from '~/types';
+import { useCities } from '~/composables/useCities';
 
-interface City {
-  name: string;
-  region: string;
-}
+const { cities } = useCities();
 
 const props = defineProps<{
   modelValue: string;

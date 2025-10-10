@@ -67,6 +67,7 @@ const emit = defineEmits<{
 
 // Gérer le scroll
 watch(() => props.modelValue, (newValue) => {
+  if (!process.client) return;
   if (newValue) {
     document.body.style.overflow = 'hidden';
     document.body.style.paddingRight = '15px'; // Pour éviter le saut dû à la disparition de la scrollbar

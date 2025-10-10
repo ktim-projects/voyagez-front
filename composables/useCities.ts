@@ -1,5 +1,6 @@
-import type { City } from './types';
+import type { City } from '~/types';
 
+// Données des villes - définies directement ici pour éviter les problèmes SSR
 const citiesData: City[] = [
   { name: 'Abidjan', region: 'Lagunes', latitude: 5.3599517, longitude: -4.0082563 },
   { name: 'Bouaké', region: 'Vallée du Bandama', latitude: 7.6907799, longitude: -5.0303319 },
@@ -14,7 +15,7 @@ const citiesData: City[] = [
   { name: 'Bondoukou', region: 'Gontougo', latitude: 8.044792, longitude: -2.800962 },
   { name: 'Odienné', region: 'Kabadougou', latitude: 9.509167, longitude: -7.564444 },
   { name: 'Aboisso', region: 'Sud-Comoé', latitude: 5.467778, longitude: -3.207222 },
-  { name: 'Dimbokro', region: 'N’Zi', latitude: 6.646805, longitude: -4.705444 },
+  { name: 'Dimbokro', region: "N'Zi", latitude: 6.646805, longitude: -4.705444 },
   { name: 'Tiassalé', region: 'Agneby-Tiassa', latitude: 5.898889, longitude: -4.822778 },
   { name: 'Toumodi', region: 'Bélier', latitude: 6.556312, longitude: -5.017755 },
   { name: 'Ferkessédougou', region: 'Tchologo', latitude: 9.593889, longitude: -5.197778 },
@@ -28,22 +29,32 @@ const citiesData: City[] = [
   { name: 'Adiaké', region: 'Sud-Comoé', latitude: 5.286340, longitude: -3.303140 },
   { name: 'Akoupé', region: 'La Mé', latitude: 6.383330, longitude: -3.900000 },
   { name: 'Alépé', region: 'La Mé', latitude: 5.500000, longitude: -3.650000 },
-  { name: 'Anyama', region: 'Lagunes', latitude: 5.494622, longitude: -4.051830 },
-  { name: 'Bouaflé', region: 'Marahoué', latitude: 6.991939, longitude: -5.744202 },
-  { name: 'Boundiali', region: 'Bagoué', latitude: 9.521560, longitude: -6.488530 },
-  { name: 'Dabou', region: 'Grands-Ponts', latitude: 5.325560, longitude: -4.376850 },
-  { name: 'Danané', region: 'Tonkpi', latitude: 7.259760, longitude: -8.154980 },
-  { name: 'Divo', region: 'Lôh-Djiboua', latitude: 5.837520, longitude: -5.357230 },
-  { name: 'Duékoué', region: 'Guémon', latitude: 6.742020, longitude: -7.352759 },
-  { name: 'Grand-Bassam', region: 'Sud-Comoé', latitude: 5.211740, longitude: -3.738840 },
-  { name: 'Jacqueville', region: 'Grands-Ponts', latitude: 5.208320, longitude: -4.414010 },
-  { name: 'Lakota', region: 'Lôh-Djiboua', latitude: 5.847016, longitude: -5.681042 },
-  { name: 'Mankono', region: 'Béré', latitude: 8.059710, longitude: -6.189851 },
-  { name: 'Sinfra', region: 'Marahoué', latitude: 6.616740, longitude: -5.912900 },
-  { name: 'Tabou', region: 'San-Pédro', latitude: 4.422700, longitude: -7.352200 },
-  { name: 'Vavoua', region: 'Haut-Sassandra', latitude: 7.381870, longitude: -6.478076 },
-  { name: 'Zuénoula', region: 'Marahoué', latitude: 7.431050, longitude: -6.045820 },
-  { name: 'Grand-Lahou', region: 'Grands-Ponts', latitude: 5.325560, longitude: -4.376850 },
+  { name: 'Adzopé', region: 'La Mé', latitude: 6.106944, longitude: -3.859444 },
+  { name: 'Anyama', region: 'Lagunes', latitude: 5.495556, longitude: -3.991667 },
+  { name: 'Bingerville', region: 'Lagunes', latitude: 5.355556, longitude: -3.893056 },
+  { name: 'Dabou', region: 'Lagunes', latitude: 5.326111, longitude: -4.376944 },
+  { name: 'Grand-Bassam', region: 'Sud-Comoé', latitude: 5.200000, longitude: -3.733333 },
+  { name: 'Grand-Lahou', region: 'Grands-Ponts', latitude: 5.250000, longitude: -5.016667 },
+  { name: 'Jacqueville', region: 'Grands-Ponts', latitude: 5.200000, longitude: -4.416667 },
+  { name: 'Lakota', region: 'Lôh-Djiboua', latitude: 5.850000, longitude: -5.683333 },
+  { name: 'Divo', region: 'Lôh-Djiboua', latitude: 5.837222, longitude: -5.357222 },
+  { name: 'Fresco', region: 'Gbôklé', latitude: 5.100000, longitude: -5.566667 },
+  { name: 'Tabou', region: 'San-Pédro', latitude: 4.423333, longitude: -7.352778 },
+  { name: 'Danané', region: 'Tonkpi', latitude: 7.260278, longitude: -8.151389 },
+  { name: 'Duékoué', region: 'Guémon', latitude: 6.750000, longitude: -7.350000 },
+  { name: 'Biankouma', region: 'Tonkpi', latitude: 7.740000, longitude: -7.610000 },
+  { name: 'Zouan-Hounien', region: 'Tonkpi', latitude: 6.916667, longitude: -8.216667 },
+  { name: 'Vavoua', region: 'Haut-Sassandra', latitude: 7.383333, longitude: -6.483333 },
+  { name: 'Sinfra', region: 'Marahoué', latitude: 6.616667, longitude: -5.900000 },
+  { name: 'Zuénoula', region: 'Marahoué', latitude: 7.433333, longitude: -6.050000 },
+  { name: 'Bouaflé', region: 'Marahoué', latitude: 6.983333, longitude: -5.750000 },
+  { name: 'Oumé', region: 'Gôh', latitude: 6.383333, longitude: -5.416667 },
+  { name: 'Duekoue', region: 'Guémon', latitude: 6.750000, longitude: -7.350000 },
 ];
 
-export const cities = citiesData.sort((a, b) => a.name.localeCompare(b.name));
+
+export const useCities = () => {
+  return {
+    cities: citiesData.sort((a, b) => a.name.localeCompare(b.name)),
+  }
+}

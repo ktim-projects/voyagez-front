@@ -78,19 +78,6 @@ const props = defineProps({
   }
 });
 
-const router = useRouter();
-
-const goBack = () => {
-  // Vérifier s'il y a un historique
-  if (window.history.length > 1) {
-    router.back();
-  } else {
-    // Sinon, rediriger vers l'accueil
-    router.push('/');
-  }
-};
-
-// SEO
 useHead({
   title: '404 - Page non trouvée | Geyavo',
   meta: [

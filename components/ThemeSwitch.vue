@@ -26,6 +26,9 @@ const toggleTheme = () => {
 
 // Fonction pour mettre à jour le thème
 const updateTheme = () => {
+  // Vérifier qu'on est côté client
+  if (!process.client) return;
+  
   // Mettre à jour les classes sur le document
   if (isDark.value) {
     document.documentElement.classList.add('dark');

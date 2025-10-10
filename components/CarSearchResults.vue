@@ -128,15 +128,19 @@
               @update:modelValue="debouncedFilterSearch"
             />
 
-            <!-- Results List -->
             <div>
-              <!-- Loading State -->
               <div v-if="loading" class="text-center py-8">
                 <CarLoader />
                 <p class="text-gray-500 dark:text-gray-400">{{ $t('results.searchingTrips') }}</p>
               </div>
 
-              <!-- Results List -->
+              <div v-else-if="departures.length === 0">
+                <SearchEmptyState
+                  :title="$t('results.noResults')"
+                  :description="$t('results.noResultsDescription')"
+                />
+              </div>
+
               <div v-else-if="departures.length > 0" class="space-y-4">
                 <DepartureCard
                   v-for="departure in departures" 
@@ -145,7 +149,6 @@
                   @click="departureSelected = departure"
                 />
 
-                <!-- Load More Button -->
                 <div v-if="hasMoreResults" class="flex justify-center mt-8 mb-4">
                   <button 
                     @click="loadMoreResults"
@@ -157,18 +160,9 @@
                   </button>
                 </div>
               </div>
-
-              <!-- Empty State -->
-              <div v-else>
-                <SearchEmptyState
-                  :title="$t('results.noResults')"
-                  :description="$t('results.noResultsDescription')"
-                />
-              </div>
             </div>
           </div>
 
-          <!-- Map Section - Hidden on Mobile -->
           <div class="hidden lg:block col-span-12 lg:col-span-5">
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-light p-4 sticky" style="top: calc(var(--header-height, 64px) + var(--form-height, 88px) + 1.5rem);">
               <div class="aspect-[3/4] bg-gray-100 dark:bg-gray-700 rounded-lg">
@@ -217,7 +211,7 @@ const router = useRouter();
 const route = useRoute();
 
 const searchStore = useSearchStore();
-const loading = ref(false);
+const loading = ref(true);
 const departures = ref<Departure[]>([]);
 const showFiltersModal = ref(false);
 const departureSelected = ref<Departure | null>(null);
@@ -229,6 +223,7 @@ const page = ref(1);
 const limit = 25;
 
 const { searchCars } = useSecureApi()
+  const { isCityValid } = await import('~/utils/cities');
 
 const hasMoreResults = computed(() => {
   return page.value < totalPages.value;
@@ -238,14 +233,12 @@ const loadingMore = ref(false);
 
 const fromCity = ref(searchStore.from || '');
 const toCity = ref(searchStore.to || '');
-const hasSearched = ref(false); // Variable for tracking if a search has been performed
+const hasSearched = ref(false);
 const showSearchModal = ref(false);
 
-// Variables pour tracker la dernière recherche effectuée
 const lastSearchFrom = ref('');
 const lastSearchTo = ref('');
 
-// Variable pour tracker si on est en train de filtrer
 const isFiltering = ref(false);
 
 const filters = ref({
@@ -255,34 +248,26 @@ const filters = ref({
   comfortCategories: [] as string[]
 });
 
-// const companies = computed(() => carCompanies);
-
-// Liste statique des catégories de confort disponibles
 const comfortCategories = ref(['Ordinaire', 'VIP', 'VVIP']);
 
-// Computed pour vérifier si la recherche actuelle est différente de la précédente
 const isSearchChanged = computed(() => {
   return fromCity.value !== lastSearchFrom.value || toCity.value !== lastSearchTo.value;
 });
 
-// Computed pour l'état du bouton de recherche
 const isSearchDisabled = computed(() => {
   return !fromCity.value || !toCity.value || fromCity.value === toCity.value || (!isSearchChanged.value && hasSearched.value) || loading.value;
 });
 
-// Computed pour déterminer si les filtres doivent être affichés
 const shouldShowFilters = computed(() => {
   return hasSearched.value && (departures.value.length > 0 || isFiltering.value);
 });
 
 const debouncedFilterSearch = useDebounceFn(() => {
-  isFiltering.value = true; // Marquer qu'on est en train de filtrer
+  isFiltering.value = true;
   page.value = 1;
-  // currentSort.value = 'price_asc';
-  performSearch(true); // Passer true pour indiquer que c'est un filtrage
+  performSearch(true);
 }, 500);
 
-// Wrapper pour les formulaires (sans paramètres)
 const handleSearch = async () => {
   await performSearch(false);
 };
@@ -292,42 +277,43 @@ const performSearch = async (isFilteringParam = false) => {
     return;
   }
 
-  // Vérifier si la recherche est différente de la précédente
-  // Permettre les recherches avec filtres même si les villes n'ont pas changé
   if (!isSearchChanged.value && hasSearched.value && !isFilteringParam) {
     return;
   }
 
-  hasSearched.value = true; // Mark that a search has been performed
+  hasSearched.value = true;
   
-  // Si ce n'est pas un filtrage, réinitialiser l'état de filtrage
   if (!isFilteringParam) {
     isFiltering.value = false;
   }
   
-  // Sauvegarder les villes de la recherche actuelle
   lastSearchFrom.value = fromCity.value;
   lastSearchTo.value = toCity.value;
   
-  // Mettre à jour le store avec les nouvelles valeurs
+
+  
+  if (!isCityValid(fromCity.value) || !isCityValid(toCity.value)) {
+    await router.push('/destinations-populaires');
+    return;
+  }
+  
   searchStore.setSearchParams({
     type: 'car',
     from: fromCity.value,
     to: toCity.value
   });
   
-  // Convertir les noms de villes en slugs pour l'URL
   const fromSlug = getSlugFromCity(fromCity.value);
   const toSlug = getSlugFromCity(toCity.value);
   
-  // Mettre à jour l'URL avec les slugs
   await router.replace(`/results/${fromSlug}/${toSlug}`);
   
   loading.value = true;
   departures.value = [];
   
-  // Remonter en haut de la page lors d'une nouvelle recherche
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (process.client) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
   
   try {
     const response = await searchCars({
@@ -387,12 +373,8 @@ const loadMoreResults = async () => {
   }
 }
 
-// Trigger search on component mount
 onMounted(() => {
-  // Les valeurs from et to sont déjà synchronisées depuis le store
-  // (mis à jour par la page dynamique [from]/[to].vue)
   if (fromCity.value && toCity.value) {
-    // Initialiser les dernières valeurs de recherche
     lastSearchFrom.value = fromCity.value;
     lastSearchTo.value = toCity.value;
     performSearch();
@@ -411,7 +393,6 @@ const handleToSelect = (city: any) => {
   });
 }
 
-// Fonction pour inverser les villes de départ et d'arrivée
 const swapCities = () => {
   const tempFrom = fromCity.value;
   const tempTo = toCity.value;
@@ -419,13 +400,6 @@ const swapCities = () => {
   fromCity.value = tempTo;
   toCity.value = tempFrom;
   
-  // Mettre à jour le store
-  // searchStore.setSearchParams({
-  //   from: tempTo,
-  //   to: tempFrom
-  // });
-  
-  // Lancer une nouvelle recherche si les deux villes sont définies
   if (fromCity.value && toCity.value) {
     showSearchModal.value = false;
     performSearch();
@@ -436,7 +410,6 @@ watch(() => currentSort.value, () => {
   debouncedFilterSearch();
 });
 
-// SEO dynamique basé sur les données de recherche
 const seoData = computed(() => {
   const hasSearchData = fromCity.value && toCity.value;
   const hasResults = departures.value.length > 0;
@@ -468,7 +441,6 @@ const seoData = computed(() => {
     };
   }
   
-  // Fallback pour les cas sans données de recherche
   return {
     title: 'Recherche de trajets en car - Geyavo',
     description: 'Trouvez et comparez les meilleurs trajets en car en Côte d\'Ivoire. Réservez votre voyage avec les meilleures compagnies de transport.',
@@ -479,11 +451,9 @@ const seoData = computed(() => {
   };
 });
 
-// Application du SEO avec données dynamiques
 useHead(() => ({
   title: seoData.value.title,
   meta: [
-    // Description
     {
       name: 'description',
       content: seoData.value.description

@@ -77,6 +77,7 @@
 <script setup lang="ts">
 
 const scrollToDestinations = () => {
+  if (!process.client) return;
   const destinations = document.querySelector('.popular-destinations-section');
   if (destinations) {
     destinations.scrollIntoView({ behavior: 'smooth' });

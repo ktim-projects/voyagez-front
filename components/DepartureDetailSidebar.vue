@@ -197,6 +197,7 @@ const displayDestination = computed(() => {
 
 // Bloquer le scroll du body quand la modale est ouverte
 watch(() => props.modelValue, (newValue) => {
+  if (!process.client) return;
   if (newValue) {
     document.body.style.overflow = 'hidden';
   } else {
@@ -206,6 +207,8 @@ watch(() => props.modelValue, (newValue) => {
 
 // Nettoyer au démontage
 onUnmounted(() => {
-  document.body.style.overflow = '';
+  if (process.client) {
+    document.body.style.overflow = '';
+  }
 });
 </script>

@@ -85,6 +85,14 @@
             <p class="text-gray-500 dark:text-gray-400 mt-2">{{ $t('busSearch.searchingMessage') }}</p>
           </div>
 
+          <EmptyState
+              v-else-if="routes.length === 0"
+              :title="$t('busSearch.noResults')"
+              :description="$t('busSearch.noResultsDescription')"
+              image="/images/empty-search.svg"
+              class="dark:text-white"
+            />
+
           <template v-else>
             <div v-if="routes.length > 0" class="bg-white dark:bg-gray-800 rounded-lg pt-4">
               <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">
@@ -159,13 +167,6 @@
                 />
               </div>
             </div>
-            <EmptyState
-              v-else
-              :title="$t('busSearch.noResults')"
-              :description="$t('busSearch.noResultsDescription')"
-              image="/images/empty-search.svg"
-              class="dark:text-white"
-            />
           </template>
         </div>
       </div>
@@ -187,15 +188,29 @@
 </template>
 
 <script setup lang="ts">
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
-import type { BusLine } from '~/server/data/mockData';
 import { LineData } from '~/modules/bus/models/line_data';
 import { getAllRoutesInfo } from '~/modules/bus/utils/route-utils';
-import { displayRouteMap } from '~/modules/bus/utils/map-utils';
 import { ChevronLeft, X as XIcon, Map as MapIcon, List as ListIcon } from 'lucide-vue-next';
 import { useSearchStore } from '~/stores/search';
-import type { Ref } from 'vue';
+
+let L: any = null;
+let displayRouteMap: any = null;
+
+export interface BusStop {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  description: string;
+}
+
+ interface BusLine {
+  id: string;
+  number: string;
+  name: string;
+  color: string;
+  stops: BusStop[];
+}
 
 // Types pour les données
 interface Stop {
@@ -227,7 +242,7 @@ const router = useRouter();
 const lines = ref<BusLine[]>([]);
 const busNumber = ref(searchStore.ref || '');
 const modalBusNumber = ref('');
-const loading = ref(false);
+const loading = ref(true);
 const lastSearchedBusNumber = ref('');
 const displayedBusNumber = ref('');
 const isFormValid = computed(() => busNumber.value.trim() !== '' && busNumber.value !== lastSearchedBusNumber.value);
@@ -368,7 +383,7 @@ const calculateBounds = (stops: Stop[]): [[number, number], [number, number]] | 
 
 // Mettre à jour la carte avec l'itinéraire sélectionné
 const updateMap = () => {
-  if (!mapContainer.value) return;
+  if (!mapContainer.value || !displayRouteMap) return;
   
   // Supprimer la carte existante si elle existe
   if (map.value) {
@@ -431,7 +446,7 @@ const updateMap = () => {
 
 // Initialiser la carte par défaut
 const initDefaultMap = () => {
-  if (!mapContainer.value) return;
+  if (!mapContainer.value || !L) return;
   
   // Nettoyer le conteneur au cas où
   if (map.value) {
@@ -477,7 +492,14 @@ const handleModalSearch = () => {
 };
 
 // Initialiser la carte au montage du composant
-onMounted(() => {
+onMounted(async () => {
+  if (process.client) {
+    await import('leaflet/dist/leaflet.css');
+    L = (await import('leaflet')).default;
+    const mapUtils = await import('~/modules/bus/utils/map-utils');
+    displayRouteMap = mapUtils.displayRouteMap;
+  }
+  
   initDefaultMap();
   
   // Les valeurs sont déjà synchronisées depuis le store

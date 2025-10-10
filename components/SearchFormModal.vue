@@ -93,14 +93,19 @@
 <script setup lang="ts">
 import { Dialog, DialogPanel, DialogTitle, TransitionRoot, TransitionChild } from '@headlessui/vue'
 import { ArrowLeftRight } from 'lucide-vue-next'
-import type { City } from '../types'
+import type { City } from '~/types';
 
-const props = defineProps<{
-  show: boolean
-  fromCity: string
-  toCity: string
-  searchDisabled: boolean
-}>()
+const props = withDefaults(defineProps<{
+  show?: boolean
+  fromCity?: string
+  toCity?: string
+  searchDisabled?: boolean
+}>(), {
+  show: false,
+  fromCity: '',
+  toCity: '',
+  searchDisabled: false
+})
 
 const emit = defineEmits<{
   'update:show': [value: boolean]

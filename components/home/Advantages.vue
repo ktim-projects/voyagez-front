@@ -95,6 +95,7 @@ const advantages = [
 ];
 
 const scrollToSearch = () => {
+  if (!process.client) return;
   const searchForm = document.querySelector('.search-form-section');
   if (searchForm) {
     searchForm.scrollIntoView({ behavior: 'smooth' });

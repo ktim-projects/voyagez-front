@@ -168,6 +168,13 @@ const handleToSelect = (city: any) => {
 const handleSearch = async () => {
   if (!from.value || !to.value) return;
 
+  const { isCityValid } = await import('~/utils/cities');
+  
+  if (!isCityValid(from.value) || !isCityValid(to.value)) {
+    await router.push('/destinations-populaires');
+    return;
+  }
+
   searchStore.setSearchParams({
     type: activeTab.value as 'car' | 'bus',
     from: from.value,
@@ -195,7 +202,7 @@ const handleBusSearch = async () => {
 };
 
 const quickSearch = async (destination: string) => {
-  const isMobile = window.innerWidth < 768;
+  const isMobile = process.client ? window.innerWidth < 768 : false;
   
   if (isMobile) {
     to.value = destination;
@@ -215,6 +222,13 @@ const quickSearch = async (destination: string) => {
 
 const handleModalSearch = async () => {
   if (!from.value || !to.value) return;
+
+  const { isCityValid } = await import('~/utils/cities');
+  
+  if (!isCityValid(from.value) || !isCityValid(to.value)) {
+    await router.push('/destinations-populaires');
+    return;
+  }
 
   searchStore.setSearchParams({
     type: activeTab.value as 'car' | 'bus',

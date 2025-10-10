@@ -71,6 +71,7 @@ const scrollY = ref(0);
 
 // Fonction pour faire défiler jusqu'au formulaire de recherche
 const scrollToSearch = () => {
+  if (!process.client) return;
   const searchForm = document.querySelector('.search-form-section');
   if (searchForm) {
     searchForm.scrollIntoView({ behavior: 'smooth' });
@@ -79,6 +80,7 @@ const scrollToSearch = () => {
 
 // Fonction pour faire défiler jusqu'aux destinations populaires
 const scrollToDestinations = () => {
+  if (!process.client) return;
   const destinations = document.querySelector('.popular-destinations-section');
   if (destinations) {
     destinations.scrollIntoView({ behavior: 'smooth' });
@@ -87,7 +89,9 @@ const scrollToDestinations = () => {
 
 // Effet de parallaxe au défilement
 const handleScroll = () => {
-  scrollY.value = window.scrollY;
+  if (process.client) {
+    scrollY.value = window.scrollY;
+  }
 };
 
 // Rotation des images de fond
