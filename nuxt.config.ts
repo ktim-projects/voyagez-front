@@ -15,6 +15,9 @@ export default defineNuxtConfig({
       supabaseUrl: process.env.SUPABASE_URL,
       supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
       apiKeyFrontend: process.env.API_KEY_FRONTEND,
+      // Mode maintenance
+      maintenanceMode: process.env.MAINTENANCE_MODE || 'false',
+      maintenanceAllowedIPs: process.env.MAINTENANCE_ALLOWED_IPS || '',
     }
   },
 
