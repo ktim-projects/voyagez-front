@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-[calc(100vh-4rem)] relative dark:bg-gray-950">
-    <div class="grid grid-cols-1 md:grid-cols-12 h-full">
+  <div class="md:min-h-[calc(100vh-4rem)] relative">
+    <div class="grid grid-cols-1 md:grid-cols-12 md:h-full">
       <div class="bg-primary-600 md:hidden fixed top-0 left-0 right-0 z-50 shadow-md">
         <div class="container mx-auto px-4 py-3">
           <div class="flex items-center justify-between">
@@ -63,7 +63,7 @@
         </div>
       </div>
  
-      <div class="md:col-span-5 lg:col-span-4 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto h-[calc(100vh-4rem)] md:pt-0" :class="[{'hidden md:block': showMapOnMobile}, routes.length > 0 ? 'pt-28' : 'pt-14']">
+      <div class="md:col-span-5 lg:col-span-4 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto md:h-[calc(100vh-4rem)] md:pt-0" :class="[{'hidden md:block': showMapOnMobile}, routes.length > 0 ? 'pt-28' : 'pt-14']">
         <div class="p-6 border-b border-gray-200 dark:border-gray-700" :class="{'hidden md:block': routes.length > 0}" v-if="!loading">
           <form @submit.prevent="searchRoute" class="space-y-6">
               <div>
@@ -171,9 +171,9 @@
         </div>
       </div>
       <!-- Map (Desktop always, Mobile conditionally) -->
-      <div class="md:col-span-7 lg:col-span-8 relative" :class="[
+      <div class="md:col-span-7 lg:col-span-8 relative bg-gray-100 dark:bg-gray-900" :class="[
         showMapOnMobile ? 'block' : 'hidden md:block',
-        showMapOnMobile && routes.length > 0 ? 'h-[calc(100vh-9rem)] mt-20' : 'h-[calc(100vh-4rem)]'
+        showMapOnMobile && routes.length > 0 ? 'h-[calc(100vh-9rem)] mt-20' : 'h-screen md:h-[calc(100vh-4rem)]'
       ]">
         <div ref="mapContainer" class="absolute inset-0 z-0"></div>
       </div>

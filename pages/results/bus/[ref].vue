@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen dark:bg-gray-950">
+  <div class="dark:bg-gray-950">
     <BusSearchResults />
   </div>
 </template>

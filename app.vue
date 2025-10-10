@@ -4,7 +4,7 @@
     <Header v-if="!isMaintenancePage" />
     <Analytics />
     <NuxtPage />
-    <Footer v-if="!isMaintenancePage" />
+    <Footer v-if="!isMaintenancePage" :class="{ 'hidden md:block': isBusResultsPage }" />
   </div>
 </template>
 
@@ -17,4 +17,7 @@ const route = useRoute()
 
 // Masquer Header et Footer sur la page de maintenance
 const isMaintenancePage = computed(() => route.path === '/maintenance')
+
+// Masquer Footer en mobile sur les pages de résultats de bus
+const isBusResultsPage = computed(() => route.path.startsWith('/results/bus/'))
 </script>
