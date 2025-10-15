@@ -182,7 +182,6 @@
       </div>
     </div>
 
-    <!-- Journey Details Sidebar -->
     <DepartureDetailSidebar
       v-model="departureSelected"
     />

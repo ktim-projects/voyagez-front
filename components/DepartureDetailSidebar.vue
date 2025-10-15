@@ -24,7 +24,6 @@
           class="fixed inset-y-0 right-0 w-full md:w-96 bg-white shadow-xl z-[60] overflow-y-auto"
           @click.stop
         >
-          <!-- Modal Header -->
           <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center z-[70] shadow-sm">
             <h3 class="text-lg font-semibold text-gray-800">Détails du trajet</h3>
             <button
@@ -35,10 +34,8 @@
             </button>
           </div>
 
-          <!-- Modal Content -->
           <div class="p-6">
             <div v-if="modelValue" class="space-y-6">
-              <!-- Company Info -->
               <div class="flex items-center justify-between">
                 <div class="flex items-center">
                   <img 
@@ -49,7 +46,7 @@
                   />
                   <div>
                     <h4 class="font-medium text-gray-900">{{ modelValue.company?.name }}</h4>
-                    <p class="text-sm text-gray-500">Transport routier</p>
+                    <p class="text-sm text-gray-500">{{ modelValue.station }}</p>
                   </div>
                 </div>
                 <p class="text-lg font-bold text-primary-600">
@@ -57,14 +54,12 @@
                 </p>
               </div>
 
-              <!-- Journey Details -->
               <div class="border border-gray-200 rounded-lg p-4 space-y-4">
                 <div class="flex items-start">
                   <div class="w-1/3">
                     <p class="text-sm text-gray-500">Départ</p>
                     <p class="font-medium">{{ formatTime(modelValue.departure_time) }}</p>
                     <p class="text-sm text-gray-600">{{ displayOrigin }}</p>
-                    <p class="text-xs text-gray-400">{{ modelValue.station }}</p>
                   </div>
                   <div class="w-1/3 text-center">
                     <p class="text-sm text-gray-500">Durée</p>
@@ -78,9 +73,7 @@
                 </div>
               </div>
 
-              <!-- Comfort Section -->
               <div v-if="modelValue.comfort_info?.category" class="border border-gray-200 rounded-lg p-4">
-                <!-- Header with title and chip -->
                 <div class="flex items-center justify-between mb-3">
                   <h4 class="font-medium text-gray-900">Catégorie de confort</h4>
                   <span 
@@ -91,7 +84,6 @@
                   </span>
                 </div>
                 
-                <!-- Comfort Details as bullet points -->
                 <ul class="text-sm text-gray-600 dark:text-gray-300 space-y-1">
                   <li 
                     v-for="detail in parseComfortDetails(modelValue.comfort_info.details)" 
@@ -104,29 +96,28 @@
                 </ul>
               </div>
 
-              <!-- Contact Section -->
-              <div class="border border-gray-200 rounded-lg p-4">
-                <h4 class="font-medium text-gray-900 mb-3">Contact</h4>
+              <div v-if="contactsList.length > 0 || modelValue.company?.email" class="border border-gray-200 rounded-lg p-4">
+                <h4 class="font-medium text-gray-900 mb-3">Contacts</h4>
                 <div class="space-y-2">
                   <a 
-                    :href="'tel:' + modelValue?.company?.phone"
-                    class="flex items-center text-sm"
+                    v-for="(contact, index) in contactsList"
+                    :key="index"
+                    :href="'tel:+225' + contact.replace(/\s+|-|\./g, '')"
+                    class="flex items-center text-sm text-gray-700 hover:text-primary-600 transition-colors"
                   >
-                    <PhoneIcon class="w-4 h-4 mr-2" />
-                    {{ modelValue?.company?.phone || '08 99 99 99 99' }}
+                    <PhoneIcon class="w-4 h-4 mr-2 flex-shrink-0" />
+                    <span>{{ formatPhoneNumber(contact) }}</span>
                   </a>
                   <a 
-                    :href="'https://maps.google.com/?q=' + modelValue?.company?.address"
-                    target="_blank"
-                    class="flex items-center text-sm"
+                    :href="'mailto:' + modelValue.company?.email"
+                    class="flex items-center text-sm text-gray-700 hover:text-primary-600 transition-colors"
                   >
-                    <MapPinIcon class="w-4 h-4 mr-2" />
-                    {{ modelValue?.company?.address || 'adresse@test' }}
+                    <MailIcon class="w-4 h-4 mr-2 flex-shrink-0" />
+                    <span>{{ modelValue.company?.email  || 'contact@geyavo.com' }}</span>
                   </a>
                 </div>
               </div>
 
-              <!-- Services Section -->
               <div v-if="modelValue.company?.services?.length" class="border border-gray-200 rounded-lg p-4">
                 <h4 class="font-medium text-gray-900 mb-3">Services</h4>
                 <div class="flex flex-wrap gap-2">
@@ -148,7 +139,7 @@
 </template>
 
 <script setup lang="ts">
-import { XIcon, PhoneIcon, MapPinIcon } from 'lucide-vue-next';
+import { XIcon, PhoneIcon, MailIcon } from 'lucide-vue-next';
 import { getComfortChipClasses, parseComfortDetails } from '~/utils/comfort';
 import { getCityFromSlug } from '~/utils/cities';
 
@@ -157,6 +148,7 @@ interface Company {
   name: string;
   logo_url?: string;
   phone?: string;
+  email?: string;
   address?: string;
   services?: string[];
 }
@@ -171,6 +163,7 @@ interface Departure {
   origin: string;
   destination: string;
   station: string;
+  contacts?: string;
   comfort_info?: {
     category: string;
     details: string;
@@ -195,7 +188,28 @@ const displayDestination = computed(() => {
   return getCityFromSlug(props.modelValue.destination) || props.modelValue.destination;
 });
 
-// Bloquer le scroll du body quand la modale est ouverte
+const contactsList = computed(() => {
+  if (!props.modelValue?.contacts) return [];
+  return props.modelValue.contacts
+    .split(',')
+    .map(contact => contact.trim())
+    .filter(contact => contact.length > 0);
+});
+
+const formatPhoneNumber = (phone: string): string => {
+  // Nettoyer le numéro (enlever espaces, tirets, etc.)
+  const cleaned = phone.replace(/\s+|-|\./g, '');
+  
+  // Si le numéro commence déjà par +225, l'enlever pour le reformater
+  const number = cleaned.replace(/^\+225/, '').replace(/^225/, '');
+  
+  // Espacer par groupes de 2 chiffres
+  const formatted = number.match(/.{1,2}/g)?.join(' ') || number;
+  
+  // Ajouter l'indicatif ivoirien
+  return `(+225) ${formatted}`;
+};
+
 watch(() => props.modelValue, (newValue) => {
   if (!process.client) return;
   if (newValue) {
@@ -205,7 +219,6 @@ watch(() => props.modelValue, (newValue) => {
   }
 });
 
-// Nettoyer au démontage
 onUnmounted(() => {
   if (process.client) {
     document.body.style.overflow = '';

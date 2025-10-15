@@ -55,6 +55,7 @@ export interface Departure {
   date: string;
   company: CarCompany
   station: string;
+  contacts?: string;
   comfort_info?: {
     category: string;
     details: string;

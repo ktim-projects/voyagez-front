@@ -28,7 +28,7 @@ async function getCachedCompanies(client: any, operatorIds: string[]) {
   if (uncachedIds.length > 0) {
     const { data: freshCompanies } = await client
       .from('company')
-      .select('id, name, logo_url, contact, email')
+      .select('id, name, logo_url')
       .in('id', uncachedIds)
     
     // Add to cache
@@ -117,12 +117,11 @@ export default defineEventHandler(async (event) => {
       date,
       station,
       comfort_info,
+      contacts,
       company:operator (
         id,
         name,
-        logo_url,
-        contact,
-        email
+        logo_url
       )
     `, { count: 'exact' })
     .eq('origin', from)
@@ -189,7 +188,7 @@ export default defineEventHandler(async (event) => {
     
     let fallbackQuery = client
       .from('departure')
-      .select('*, comfort_info', { count: 'exact' })
+      .select('*, comfort_info, contacts', { count: 'exact' })
       .eq('origin', from)
       .eq('destination', to)
 
