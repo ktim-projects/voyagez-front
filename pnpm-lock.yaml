@@ -81,6 +81,9 @@ importers:
       '@types/leaflet':
         specifier: ^1.9.8
         version: 1.9.14
+      '@vitejs/plugin-vue':
+        specifier: ^5.0.0
+        version: 5.2.1(vite@5.4.11(@types/node@22.10.0)(sass@1.86.3)(terser@5.36.0))(vue@3.5.13(typescript@5.8.3))
       '@vitest/ui':
         specifier: ^3.2.4
         version: 3.2.4(vitest@3.2.4)
