@@ -19,6 +19,11 @@ export type ResponseBus = {
 const busCache = new Map<string, { data: any; timestamp: number }>()
 const CACHE_DURATION = 5 * 60 * 60 * 1000 // 5 heures en millisecondes
 
+// Fonction pour nettoyer le cache (utile pour les tests)
+export const clearBusCache = () => {
+  busCache.clear()
+}
+
 export const useSecureApi = () => {
   const config = useRuntimeConfig()
   

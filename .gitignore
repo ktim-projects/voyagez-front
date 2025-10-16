@@ -8,3 +8,11 @@ node_modules
 .env
 dist
 security-tests
+
+# Test coverage
+coverage
+*.lcov
+.nyc_output
+
+# Vitest
+.vitest
