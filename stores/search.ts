@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { useRouter, useRoute } from 'vue-router'
 
 interface SearchState {
   type: 'car' | 'bus' | null
