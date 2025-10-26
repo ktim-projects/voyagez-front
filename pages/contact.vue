@@ -68,6 +68,15 @@
             ></textarea>
           </div>
 
+          <!-- Messages d'erreur/succès -->
+          <div v-if="successMessage" class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+            <p class="text-green-800 dark:text-green-200">{{ successMessage }}</p>
+          </div>
+          
+          <div v-if="errorMessage" class="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <p class="text-red-800 dark:text-red-200">{{ errorMessage }}</p>
+          </div>
+
           <!-- Bouton d'envoi -->
           <div>
             <button
@@ -75,7 +84,7 @@
               :disabled="isSubmitting"
               class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span v-if="isSubmitting">
+              <span v-if="isSubmitting" class="flex items-center">
                 <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -97,7 +106,7 @@
           <div class="ml-4">
             <h3 class="text-lg font-medium text-gray-900 dark:text-white">{{ $t('contact.contactInfo.phone.title') }}</h3>
             <p class="mt-1 text-gray-600 dark:text-gray-400">{{ $t('contact.contactInfo.phone.hours') }}</p>
-            <a :href="'tel:' + $t('contact.contactInfo.phone.number')" class="mt-1 block text-primary-600 dark:text-primary-400 hover:text-primary-500">
+            <a :href="'tel:' + $t('contact.contactInfo.phone.number')" class="mt-1 block text-primary-600 dark:text-corail-400 hover:text-corail-500">
               {{ $t('contact.contactInfo.phone.number') }}
             </a>
           </div>
@@ -105,13 +114,13 @@
 
         <div class="flex items-center">
           <div class="flex-shrink-0">
-            <MailIcon class="h-6 w-6 text-primary-600 dark:text-primary-400" />
+            <MailIcon class="h-6 w-6 text-primary-600 dark:text-corail-400" />
           </div>
           <div class="ml-4">
             <h3 class="text-lg font-medium text-gray-900 dark:text-white">{{ $t('contact.contactInfo.email.title') }}</h3>
             <p class="mt-1 text-gray-600 dark:text-gray-400">{{ $t('contact.contactInfo.email.response') }}</p>
-            <a :href="'mailto:' + $t('contact.contactInfo.email.address')" class="mt-1 block text-primary-600 dark:text-primary-400 hover:text-primary-500">
-              {{ $t('contact.contactInfo.email.address') }}
+            <a :href="'mailto:contact@geyavo.com'" class="mt-1 block text-primary-600 dark:text-corail-400 hover:text-corail-500">
+              contact@geyavo.com
             </a>
           </div>
         </div>
@@ -132,13 +141,19 @@ const formData = ref({
 })
 
 const isSubmitting = ref(false)
+const successMessage = ref('')
+const errorMessage = ref('')
 
 const handleSubmit = async () => {
   isSubmitting.value = true
+  successMessage.value = ''
+  errorMessage.value = ''
   
   try {
-    // Simuler un délai d'envoi
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    const { sendContactMessage } = useSecureApi()
+    await sendContactMessage(formData.value)
+    
+    successMessage.value = '✅ Message envoyé avec succès! Nous vous répondrons au plus vite.'
     
     // Réinitialiser le formulaire
     formData.value = {
@@ -147,11 +162,19 @@ const handleSubmit = async () => {
       subject: '',
       message: ''
     }
+  } catch (error: any) {
+    console.error('Contact error:', error)
     
-    // Afficher un message de succès
-    alert($t('contact.form.successMessage'))
-  } catch (error) {
-    alert($t('contact.form.errorMessage'))
+    if (error.statusCode === 409 || error.data?.message?.includes('You already have a pending message.')) {
+      errorMessage.value = '⚠️ Vous avez déjà un message en attente. Veuillez attendre notre réponse avant d\'envoyer un nouveau message.'
+
+    }else if (error.statusCode === 400 && error.data?.message?.includes("Invalid email format")) {
+      errorMessage.value = '❌ Veuillez entrer une adresse email valide.'
+    } else if (error.statusCode === 400 && error.data?.message?.includes('required')) {
+      errorMessage.value = '❌ Veuillez remplir tous les champs obligatoires.'
+    } else {
+      errorMessage.value = '❌ Une erreur est survenue lors de l\'envoi de votre message. Veuillez réessayer plus tard.'
+    }
   } finally {
     isSubmitting.value = false
   }

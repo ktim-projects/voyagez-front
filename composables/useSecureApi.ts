@@ -113,11 +113,19 @@ export const useSecureApi = () => {
       }
     })
   }
+
+  const sendContactMessage = async (data: { name: string; email: string; subject: string; message: string }) => {
+    return await secureApiFetch('/api/contact', {
+      method: 'POST',
+      body: data
+    })
+  }
   
   return {
     secureApiFetch,
     searchCars,
     searchBus,
-    subscribeNewsletter
+    subscribeNewsletter,
+    sendContactMessage
   }
 }

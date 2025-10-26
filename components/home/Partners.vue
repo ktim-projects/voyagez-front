@@ -11,7 +11,9 @@
             <p class="text-gray-600 dark:text-gray-400 mb-8 text-lg">
               {{ $t('home.partners.description') }}
             </p>
-            <AppButton variant="corail" :label="$t('home.partners.button')" :fullWidth="false" />
+            <NuxtLink to="/contact">
+              <AppButton variant="corail" :label="$t('home.partners.button')" :fullWidth="false" />
+            </NuxtLink>
           </div>
 
           <!-- Partenaires à droite -->

@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     apiKeyAdmin: process.env.API_KEY_ADMIN,
     apiKeyStats: process.env.API_KEY_STATS,
     brevoApiKey: process.env.BREVO_API_KEY,
+    slackWebhookUrl: process.env.SLACK_WEBHOOK_URL,
     
     // Variables publiques (côté client)
     public: {

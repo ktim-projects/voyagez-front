@@ -416,4 +416,65 @@ describe('useSecureApi', () => {
       await expect(subscribeNewsletter('invalid-email')).rejects.toEqual(errorResponse)
     })
   })
+
+  describe('sendContactMessage', () => {
+    it('should send POST request with contact data', async () => {
+      const mockResponse = { success: true, message: 'Message sent successfully' }
+      ;(global as any).$fetch = vi.fn().mockResolvedValue(mockResponse)
+
+      const { sendContactMessage } = useSecureApi()
+      const contactData = {
+        name: 'John Doe',
+        email: 'john@example.com',
+        subject: 'general',
+        message: 'Hello, I have a question...'
+      }
+      const result = await sendContactMessage(contactData)
+
+      expect((global as any).$fetch).toHaveBeenCalledWith('/api/contact', {
+        method: 'POST',
+        body: contactData,
+        headers: {
+          'x-api-key': 'test-api-key'
+        }
+      })
+      expect(result).toEqual(mockResponse)
+    })
+
+    it('should handle pending message error', async () => {
+      const errorResponse = {
+        statusCode: 409,
+        data: { success: false, message: 'You already have a pending message. Please wait for a response before sending another one.' }
+      }
+      ;(global as any).$fetch = vi.fn().mockRejectedValue(errorResponse)
+
+      const { sendContactMessage } = useSecureApi()
+      const contactData = {
+        name: 'John Doe',
+        email: 'john@example.com',
+        subject: 'support',
+        message: 'Another message'
+      }
+
+      await expect(sendContactMessage(contactData)).rejects.toEqual(errorResponse)
+    })
+
+    it('should handle validation errors', async () => {
+      const errorResponse = {
+        statusCode: 400,
+        data: { success: false, message: 'All fields are required' }
+      }
+      ;(global as any).$fetch = vi.fn().mockRejectedValue(errorResponse)
+
+      const { sendContactMessage } = useSecureApi()
+      const contactData = {
+        name: '',
+        email: 'john@example.com',
+        subject: 'general',
+        message: ''
+      }
+
+      await expect(sendContactMessage(contactData)).rejects.toEqual(errorResponse)
+    })
+  })
 })
