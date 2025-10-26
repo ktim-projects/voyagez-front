@@ -16,18 +16,23 @@
 
           <!-- Partenaires à droite -->
           <div class="md:w-1/2">
-            <div class="grid grid-cols-2 gap-8">
-              <div class="flex items-center justify-center">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Air_Ivoire_logo.png" alt="Air Ivoire" class="h-12 object-contain grayscale hover:grayscale-0 transition-all duration-300 dark:brightness-90">
-              </div>
-              <div class="flex items-center justify-center">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/9/90/Air_C%C3%B4te_d%27Ivoire_Logo.svg" alt="Air Côte d'Ivoire" class="h-12 object-contain grayscale hover:grayscale-0 transition-all duration-300 dark:brightness-90">
-              </div>
-              <div class="flex items-center justify-center">
-                <img src="https://seeklogo.com/images/S/sotra-logo-D8778E8F24-seeklogo.com.png" alt="SOTRA" class="h-12 object-contain grayscale hover:grayscale-0 transition-all duration-300 dark:brightness-90">
-              </div>
-              <div class="flex items-center justify-center">
-                <img src="https://stlci.com/wp-content/uploads/2021/09/logo-stl.png" alt="STL" class="h-12 object-contain grayscale hover:grayscale-0 transition-all duration-300 dark:brightness-90">
+            <div class="flex flex-wrap items-center justify-center gap-4">
+              <div 
+                v-for="partner in partners" 
+                :key="partner.name"
+                class="relative flex items-center justify-center bg-white rounded-lg p-4 group cursor-pointer"
+                :style="{ width: partner.size, height: partner.size }"
+              >
+                <img 
+                  :src="partner.logo" 
+                  :alt="partner.name" 
+                  class="w-full h-full object-contain"
+                  loading="lazy"
+                >
+                <!-- Tooltip au hover -->
+                <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-10">
+                  {{ partner.name }}
+                </div>
               </div>
             </div>
           </div>
@@ -38,4 +43,57 @@
 </template>
 
 <script setup>
+// Liste des partenaires
+const partners = [
+  {
+    name: 'Rahimo',
+    logo: 'https://xgzetswtddvvgedpxzbx.supabase.co/storage/v1/object/public/companies_logo/rahimo_logo.jpg',
+    size: '100px' // Taille personnalisée
+  },
+  {
+    name: 'UTB',
+    logo: 'https://xgzetswtddvvgedpxzbx.supabase.co/storage/v1/object/public/companies_logo/utb.jpg',
+    size: '80px'
+  },
+  {
+    name: 'TSR',
+    logo: 'https://xgzetswtddvvgedpxzbx.supabase.co/storage/v1/object/public/companies_logo/tsr_logo.jpg',
+    size: '50px'
+  },
+  {
+    name: 'Sido',
+    logo: 'https://xgzetswtddvvgedpxzbx.supabase.co/storage/v1/object/public/companies_logo/sido_logo.jpg',
+    size: '90px'
+  },
+  {
+    name: 'SHT',
+    logo: 'https://xgzetswtddvvgedpxzbx.supabase.co/storage/v1/object/public/companies_logo/sht_logo.jpg',
+    size: '80px'
+  },
+  {
+    name: 'SBTA',
+    logo: 'https://xgzetswtddvvgedpxzbx.supabase.co/storage/v1/object/public/companies_logo/sbta.png',
+    size: '80px'
+  },
+  {
+    name: 'ART',
+    logo: 'https://xgzetswtddvvgedpxzbx.supabase.co/storage/v1/object/public/companies_logo/art_logo.jpg',
+    size: '80px'
+  },
+  {
+    name: 'Jet Express',
+    logo: 'https://xgzetswtddvvgedpxzbx.supabase.co/storage/v1/object/public/companies_logo/jet_logo.jpg',
+    size: '80px'
+  },
+  {
+    name: 'UTB 5',
+    logo: 'https://xgzetswtddvvgedpxzbx.supabase.co/storage/v1/object/public/companies_logo/utb.jpg',
+    size: '80px'
+  },
+  {
+    name: 'UTB 5',
+    logo: 'https://xgzetswtddvvgedpxzbx.supabase.co/storage/v1/object/public/companies_logo/utb.jpg',
+    size: '80px'
+  }
+]
 </script>

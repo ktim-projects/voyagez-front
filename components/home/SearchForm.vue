@@ -118,7 +118,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { CarIcon, BusIcon, TrainIcon, MapPinIcon } from 'lucide-vue-next';
+import { BusFrontIcon, BusIcon } from 'lucide-vue-next';
 import { getSlugFromCity } from '~/utils/cities';
 
 const router = useRouter();
@@ -134,12 +134,12 @@ const tabs = [
   { 
     label: 'search.tabs.car',
     value: 'car',
-    icon: CarIcon
+    icon: BusIcon
   },
   { 
     label: 'search.tabs.bus',
     value: 'bus',
-    icon: BusIcon
+    icon: BusFrontIcon
   },
 ];
 
