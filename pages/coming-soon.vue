@@ -21,10 +21,6 @@
             simplicité
           </span>
         </h1>
-
-        <p class="text-xl md:text-2xl text-gray-700 mb-4 leading-relaxed max-w-3xl mx-auto">
-          La plateforme de comparaison de transport en car et bus en Côte d'Ivoire
-        </p>
         
         <p class="text-lg text-gray-600 max-w-2xl mx-auto">
           Toutes les informations sur les compagnies de transport et les lignes de bus réunies en un seul endroit. 
@@ -32,7 +28,7 @@
         </p>
       </div>
 
-      <div class="grid md:grid-cols-3 gap-6 mt-16 max-w-4xl mx-auto">
+      <div class="grid md:grid-cols-3 gap-6 mt-8 max-w-4xl mx-auto">
         <div class="bg-gray-50 rounded-2xl p-6 border border-gray-200 text-center hover:shadow-lg transition-shadow">
           <div class="bg-corail-100 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4">
             <Clock class="w-6 h-6 text-corail-600" />
