@@ -1,28 +1,6 @@
-import fs from 'fs'
-import path from 'path'
+import * as brevo from '@getbrevo/brevo'
 
 // Types TypeScript
-interface NewsletterSubscriber {
-  email: string
-  dateInscription: string
-  source: string
-  statut: 'actif' | 'inactif' | 'desabonne'
-  ip: string
-  userAgent: string
-  langue: 'fr' | 'en'
-}
-
-interface NewsletterData {
-  emails: NewsletterSubscriber[]
-  count: number
-  lastUpdated: string
-  metadata?: {
-    created: string
-    version: string
-    description: string
-  }
-}
-
 interface NewsletterRequest {
   email: string
   source?: string
@@ -31,57 +9,7 @@ interface NewsletterRequest {
 interface NewsletterResponse {
   success: boolean
   message: string
-}
-
-const DATA_FILE = path.join(process.cwd(), 'data', 'newsletter-emails.json')
-function ensureDataDirectory(): void {
-  const dataDir = path.dirname(DATA_FILE)
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true })
-  }
-}
-
-// Fonction pour lire les emails existants
-function readEmails(): NewsletterData {
-  ensureDataDirectory()
-  
-  if (!fs.existsSync(DATA_FILE)) {
-    const initialData: NewsletterData = {
-      emails: [],
-      count: 0,
-      lastUpdated: new Date().toISOString(),
-      metadata: {
-        created: new Date().toISOString(),
-        version: '1.0.0',
-        description: 'Stockage des emails newsletter pour Geyavo'
-      }
-    }
-    fs.writeFileSync(DATA_FILE, JSON.stringify(initialData, null, 2))
-    return initialData
-  }
-  
-  try {
-    const data = fs.readFileSync(DATA_FILE, 'utf8')
-    return JSON.parse(data) as NewsletterData
-  } catch (error) {
-    console.error('Erreur lecture fichier newsletter:', error)
-    return { 
-      emails: [], 
-      count: 0, 
-      lastUpdated: new Date().toISOString() 
-    }
-  }
-}
-
-// Fonction pour sauvegarder les emails
-function saveEmails(data: NewsletterData): boolean {
-  try {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2))
-    return true
-  } catch (error) {
-    console.error('Erreur sauvegarde fichier newsletter:', error)
-    return false
-  }
+  contactId?: string
 }
 
 // Validation email
@@ -92,94 +20,102 @@ function isValidEmail(email: string): boolean {
 
 export default defineEventHandler(async (event): Promise<NewsletterResponse> => {
   if (getMethod(event) !== 'POST') {
-    throw createError({
-      statusCode: 405,
-      statusMessage: 'Method Not Allowed'
-    })
+    setResponseStatus(event, 405)
+    return {
+      success: false,
+      message: 'Method not allowed'
+    }
   }
 
+  const config = useRuntimeConfig()
+  const body = await readBody(event) as NewsletterRequest
+  const { email, source = 'homepage' } = body
+
+  // Validation de l'email
+  if (!email || typeof email !== 'string') {
+    setResponseStatus(event, 400)
+    return {
+      success: false,
+      message: 'Email is required'
+    }
+  }
+
+  if (!isValidEmail(email)) {
+    setResponseStatus(event, 400)
+    return {
+      success: false,
+      message: 'Invalid email format'
+    }
+  }
+
+  // Vérifier que la clé API Brevo est configurée
+  if (!config.brevoApiKey) {
+    console.error('❌ [Newsletter] BREVO_API_KEY not configured')
+    setResponseStatus(event, 500)
+    return {
+      success: false,
+      message: 'Newsletter service not configured'
+    }
+  }
+
+  // Récupérer les informations de la requête
+  const clientIP = getHeader(event, 'x-forwarded-for') || 
+                   getHeader(event, 'x-real-ip') || 
+                   getHeader(event, 'cf-connecting-ip') || 
+                   'unknown'
+  const acceptLanguage = getHeader(event, 'accept-language') || ''
+  const langue = acceptLanguage.includes('en') ? 'en' : 'fr'
+
+  // Configuration de l'API Brevo
+  const apiInstance = new brevo.ContactsApi()
+  apiInstance.setApiKey(brevo.ContactsApiApiKeys.apiKey, config.brevoApiKey)
+
+  // Créer le contact dans Brevo
+  const createContact = new brevo.CreateContact()
+  createContact.email = email.toLowerCase().trim()
+  createContact.listIds = [4]
+  createContact.attributes = {
+    SOURCE: source,
+    LANGUE: langue,
+    DATE_INSCRIPTION: new Date().toISOString(),
+    IP: clientIP
+  }
+  createContact.updateEnabled = false // Ne pas mettre à jour si existe déjà
+
   try {
-    const body = await readBody(event) as NewsletterRequest
-    const { email, source = 'homepage' } = body
-
-    // Validation de l'email
-    if (!email || typeof email !== 'string') {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Email requis'
-      })
-    }
-
-    if (!isValidEmail(email)) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Format email invalide'
-      })
-    }
-
-    // Lire les données existantes
-    const data = readEmails()
-
-    // Vérifier si l'email existe déjà
-    const existingEmail = data.emails.find(item => 
-      item.email.toLowerCase() === email.toLowerCase()
-    )
+    const response = await apiInstance.createContact(createContact)
     
-    if (existingEmail) {
-      throw createError({
-        statusCode: 409,
-        statusMessage: 'Email déjà inscrit'
-      })
-    }
-
-    // Récupérer les informations de la requête
-    const clientIP = getHeader(event, 'x-forwarded-for') || 
-                     getHeader(event, 'x-real-ip') || 
-                     getHeader(event, 'cf-connecting-ip') || 
-                     'unknown'
-    const userAgent = getHeader(event, 'user-agent') || 'unknown'
-    const acceptLanguage = getHeader(event, 'accept-language') || ''
-
-    // Ajouter le nouvel email
-    const newSubscriber: NewsletterSubscriber = {
+    console.log('✅ [Newsletter] Contact added to Brevo:', {
       email: email.toLowerCase().trim(),
-      dateInscription: new Date().toISOString(),
-      source: source,
-      statut: 'actif',
-      ip: clientIP,
-      userAgent: userAgent,
-      langue: acceptLanguage.includes('en') ? 'en' : 'fr'
-    }
-
-    data.emails.push(newSubscriber)
-    data.count = data.emails.length
-    data.lastUpdated = new Date().toISOString()
-
-    // Sauvegarder
-    const saved = saveEmails(data)
-    if (!saved) {
-      throw createError({
-        statusCode: 500,
-        statusMessage: 'Erreur de sauvegarde'
-      })
-    }
+      contactId: response.body?.id,
+      source
+    })
 
     return {
       success: true,
-      message: 'Email ajouté avec succès',
+      message: 'Successfully subscribed to newsletter',
     }
 
-  } catch (error: any) {
-    // Si c'est déjà une erreur HTTP, la relancer
-    if (error.statusCode) {
-      throw error
+  } catch (brevoError: any) {
+    if (brevoError.status === 400 && brevoError.response?.data?.message?.includes('email is already associated with another Contact')) {
+      console.warn('⚠️ [Newsletter] Email already subscribed:', email)
+      setResponseStatus(event, 409)
+      return {
+        success: false,
+        message: 'Email already subscribed'
+      }
     }
 
-    // Sinon, créer une erreur serveur générique
-    console.error('Erreur API newsletter:', error)
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Erreur serveur interne'
+    // Autre erreur Brevo
+    console.error('❌ [Newsletter] Brevo error:', {
+      status: brevoError.status,
+      message: brevoError.response?.body?.message || brevoError.message
     })
+
+    setResponseStatus(event, 500)
+    return {
+      success: false,
+      message: 'Error during subscription'
+    }
   }
 })

@@ -333,8 +333,8 @@ describe('useSecureApi', () => {
   })
 
   describe('subscribeNewsletter', () => {
-    it('should send POST request with email', async () => {
-      const mockResponse = { success: true }
+    it('should send POST request with email and default source', async () => {
+      const mockResponse = { success: true, message: 'Successfully subscribed to newsletter' }
       ;(global as any).$fetch = vi.fn().mockResolvedValue(mockResponse)
 
       const { subscribeNewsletter } = useSecureApi()
@@ -342,12 +342,78 @@ describe('useSecureApi', () => {
 
       expect((global as any).$fetch).toHaveBeenCalledWith('/api/newsletter', {
         method: 'POST',
-        body: { email: 'test@example.com' },
+        body: { 
+          email: 'test@example.com',
+          source: 'homepage'
+        },
         headers: {
           'x-api-key': 'test-api-key'
         }
       })
       expect(result).toEqual(mockResponse)
+    })
+
+    it('should send POST request with email and custom source', async () => {
+      const mockResponse = { success: true, message: 'Successfully subscribed to newsletter' }
+      ;(global as any).$fetch = vi.fn().mockResolvedValue(mockResponse)
+
+      const { subscribeNewsletter } = useSecureApi()
+      const result = await subscribeNewsletter('test@example.com', 'footer')
+
+      expect((global as any).$fetch).toHaveBeenCalledWith('/api/newsletter', {
+        method: 'POST',
+        body: { 
+          email: 'test@example.com',
+          source: 'footer'
+        },
+        headers: {
+          'x-api-key': 'test-api-key'
+        }
+      })
+      expect(result).toEqual(mockResponse)
+    })
+
+    it('should trim email before sending', async () => {
+      const mockResponse = { success: true, message: 'Successfully subscribed to newsletter' }
+      ;(global as any).$fetch = vi.fn().mockResolvedValue(mockResponse)
+
+      const { subscribeNewsletter } = useSecureApi()
+      await subscribeNewsletter('  test@example.com  ')
+
+      expect((global as any).$fetch).toHaveBeenCalledWith('/api/newsletter', {
+        method: 'POST',
+        body: { 
+          email: 'test@example.com',
+          source: 'homepage'
+        },
+        headers: {
+          'x-api-key': 'test-api-key'
+        }
+      })
+    })
+
+    it('should handle email already subscribed error', async () => {
+      const errorResponse = {
+        statusCode: 409,
+        data: { success: false, message: 'Email already subscribed' }
+      }
+      ;(global as any).$fetch = vi.fn().mockRejectedValue(errorResponse)
+
+      const { subscribeNewsletter } = useSecureApi()
+
+      await expect(subscribeNewsletter('test@example.com')).rejects.toEqual(errorResponse)
+    })
+
+    it('should handle invalid email error', async () => {
+      const errorResponse = {
+        statusCode: 400,
+        data: { success: false, message: 'Invalid email format' }
+      }
+      ;(global as any).$fetch = vi.fn().mockRejectedValue(errorResponse)
+
+      const { subscribeNewsletter } = useSecureApi()
+
+      await expect(subscribeNewsletter('invalid-email')).rejects.toEqual(errorResponse)
     })
   })
 })

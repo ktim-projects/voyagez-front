@@ -24,12 +24,12 @@
               {{ destination.name }}
             </h3>
             <p class="text-white dark:text-gray-400 text-sm mb-4">{{ destination.description }}</p>
-            <div class="flex items-center justify-between w-full">
+            <!-- <div class="flex items-center justify-between w-full">
               <p class="text-white dark:text-gray-400 font-medium">
                 <span class="text-corail-300">{{ $t('home.destinations.priceFrom') }}</span> 
                 {{ destination.price }} FCFA
               </p>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>

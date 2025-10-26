@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     apiKeyFrontend: process.env.API_KEY_FRONTEND,
     apiKeyAdmin: process.env.API_KEY_ADMIN,
     apiKeyStats: process.env.API_KEY_STATS,
+    brevoApiKey: process.env.BREVO_API_KEY,
     
     // Variables publiques (côté client)
     public: {

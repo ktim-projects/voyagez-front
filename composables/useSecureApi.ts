@@ -104,10 +104,13 @@ export const useSecureApi = () => {
     throw lastError
   }
 
-  const subscribeNewsletter = async (email: string) => {
+  const subscribeNewsletter = async (email: string, source: string = 'homepage') => {
     return await secureApiFetch('/api/newsletter', {
       method: 'POST',
-      body: { email }
+      body: { 
+        email: email.trim(),
+        source 
+      }
     })
   }
   

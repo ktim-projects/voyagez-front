@@ -104,13 +104,9 @@ async function handleSubmit() {
   isLoading.value = true
 
   try {
-    const response = await $fetch('/api/newsletter', {
-      method: 'POST',
-      body: {
-        email: email.value,
-        source: 'homepage'
-      }
-    })
+    // Utiliser useSecureApi pour l'authentification
+    const { subscribeNewsletter } = useSecureApi()
+    const response = await subscribeNewsletter(email.value, 'homepage')
 
     const subscribedEmail = email.value
 
@@ -124,7 +120,6 @@ async function handleSubmit() {
         email: subscribedEmail
       })
     }
-
 
   } catch (error) {
     console.error('Erreur newsletter:', error)
