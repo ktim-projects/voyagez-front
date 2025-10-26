@@ -54,6 +54,50 @@
         </div>
       </div>
 
+      <!-- Newsletter Form -->
+      <div class="mt-16 max-w-xl mx-auto">
+        <div class="bg-gradient-to-br from-corail-50 to-white rounded-2xl p-8 border border-corail-200">
+          <div class="text-center mb-6">
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">
+              Soyez informé du lancement
+            </h3>
+            <p class="text-gray-600">
+              Inscrivez-vous pour recevoir une notification dès que Geyavo sera disponible
+            </p>
+          </div>
+
+          <form @submit.prevent="handleSubmit" class="space-y-4">
+            <div>
+              <input
+                v-model="email"
+                type="email"
+                placeholder="Votre adresse email"
+                class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-corail-500 focus:ring-2 focus:ring-corail-200 outline-none transition-all"
+                :class="{ 'border-red-500': emailError }"
+                :disabled="isLoading"
+              />
+              <p v-if="emailError" class="text-red-500 text-sm mt-2">{{ emailError }}</p>
+            </div>
+
+            <button
+              type="submit"
+              :disabled="isLoading"
+              class="w-full bg-gradient-to-r from-corail-500 to-corail-600 text-white font-semibold py-3 px-6 rounded-xl hover:from-corail-600 hover:to-corail-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              <span v-if="!isLoading">M'informer du lancement</span>
+              <span v-else>Inscription en cours...</span>
+            </button>
+
+            <p v-if="successMessage" class="text-green-600 text-sm text-center">
+              {{ successMessage }}
+            </p>
+            <p v-if="errorMessage" class="text-red-500 text-sm text-center">
+              {{ errorMessage }}
+            </p>
+          </form>
+        </div>
+      </div>
+
       <!-- Footer -->
       <div class="mt-16 pt-8 border-t border-gray-200 text-center">
         <p class="text-gray-600 text-sm mb-4">
@@ -77,6 +121,56 @@ import {
   Wallet,
   ShieldCheck
 } from 'lucide-vue-next'
+
+// Newsletter form
+const email = ref('')
+const emailError = ref('')
+const successMessage = ref('')
+const errorMessage = ref('')
+const isLoading = ref(false)
+
+const isValidEmail = computed(() => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(email.value)
+})
+
+async function handleSubmit() {
+  emailError.value = ''
+  errorMessage.value = ''
+  successMessage.value = ''
+
+  if (!email.value) {
+    emailError.value = 'Veuillez entrer votre adresse email'
+    return
+  }
+
+  if (!isValidEmail.value) {
+    emailError.value = 'Format d\'email invalide'
+    return
+  }
+
+  isLoading.value = true
+
+  try {
+    const { subscribeNewsletter } = useSecureApi()
+    await subscribeNewsletter(email.value, 'coming-soon')
+
+    successMessage.value = '✅ Merci ! Vous serez notifié du lancement.'
+    email.value = ''
+  } catch (error: any) {
+    console.error('Erreur newsletter:', error)
+    
+    if (error.data?.message === 'Email already subscribed') {
+      errorMessage.value = 'Cet email est déjà inscrit'
+    } else if (error.data?.message === 'Invalid email format') {
+      errorMessage.value = 'Format d\'email invalide'
+    } else {
+      errorMessage.value = 'Une erreur est survenue. Veuillez réessayer.'
+    }
+  } finally {
+    isLoading.value = false
+  }
+}
 
 // SEO
 useHead({
