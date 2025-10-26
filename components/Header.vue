@@ -3,20 +3,15 @@
     <nav class="container mx-auto px-4 h-16 flex items-center justify-between">
       <div class="flex items-center">
         <NuxtLink to="/" class="text-2xl font-bold text-corail-600 hover:text-corail-700 dark:text-corail-500 dark:hover:text-corail-400 transition-colors">
-          <!-- {{ $t('header.appName') }} -->
           <img :src="logoPath" alt="Geyavo" class="h-20" />
         </NuxtLink>
       </div>
       
-      <!-- Desktop Menu -->
       <div class="hidden md:flex space-x-8 items-center">
         <NuxtLink to="/contact" class="text-gray-700 hover:text-corail-600 dark:text-gray-300 dark:hover:text-corail-500">{{ $t('header.contact') }}</NuxtLink>
-        <!-- <ThemeSwitch /> -->
       </div>
 
-      <!-- Mobile Menu Button -->
       <div class="md:hidden flex items-center gap-3">
-        <!-- <ThemeSwitch /> -->
         <button 
           @click="isMenuOpen = !isMenuOpen" 
           class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-800"
@@ -27,7 +22,6 @@
       </div>
     </nav>
 
-    <!-- Mobile Menu -->
     <Transition
       enter-active-class="transition duration-300 ease-out"
       enter-from-class="transform -translate-y-8 opacity-0"
@@ -51,12 +45,10 @@ import { Menu, X } from 'lucide-vue-next'
 const isMenuOpen = ref(false)
 const route = useRoute()
 
-// Logo path
 const logoPath = computed(() => '/logos/geyavo_full.png')
 
 const isSearchResults = computed(() => route.name === 'results-from-to___fr' || route.path.includes('results/bus') )
 
-// Fonction pour fermer le menu mobile
 const closeMenu = () => {
   isMenuOpen.value = false
 }

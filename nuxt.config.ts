@@ -18,6 +18,9 @@ export default defineNuxtConfig({
       // Mode maintenance
       maintenanceMode: process.env.MAINTENANCE_MODE || 'false',
       maintenanceAllowedIPs: process.env.MAINTENANCE_ALLOWED_IPS || '',
+      // Mode coming soon
+      comingSoonMode: process.env.COMING_SOON_MODE || 'false',
+      comingSoonAllowedIPs: process.env.COMING_SOON_ALLOWED_IPS || '',
     }
   },
 

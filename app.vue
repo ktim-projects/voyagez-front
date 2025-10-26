@@ -1,10 +1,10 @@
 <template>
   <SpeedInsights />
   <div class="min-h-screen dark:bg-gray-950">
-    <Header v-if="!isMaintenancePage" />
+    <Header v-if="!isSpecialPage" />
     <Analytics />
     <NuxtPage />
-    <Footer v-if="!isMaintenancePage" :class="{ 'hidden md:block': isBusResultsPage }" />
+    <Footer v-if="!isSpecialPage" :class="{ 'hidden md:block': isBusResultsPage }" />
   </div>
 </template>
 
@@ -15,8 +15,10 @@ import { SpeedInsights } from '@vercel/speed-insights/vue';
 
 const route = useRoute()
 
-// Masquer Header et Footer sur la page de maintenance
-const isMaintenancePage = computed(() => route.path === '/maintenance')
+// Masquer Header et Footer sur les pages spéciales (maintenance, coming-soon)
+const isSpecialPage = computed(() => 
+  route.path === '/maintenance' || route.path === '/coming-soon'
+)
 
 // Masquer Footer en mobile sur les pages de résultats de bus
 const isBusResultsPage = computed(() => route.path.startsWith('/results/bus/'))

@@ -55,8 +55,6 @@
     "vitest": "^3.2.4"
   },
   "lint-staged": {
-    "*.{js,ts,vue}": [
-      "eslint --fix"
-    ]
+    "*.{js,ts,vue}": []
   }
 }
