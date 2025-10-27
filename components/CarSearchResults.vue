@@ -39,7 +39,6 @@
               <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">{{ $t('common.departure') }}</label>
               <CityAutocomplete
                 v-model="fromCity"
-                @select="handleFromSelect"
                 :placeholder="$t('search.departurePlaceholder')"
               />
               
@@ -58,7 +57,6 @@
               <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">{{ $t('common.arrival') }}</label>
               <CityAutocomplete
                 v-model="toCity"
-                @select="handleToSelect"
                 :placeholder="$t('search.arrivalPlaceholder')"
               />
             </div>
@@ -92,13 +90,9 @@
     <!-- Search Form Modal -->
     <SearchFormModal
       v-model:show="showSearchModal"
-      v-model:fromCity="fromCity"
-      v-model:toCity="toCity"
-      :search-disabled="isSearchDisabled"
-      @from-select="handleFromSelect"
-      @to-select="handleToSelect"
-      @submit="handleSearch"
-      @swap-cities="swapCities"
+      :from-city="fromCity"
+      :to-city="toCity"
+      @submit="handleModalSubmit"
     />
 
     <!-- Main Content -->
@@ -263,25 +257,40 @@ const shouldShowFilters = computed(() => {
 
 const debouncedFilterSearch = useDebounceFn(() => {
   isFiltering.value = true;
+  loading.value = true;
   page.value = 1;
   performSearch(true);
 }, 500);
 
 const handleSearch = async () => {
+  // Désactiver le bouton immédiatement
+  loading.value = true;
+  await performSearch(false);
+};
+
+const handleModalSubmit = async (data: { from: string; to: string }) => {
+  // Mettre à jour les villes avec les valeurs du modal
+  fromCity.value = data.from;
+  toCity.value = data.to;
+  // Désactiver le bouton immédiatement
+  loading.value = true;
   await performSearch(false);
 };
 
 const performSearch = async (isFilteringParam = false) => {
   if (!fromCity.value || !toCity.value || fromCity.value === toCity.value) {
+    loading.value = false;
     return;
   }
 
   if (!isSearchChanged.value && hasSearched.value && !isFilteringParam) {
+    loading.value = false;
     return;
   }
 
+  // Loading est déjà à true grâce à handleSearch
   hasSearched.value = true;
-  
+
   if (!isFilteringParam) {
     isFiltering.value = false;
   }
@@ -293,6 +302,7 @@ const performSearch = async (isFilteringParam = false) => {
   
   if (!isCityValid(fromCity.value) || !isCityValid(toCity.value)) {
     await router.push('/destinations-populaires');
+    loading.value = false;
     return;
   }
   
@@ -304,10 +314,14 @@ const performSearch = async (isFilteringParam = false) => {
   
   const fromSlug = getSlugFromCity(fromCity.value);
   const toSlug = getSlugFromCity(toCity.value);
+  const targetPath = `/results/${fromSlug}/${toSlug}`;
   
-  await router.replace(`/results/${fromSlug}/${toSlug}`);
-  
-  loading.value = true;
+  // Mettre à jour l'URL seulement si elle est différente
+  if (route.path !== targetPath) {
+    await router.replace(targetPath);
+    // Le watch se déclenchera automatiquement avec les nouveaux params
+    return;
+  }
   departures.value = [];
   
   if (process.client) {
@@ -372,37 +386,42 @@ const loadMoreResults = async () => {
   }
 }
 
-onMounted(() => {
-  if (fromCity.value && toCity.value) {
-    lastSearchFrom.value = fromCity.value;
-    lastSearchTo.value = toCity.value;
-    performSearch();
-  }
-})
-
-const handleFromSelect = (city: any) => {
-  searchStore.setSearchParams({
-    from: city.name
-  });
-}
-
-const handleToSelect = (city: any) => {
-  searchStore.setSearchParams({
-    to: city.name
-  });
-}
+// Watch sur les paramètres de route pour déclencher la recherche
+watch(
+  () => ({ from: route.params.from, to: route.params.to }),
+  (newParams, oldParams) => {
+    const { from: newFrom, to: newTo } = newParams;
+    // Mettre à jour les villes depuis l'URL
+    if (newFrom && typeof newFrom === 'string') {
+      const newFromCity = newFrom.charAt(0).toUpperCase() + newFrom.slice(1);
+      if (fromCity.value !== newFromCity) {
+        fromCity.value = newFromCity;
+      }
+    }
+    if (newTo && typeof newTo === 'string') {
+      const newToCity = newTo.charAt(0).toUpperCase() + newTo.slice(1);
+      if (toCity.value !== newToCity) {
+        toCity.value = newToCity;
+      }
+    }
+    
+    // Faire la recherche si on a les deux villes et qu'elles ont changé
+    if (fromCity.value && toCity.value) {
+      // Ne rechercher que si les villes ont vraiment changé
+      if (fromCity.value !== lastSearchFrom.value || toCity.value !== lastSearchTo.value) {
+        lastSearchFrom.value = fromCity.value;
+        lastSearchTo.value = toCity.value;
+        performSearch();
+      }
+    }
+  },
+  { immediate: true }
+)
 
 const swapCities = () => {
   const tempFrom = fromCity.value;
-  const tempTo = toCity.value;
-  
-  fromCity.value = tempTo;
+  fromCity.value = toCity.value;
   toCity.value = tempFrom;
-  
-  if (fromCity.value && toCity.value) {
-    showSearchModal.value = false;
-    performSearch();
-  }
 }
 
 watch(() => currentSort.value, () => {

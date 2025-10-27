@@ -31,18 +31,17 @@
                 <div class="relative">
                   <label class="block text-sm font-medium text-gray-600 mb-2">Départ</label>
                   <CityAutocomplete
-                    :model-value="fromCity"
-                    @update:model-value="$emit('update:fromCity', $event)"
+                    v-model="localFromCity"
                     @select="handleFromSelect"
                     placeholder="Ville de départ"
-                    :auto-focus="!fromCity"
+                    :auto-focus="!localFromCity"
                   />
                   
                   <!-- Swap Cities Button -->
                   <button
                     type="button"
-                    @click="$emit('swapCities')"
-                    :disabled="!fromCity || !toCity"
+                    @click="handleSwapCities"
+                    :disabled="!localFromCity || !localToCity"
                     class="absolute -bottom-9 left-1/2 transform -translate-x-1/2 z-1000 p-2 bg-white border border-gray-300 rounded-full shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                     title="Inverser les villes"
                   >
@@ -53,11 +52,10 @@
                 <div>
                   <label class="block text-sm font-medium text-gray-600 mb-2">Arrivée</label>
                   <CityAutocomplete
-                    :model-value="toCity"
-                    @update:model-value="$emit('update:toCity', $event)"
+                    v-model="localToCity"
                     @select="handleToSelect"
                     placeholder="Ville d'arrivée"
-                    :auto-focus="!toCity"
+                    :auto-focus="!localToCity"
                   />
                 </div>
                 
@@ -78,7 +76,7 @@
                     type="submit"
                     icon="Search"
                     :fullWidth="true"
-                    :disabled="searchDisabled"
+                    :disabled="isSearchDisabled"
                   />
                 </div>
               </form>
@@ -91,6 +89,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watch, computed } from 'vue'
 import { Dialog, DialogPanel, DialogTitle, TransitionRoot, TransitionChild } from '@headlessui/vue'
 import { ArrowLeftRight } from 'lucide-vue-next'
 import type { City } from '~/types';
@@ -109,24 +108,43 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
   'update:show': [value: boolean]
-  'update:fromCity': [value: string]
-  'update:toCity': [value: string]
-  'fromSelect': [value: City]
-  'toSelect': [value: City]
-  'submit': []
-  'swapCities': []
+  'submit': [data: { from: string; to: string }]
 }>()
 
+// Valeurs locales pour le formulaire
+const localFromCity = ref(props.fromCity)
+const localToCity = ref(props.toCity)
+
+// Computed pour désactiver le bouton
+const isSearchDisabled = computed(() => {
+  return !localFromCity.value || !localToCity.value || localFromCity.value === localToCity.value
+})
+
+// Synchroniser les valeurs locales quand le modal s'ouvre
+watch(() => props.show, (isOpen) => {
+  if (isOpen) {
+    localFromCity.value = props.fromCity
+    localToCity.value = props.toCity
+  }
+})
+
 const handleFromSelect = (city: City) => {
-  emit('fromSelect', city)
+  localFromCity.value = city.name
 }
 
 const handleToSelect = (city: City) => {
-  emit('toSelect', city)
+  localToCity.value = city.name
+}
+
+const handleSwapCities = () => {
+  const temp = localFromCity.value
+  localFromCity.value = localToCity.value
+  localToCity.value = temp
 }
 
 const handleSubmit = () => {
-  emit('submit')
+  // Émettre les valeurs locales au parent
+  emit('submit', { from: localFromCity.value, to: localToCity.value })
   emit('update:show', false)
 }
 </script>
