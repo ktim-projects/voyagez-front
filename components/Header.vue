@@ -8,6 +8,7 @@
       </div>
       
       <div class="hidden md:flex space-x-8 items-center">
+        <NuxtLink to="/actualites" class="text-gray-700 hover:text-corail-600 dark:text-gray-300 dark:hover:text-corail-500">Actualités</NuxtLink>
         <NuxtLink to="/contact" class="text-gray-700 hover:text-corail-600 dark:text-gray-300 dark:hover:text-corail-500">{{ $t('header.contact') }}</NuxtLink>
       </div>
 
@@ -32,6 +33,7 @@
     >
       <div v-if="isMenuOpen" class="md:hidden bg-white dark:bg-gray-900 border-t dark:border-gray-800 shadow-md">
         <div class="container mx-auto px-4 py-2 space-y-1">
+          <NuxtLink @click="closeMenu" to="/actualites" class="block text-gray-700 hover:text-corail-600 dark:text-gray-300 dark:hover:text-corail-500 py-2">Actualités</NuxtLink>
           <NuxtLink @click="closeMenu" to="/contact" class="block text-gray-700 hover:text-corail-600 dark:text-gray-300 dark:hover:text-corail-500 py-2">{{ $t('header.contact') }}</NuxtLink>
         </div>
       </div>

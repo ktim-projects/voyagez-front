@@ -4,8 +4,9 @@
  */
 
 import { useCities } from '~/composables/useCities';
+import { serverSupabaseClient } from '#supabase/server';
 
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
   const { cities } = useCities();
   
   // URL de base du site
@@ -17,9 +18,28 @@ export default defineEventHandler((event) => {
   // Pages statiques
   const staticPages = [
     { url: '/', priority: '1.0', changefreq: 'daily' },
-    { url: '/contact', priority: '0.8', changefreq: 'monthly' },
+    { url: '/contact', priority: '0.9', changefreq: 'monthly' },
+    { url: '/actualites', priority: '0.8', changefreq: 'weekly' },
     { url: '/destinations-populaires', priority: '0.9', changefreq: 'weekly' },
+    { url: '/legal-notice', priority: '0.3', changefreq: 'yearly' },
+    { url: '/privacy-policy', priority: '0.3', changefreq: 'yearly' },
   ];
+  
+  // Récupérer les articles publiés depuis Supabase
+  const client = await serverSupabaseClient(event);
+  const { data: articles } = await client
+    .from('articles')
+    .select('slug, published_at')
+    .eq('published', true)
+    .order('published_at', { ascending: false });
+  
+  // Pages articles
+  const articleRoutes = (articles || []).map((article: any) => ({
+    url: `/actualites/${article.slug}`,
+    priority: '0.7',
+    changefreq: 'monthly',
+    lastmod: article.published_at ? new Date(article.published_at).toISOString().split('T')[0] : today
+  }));
   
   // Générer toutes les combinaisons de villes pour les résultats
   const cityRoutes: Array<{ url: string; priority: string; changefreq: string }> = [];
@@ -51,6 +71,12 @@ ${staticPages.map(page => `  <url>
     <lastmod>${today}</lastmod>
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority}</priority>
+  </url>`).join('\n')}
+${articleRoutes.map(route => `  <url>
+    <loc>${baseUrl}${route.url}</loc>
+    <lastmod>${route.lastmod}</lastmod>
+    <changefreq>${route.changefreq}</changefreq>
+    <priority>${route.priority}</priority>
   </url>`).join('\n')}
 ${cityRoutes.map(route => `  <url>
     <loc>${baseUrl}${route.url}</loc>

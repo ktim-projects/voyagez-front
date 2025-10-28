@@ -27,7 +27,7 @@
           <ul class="space-y-2">
             <li>Abidjan, Côte d'Ivoire</li>
             <li>contact@geyavo.com</li>
-            <li>+225 07 66 66 66 66</li>
+            <li>+225 01 42 46 77 13</li>
           </ul>
         </div>
         <div>

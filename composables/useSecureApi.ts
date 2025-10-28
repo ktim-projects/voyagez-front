@@ -136,12 +136,24 @@ export const useSecureApi = () => {
       body: data
     })
   }
+
+  const getArticles = async (params?: { page?: number; limit?: number; category?: string; tag?: string }) => {
+    return await secureApiFetch('/api/articles', {
+      query: params || {}
+    })
+  }
+
+  const getArticleBySlug = async (slug: string) => {
+    return await secureApiFetch(`/api/articles/${slug}`)
+  }
   
   return {
     secureApiFetch,
     searchCars,
     searchBus,
     subscribeNewsletter,
-    sendContactMessage
+    sendContactMessage,
+    getArticles,
+    getArticleBySlug
   }
 }

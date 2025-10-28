@@ -179,4 +179,115 @@ const handleSubmit = async () => {
     isSubmitting.value = false
   }
 }
+
+// SEO
+useHead({
+  title: 'Contactez-nous - Geyavo | Support et Assistance Transport',
+  meta: [
+    {
+      name: 'description',
+      content: 'Contactez l\'équipe Geyavo pour toute question sur nos services de transport en Côte d\'Ivoire. Support client, partenariats et assistance disponibles.'
+    },
+    {
+      name: 'keywords',
+      content: 'contact Geyavo, support client, assistance transport, service client Côte d\'Ivoire, contacter Geyavo, aide transport, partenariat transport'
+    },
+    {
+      name: 'robots',
+      content: 'index, follow'
+    },
+    // Open Graph
+    {
+      property: 'og:type',
+      content: 'website'
+    },
+    {
+      property: 'og:title',
+      content: 'Contactez Geyavo - Support Transport Côte d\'Ivoire'
+    },
+    {
+      property: 'og:description',
+      content: 'Besoin d\'aide ? Contactez notre équipe pour toute question sur nos services de transport en Côte d\'Ivoire.'
+    },
+    {
+      property: 'og:url',
+      content: 'https://geyavo.com/contact'
+    },
+    {
+      property: 'og:site_name',
+      content: 'Geyavo'
+    },
+    // Twitter Card
+    {
+      name: 'twitter:card',
+      content: 'summary'
+    },
+    {
+      name: 'twitter:title',
+      content: 'Contactez Geyavo'
+    },
+    {
+      name: 'twitter:description',
+      content: 'Support et assistance pour vos voyages en Côte d\'Ivoire'
+    }
+  ],
+  link: [
+    {
+      rel: 'canonical',
+      href: 'https://geyavo.com/contact'
+    }
+  ],
+  script: [
+    // Données structurées JSON-LD pour ContactPage
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'ContactPage',
+        name: 'Contact Geyavo',
+        description: 'Page de contact pour Geyavo - Plateforme de transport en Côte d\'Ivoire',
+        url: 'https://geyavo.com/contact',
+        mainEntity: {
+          '@type': 'Organization',
+          name: 'Geyavo',
+          url: 'https://geyavo.com',
+          logo: 'https://geyavo.com/logos/geyavo_full.png',
+          contactPoint: [
+            {
+              '@type': 'ContactPoint',
+              telephone: '+225-01-42-46-77-13',
+              contactType: 'customer service',
+              areaServed: 'CI',
+              availableLanguage: ['French'],
+              hoursAvailable: {
+                '@type': 'OpeningHoursSpecification',
+                dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+                opens: '08:00',
+                closes: '18:00'
+              }
+            },
+            {
+              '@type': 'ContactPoint',
+              email: 'contact@geyavo.com',
+              contactType: 'customer service',
+              areaServed: 'CI',
+              availableLanguage: ['French']
+            }
+          ],
+          address: {
+            '@type': 'PostalAddress',
+            addressCountry: 'CI',
+            addressLocality: 'Abidjan',
+            addressRegion: 'Côte d\'Ivoire'
+          },
+          sameAs: [
+            'https://facebook.com/geyavo',
+            'https://twitter.com/geyavo',
+            'https://instagram.com/geyavo'
+          ]
+        }
+      })
+    }
+  ]
+})
 </script>
