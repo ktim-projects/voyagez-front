@@ -39,6 +39,7 @@
     "noResultsDescription": "Essayez de modifier vos critères de recherche pour trouver plus de résultats.",
     "searchingTrips": "Recherche des voyages disponibles...",
     "routeMap": "Carte du trajet",
+    "tripFound": "trajet disponible | trajets disponibles",
     "filters": {
       "title": "Filtres",
       "reset": "Réinitialiser",

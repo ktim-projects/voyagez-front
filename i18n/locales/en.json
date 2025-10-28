@@ -39,6 +39,7 @@
     "noResultsDescription": "Try modifying your search criteria to find more results.",
     "searchingTrips": "Searching for available trips...",
     "routeMap": "Route map",
+    "tripFound": "trip available | trips available",
     "filters": {
       "title": "Filters",
       "reset": "Reset",

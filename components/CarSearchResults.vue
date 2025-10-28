@@ -138,6 +138,14 @@
               </div>
 
               <div v-else-if="departures.length > 0" class="space-y-4">
+                <!-- Compteur de résultats -->
+                <div class="flex items-center justify-end mb-4 pb-3 border-b border-gray-200 dark:border-gray-700">
+                  <p class="text-sm text-gray-500 dark:text-gray-400">
+                    <span class="font-medium text-gray-700 dark:text-gray-300">{{ totalResults }}</span>
+                    {{ $t('results.tripFound', { count: totalResults }) }}
+                  </p>
+                </div>
+
                 <DepartureCard
                   v-for="departure in departures" 
                   :key="departure.id"
