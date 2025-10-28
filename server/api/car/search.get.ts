@@ -171,16 +171,21 @@ export default defineEventHandler(async (event) => {
     
     if (quartiers && quartiers.length > 0) {
       // Créer un filtre OR pour chaque quartier de la commune
-      // Format: station.ilike.%quartier1%,station.ilike.%quartier2%,...
+      // On recherche à la fois avec et sans accents pour maximiser les résultats
       const quartierFilters = quartiers
-        .map(quartier => {
-          // Normaliser le quartier (enlever accents, mettre en minuscule)
+        .flatMap(quartier => {
+          // Version originale (avec accents potentiels)
+          const original = `station.ilike.%${quartier}%`
+          
+          // Version normalisée (sans accents)
           const normalized = quartier
             .toLowerCase()
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '')
+          const normalizedFilter = `station.ilike.%${normalized}%`
           
-          return `station.ilike.%${normalized}%`
+          // Retourner les deux versions si elles sont différentes
+          return original !== normalizedFilter ? [original, normalizedFilter] : [original]
         })
         .join(',')
       
