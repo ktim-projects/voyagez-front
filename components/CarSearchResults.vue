@@ -109,15 +109,10 @@
           @update:modelValue="debouncedFilterSearch"
         />
 
-        <!-- Main Content Grid -->
         <div class="grid grid-cols-12 gap-6">
-          <!-- Results and Filters Section -->
           <div class="col-span-12 lg:col-span-7">
-<!-- Barre d'actions : Filtres et Tri -->
                 <div class="mb-4 pb-3 border-b border-gray-200 dark:border-gray-700">
-                  <!-- Ligne des boutons -->
                   <div class="flex items-center justify-between mb-2">
-                    <!-- Bouton Filtres -->
                     <button
                       v-if="shouldShowFilters"
                       @click="showFiltersModal = true"
@@ -130,11 +125,9 @@
                       <span v-if="activeFiltersCount > 0" class="inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-corail-500 rounded-full">{{ activeFiltersCount }}</span>
                     </button>
                     
-                    <!-- Menu de tri -->
-                    <SortDropdown v-model="currentSort" :disabled="!departures.length" />
+                    <SortDropdown v-if="shouldShowFilters" v-model="currentSort" :disabled="!departures.length" />
                   </div>
 
-                  <!-- Compteur de résultats -->
                   <div class="flex justify-end">
                     <p class="text-sm text-gray-500 dark:text-gray-400">
                       <span class="font-medium text-gray-700 dark:text-gray-300">{{ totalResults }}</span>
