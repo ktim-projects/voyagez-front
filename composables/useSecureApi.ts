@@ -58,8 +58,24 @@ export const useSecureApi = () => {
 
   
   const searchCars = async (searchParams: any) => {
+    // Filtrer les paramètres vides pour nettoyer l'URL
+    const cleanParams = Object.entries(searchParams).reduce((acc, [key, value]) => {
+      // Garder seulement les valeurs non vides
+      if (value !== '' && value !== null && value !== undefined) {
+        // Pour les tableaux, garder seulement s'ils ne sont pas vides
+        if (Array.isArray(value)) {
+          if (value.length > 0) {
+            acc[key] = value;
+          }
+        } else {
+          acc[key] = value;
+        }
+      }
+      return acc;
+    }, {} as Record<string, any>);
+
     return await secureApiFetch<ResponseCar>('/api/car/search', {
-      query: searchParams
+      query: cleanParams
     })
   }
 

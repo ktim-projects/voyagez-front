@@ -113,7 +113,35 @@
         <div class="grid grid-cols-12 gap-6">
           <!-- Results and Filters Section -->
           <div class="col-span-12 lg:col-span-7">
+<!-- Barre d'actions : Filtres et Tri -->
+                <div class="mb-4 pb-3 border-b border-gray-200 dark:border-gray-700">
+                  <!-- Ligne des boutons -->
+                  <div class="flex items-center justify-between mb-2">
+                    <!-- Bouton Filtres -->
+                    <button
+                      v-if="shouldShowFilters"
+                      @click="showFiltersModal = true"
+                      class="flex items-center gap-2 px-4 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                      </svg>
+                      Filtrer
+                      <span v-if="activeFiltersCount > 0" class="inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-corail-500 rounded-full">{{ activeFiltersCount }}</span>
+                    </button>
+                    
+                    <!-- Menu de tri -->
+                    <SortDropdown v-model="currentSort" :disabled="!departures.length" />
+                  </div>
 
+                  <!-- Compteur de résultats -->
+                  <div class="flex justify-end">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                      <span class="font-medium text-gray-700 dark:text-gray-300">{{ totalResults }}</span>
+                      {{ $t('results.tripFound', { count: totalResults }) }}
+                    </p>
+                  </div>
+                </div>
             <div>
               <div v-if="loading" class="text-center py-8">
                 <CarLoader />
@@ -128,27 +156,7 @@
               </div>
 
               <div v-else-if="departures.length > 0" class="space-y-4">
-                <!-- Compteur de résultats et bouton filtres -->
-                <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-200 dark:border-gray-700">
-                  <!-- Bouton Filtres -->
-                  <button
-                    v-if="shouldShowFilters"
-                    @click="showFiltersModal = true"
-                    class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                    </svg>
-                    Filtrer
-                    <span v-if="activeFiltersCount > 0" class="inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-corail-500 rounded-full">{{ activeFiltersCount }}</span>
-                  </button>
-                  
-                  <!-- Compteur de résultats -->
-                  <p class="text-sm text-gray-500 dark:text-gray-400">
-                    <span class="font-medium text-gray-700 dark:text-gray-300">{{ totalResults }}</span>
-                    {{ $t('results.tripFound', { count: totalResults }) }}
-                  </p>
-                </div>
+                
 
                 <DepartureCard
                   v-for="departure in departures" 
@@ -197,7 +205,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
 import {  RefreshCcw as RefreshCcwIcon, ChevronLeft, ArrowLeftRight } from 'lucide-vue-next';
 import SearchFiltersGroupMobile from './filters/SearchFiltersGroupMobile.vue';
 import CityAutocomplete from './CityAutocomplete.vue';
@@ -205,6 +212,7 @@ import CarLoader from './CarLoader.vue';
 import DepartureCard from './DepartureCard.vue';
 import SearchEmptyState from './SearchEmptyState.vue';
 import DepartureDetailSidebar from './DepartureDetailSidebar.vue';
+import SortDropdown from './SortDropdown.vue';
 import { carCompanies } from '~/server/data';
 import type { Departure } from '~/server/data';
 import {  useDebounceFn } from '@vueuse/core';
@@ -285,6 +293,15 @@ const debouncedFilterSearch = useDebounceFn(() => {
   page.value = 1;
   performSearch(true);
 }, 500);
+
+// Watch sur le tri pour déclencher la recherche
+watch(currentSort, () => {
+  if (hasSearched.value) {
+    loading.value = true;
+    page.value = 1;
+    performSearch(true);
+  }
+});
 
 const handleSearch = async () => {
   // Désactiver le bouton immédiatement
@@ -447,10 +464,6 @@ const swapCities = () => {
   fromCity.value = toCity.value;
   toCity.value = tempFrom;
 }
-
-watch(() => currentSort.value, () => {
-  debouncedFilterSearch();
-});
 
 const seoData = computed(() => {
   const hasSearchData = fromCity.value && toCity.value;
