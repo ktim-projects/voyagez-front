@@ -350,7 +350,6 @@ const performSearch = async (isFilteringParam = false) => {
     totalPages.value = Math.ceil((response._meta.total || 0) / limit);
     
   } catch (error) {
-    console.error('Error searching departures:', error);
     departures.value = [];
     totalResults.value = 0;
     totalPages.value = 0;
@@ -384,7 +383,6 @@ const loadMoreResults = async () => {
     totalPages.value = Math.ceil((response._meta.total || 0) / limit);
     
   } catch (error) {
-    console.error('Error loading more results:', error);
     page.value--; // Revert page increment on error
   } finally {
     loadingMore.value = false;

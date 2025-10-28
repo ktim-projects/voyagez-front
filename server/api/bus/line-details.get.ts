@@ -47,9 +47,10 @@ export default defineEventHandler(async (event) => {
     }
 
     // Étape 1: Trouver l'ID de la ligne avec le numéro de référence
-    const network = 'SOTRA'; // Valeur fixe pour le réseau
+    // Filtre strict : uniquement SOTRA (exclut SOTRAMA)
+    const network = 'SOTRA';
     let lineSearchUrl = `https://overpass-api.de/api/interpreter?data=[out:json][timeout:60];relation[type=route_master]`;
-    lineSearchUrl += `[~"network|operator"~"${network}",i]`;
+    lineSearchUrl += `[~"network|operator"~"^${network}$",i]`; // Match exact SOTRA uniquement
     lineSearchUrl += `["ref"~"^${formattedRef}$",i]`;
     lineSearchUrl += `;out tags;`;
     

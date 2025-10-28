@@ -1,6 +1,6 @@
 <template>
   <ClientOnly>
-    <div class="hidden md:block bg-white dark:bg-gray-900 py-16">
+    <div class="md:block bg-white dark:bg-gray-900 py-16">
       <div class="container mx-auto px-4">
         <div class="flex flex-col md:flex-row gap-12">
           <!-- Texte à gauche -->
@@ -17,7 +17,7 @@
           </div>
 
           <!-- Partenaires à droite -->
-          <div class="md:w-1/2">
+          <div class="md:w-1/2 hidden md:block">
             <div class="flex flex-wrap items-center justify-center gap-4">
               <div 
                 v-for="partner in partners" 
