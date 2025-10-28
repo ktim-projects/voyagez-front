@@ -108,7 +108,7 @@
             </div>
 
             <!-- Comfort Categories Filter -->
-            <div v-if="comfortCategories.length > 0">
+            <!-- <div v-if="comfortCategories.length > 0">
               <label class="block text-sm font-medium text-gray-600 mb-2">
                 Catégorie
               </label>
@@ -127,6 +127,39 @@
                   <span class="ml-2 text-sm text-gray-700">{{ category }}</span>
                 </label>
               </div>
+            </div> -->
+
+            <div v-if="isAbidjan">
+              <label class="block text-sm font-medium text-gray-600 mb-2">
+                Commune
+              </label>
+              <div class="space-y-2">
+                <label class="flex items-center">
+                  <input
+                    type="radio"
+                    v-model="filters.commune"
+                    value=""
+                    class="text-primary-600 focus:ring-primary-500"
+                  >
+                  <span class="ml-2 text-sm text-gray-700">Toutes les communes</span>
+                </label>
+                
+                <div class="grid grid-cols-2 gap-2">
+                  <label 
+                    v-for="commune in ABIDJAN_COMMUNES" 
+                    :key="commune"
+                    class="flex items-center"
+                  >
+                    <input
+                      type="radio"
+                      v-model="filters.commune"
+                      :value="commune"
+                      class="text-primary-600 focus:ring-primary-500"
+                    >
+                    <span class="ml-2 text-sm text-gray-700">{{ commune }}</span>
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -143,8 +176,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch, onUnmounted } from 'vue';
 import { FilterIcon, RefreshCcw as RefreshCcwIcon, X as XIcon } from 'lucide-vue-next';
+import { ABIDJAN_COMMUNES } from '~/utils/communes';
 
 interface Company {
   id: string;
@@ -156,12 +190,14 @@ interface Filters {
   companies: string[];
   departurePeriod: string;
   comfortCategories: string[];
+  commune: string;
 }
 
 const props = defineProps<{
   modelValue: Filters;
   companies: Company[];
   comfortCategories: string[];
+  fromCity: string;
 }>();
 
 const emit = defineEmits<{
@@ -174,14 +210,20 @@ const filters = ref<Filters>({
   maxPrice: props.modelValue.maxPrice,
   companies: [...props.modelValue.companies],
   departurePeriod: props.modelValue.departurePeriod,
-  comfortCategories: [...props.modelValue.comfortCategories]
+  comfortCategories: [...props.modelValue.comfortCategories],
+  commune: props.modelValue.commune
+});
+
+const isAbidjan = computed(() => {
+  return props.fromCity?.toLowerCase() === 'abidjan';
 });
 
 const hasActiveFilters = computed(() => {
   return filters.value.maxPrice !== 50000 || 
          filters.value.companies.length > 0 || 
          filters.value.departurePeriod !== '' ||
-         filters.value.comfortCategories.length > 0;
+         filters.value.comfortCategories.length > 0 ||
+         filters.value.commune !== '';
 });
 
 const activeFiltersCount = computed(() => {
@@ -190,6 +232,7 @@ const activeFiltersCount = computed(() => {
   if (filters.value.companies.length > 0) count++;
   if (filters.value.departurePeriod !== '') count++;
   if (filters.value.comfortCategories.length > 0) count++;
+  if (filters.value.commune !== '') count++;
   return count;
 });
 
@@ -203,7 +246,8 @@ const resetFilters = () => {
     maxPrice: 50000,
     companies: [],
     departurePeriod: '',
-    comfortCategories: []
+    comfortCategories: [],
+    commune: ''
   };
   emitUpdate();
 };

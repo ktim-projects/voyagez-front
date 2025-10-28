@@ -105,6 +105,7 @@
             v-model="filters"
             :companies="carCompanies"
             :comfort-categories="comfortCategories"
+            :from-city="fromCity"
             @update:modelValue="debouncedFilterSearch"
           />
         </div>
@@ -119,6 +120,7 @@
               v-model="filters"
               :companies="carCompanies"
               :comfort-categories="comfortCategories"
+              :from-city="fromCity"
               @update:modelValue="debouncedFilterSearch"
             />
 
@@ -238,7 +240,8 @@ const filters = ref({
   maxPrice: 50000,
   companies: [] as string[],
   departurePeriod: '',
-  comfortCategories: [] as string[]
+  comfortCategories: [] as string[],
+  commune: ''
 });
 
 const comfortCategories = ref(['Ordinaire', 'VIP', 'VVIP']);
@@ -338,6 +341,7 @@ const performSearch = async (isFilteringParam = false) => {
         companies: [...filters.value.companies],
         departurePeriod: filters.value.departurePeriod,
         comfortCategories: [...filters.value.comfortCategories],
+        commune: filters.value.commune,
         sort: currentSort.value
     })
     
@@ -371,6 +375,7 @@ const loadMoreResults = async () => {
         companies: [...filters.value.companies],
         departurePeriod: filters.value.departurePeriod,
         comfortCategories: [...filters.value.comfortCategories],
+        commune: filters.value.commune,
         sort: currentSort.value
     })
     

@@ -77,7 +77,7 @@
     </FilterMenu>
 
     <!-- Comfort Categories Filter -->
-    <FilterMenu
+    <!-- <FilterMenu
       v-if="comfortCategories.length > 0"
       title="Catégorie"
       :icon="Star"
@@ -101,14 +101,55 @@
           <span class="ml-2 text-sm text-gray-700">{{ category }}</span>
         </label>
       </div>
+    </FilterMenu> -->
+
+    <FilterMenu
+      v-if="isAbidjan"
+      title="Commune"
+      :icon="MapPin"
+      :is-active="!!modelValue.commune"
+      @apply="emitUpdate"
+      @reset="resetCommuneFilter"
+      class="inline-flex"
+    >
+      <div class="max-h-70 overflow-y-auto">
+        <div class="space-y-2">
+          <label class="flex items-center">
+            <input
+              type="radio"
+              v-model="filters.commune"
+              value=""
+              class="text-primary-600 focus:ring-primary-500"
+            >
+            <span class="ml-2 text-sm text-gray-700 font-medium">Toutes les communes</span>
+          </label>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-x-4 gap-y-2 pt-2 mt-2 border-t border-gray-200">
+          <label 
+            v-for="commune in ABIDJAN_COMMUNES" 
+            :key="commune"
+            class="flex items-center"
+          >
+            <input
+              type="radio"
+              v-model="filters.commune"
+              :value="commune"
+              class="text-primary-600 focus:ring-primary-500"
+            >
+            <span class="ml-2 text-sm text-gray-700">{{ commune }}</span>
+          </label>
+        </div>
+      </div>
     </FilterMenu>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { Euro, Building, Clock, Star } from 'lucide-vue-next';
+import { Euro, Building, Clock, Star, MapPin } from 'lucide-vue-next';
 import FilterMenu from './FilterMenu.vue';
+import { ABIDJAN_COMMUNES } from '~/utils/communes';
 
 interface Company {
   id: string;
@@ -120,12 +161,14 @@ interface Filters {
   companies: string[];
   departurePeriod: string;
   comfortCategories: string[];
+  commune: string;
 }
 
 const props = defineProps<{
   modelValue: Filters;
   companies: Company[];
   comfortCategories: string[];
+  fromCity: string;
 }>();
 
 const emit = defineEmits<{
@@ -143,7 +186,12 @@ const filters = ref<Filters>({
   maxPrice: props.modelValue.maxPrice,
   companies: [...props.modelValue.companies],
   departurePeriod: props.modelValue.departurePeriod,
-  comfortCategories: [...props.modelValue.comfortCategories]
+  comfortCategories: [...props.modelValue.comfortCategories],
+  commune: props.modelValue.commune
+});
+
+const isAbidjan = computed(() => {
+  return props.fromCity?.toLowerCase() === 'abidjan';
 });
 
 watch(() => props.modelValue, (newValue) => {
@@ -151,7 +199,8 @@ watch(() => props.modelValue, (newValue) => {
     maxPrice: newValue.maxPrice,
     companies: [...newValue.companies],
     departurePeriod: newValue.departurePeriod,
-    comfortCategories: [...newValue.comfortCategories]
+    comfortCategories: [...newValue.comfortCategories],
+    commune: newValue.commune
   };
 }, { deep: true });
 
@@ -174,8 +223,13 @@ const resetDepartureTimeFilter = () => {
   emitUpdate();
 };
 
-const resetComfortCategoriesFilter = () => {
-  filters.value.comfortCategories = [];
+// const resetComfortCategoriesFilter = () => {
+//   filters.value.comfortCategories = [];
+//   emitUpdate();
+// };
+
+const resetCommuneFilter = () => {
+  filters.value.commune = '';
   emitUpdate();
 };
 </script>

@@ -1,5 +1,6 @@
 import { serverSupabaseClient } from '#supabase/server'
 import { createError } from 'h3'
+import { COMMUNE_QUARTIERS, type CommuneAbidjan } from '~/utils/communes'
 
 // 🚀 Cache for companies
 const companyCache = new Map<string, { data: any; timestamp: number }>()
@@ -54,6 +55,7 @@ function generateCacheKey(params: any): string {
     companies: params.companies,
     departurePeriod: params.departurePeriod,
     comfortCategories: params.comfortCategories,
+    commune: params.commune,
     sort: params.sort
   })
 }
@@ -69,6 +71,7 @@ export default defineEventHandler(async (event) => {
     companies,
     departurePeriod,
     comfortCategories,
+    commune,
     sort = 'departure_time'
   } = queryFromApp; 
   
@@ -161,6 +164,30 @@ export default defineEventHandler(async (event) => {
       query = query.or(categoryFilters)
     }
   }
+
+  // Filtre de commune avec matching sur les quartiers
+  if (commune) {
+    const quartiers = COMMUNE_QUARTIERS[commune as CommuneAbidjan]
+    
+    if (quartiers && quartiers.length > 0) {
+      // Créer un filtre OR pour chaque quartier de la commune
+      // Format: station.ilike.%quartier1%,station.ilike.%quartier2%,...
+      const quartierFilters = quartiers
+        .map(quartier => {
+          // Normaliser le quartier (enlever accents, mettre en minuscule)
+          const normalized = quartier
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+          
+          return `station.ilike.%${normalized}%`
+        })
+        .join(',')
+      
+      // Appliquer le filtre OR sur tous les quartiers
+      query = query.or(quartierFilters)
+    }
+  }
   
   // 🎯 Pagination DB
   query = query.range(offset, offset + limitNum - 1);
@@ -223,6 +250,26 @@ export default defineEventHandler(async (event) => {
       if (categoryList.length > 0) {
         const categoryFilters = categoryList.map(category => `comfort_info->>category.eq.${category}`).join(',')
         fallbackQuery = fallbackQuery.or(categoryFilters)
+      }
+    }
+
+    // Filtre de commune avec matching sur les quartiers
+    if (commune) {
+      const quartiers = COMMUNE_QUARTIERS[commune as CommuneAbidjan]
+      
+      if (quartiers && quartiers.length > 0) {
+        const quartierFilters = quartiers
+          .map(quartier => {
+            const normalized = quartier
+              .toLowerCase()
+              .normalize('NFD')
+              .replace(/[\u0300-\u036f]/g, '')
+            
+            return `station.ilike.%${normalized}%`
+          })
+          .join(',')
+        
+        fallbackQuery = fallbackQuery.or(quartierFilters)
       }
     }
 
