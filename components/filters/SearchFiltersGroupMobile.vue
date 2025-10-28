@@ -74,7 +74,7 @@
               <label class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
                 Compagnies
               </label>
-              <div class="space-y-2">
+              <div class="grid grid-cols-2 gap-2">
                 <label 
                   v-for="company in companies" 
                   :key="company.id"
