@@ -104,13 +104,9 @@
     
     <SearchFormModal
       v-model:show="showSearchModal"
-      v-model:fromCity="from"
-      v-model:toCity="to"
-      :search-disabled="!isSearchEnabled"
-      @from-select="handleFromSelect"
-      @to-select="handleToSelect"
+      :from-city="from"
+      :to-city="to"
       @submit="handleModalSearch"
-      @swap-cities="swapCities"
     />
   </div>
 </template>
@@ -143,7 +139,7 @@ const tabs = [
   },
 ];
 
-const popularCities = ['Abidjan', 'Yamoussoukro', 'Bouaké', 'San-Pedro', 'Korhogo'];
+const popularCities = ['Abidjan', 'Yamoussoukro', 'Bouaké', 'San-Pedro', 'Korhogo', 'Accra'];
 
 const isSearchEnabled = computed(() => {
   return from.value && to.value;
@@ -220,35 +216,36 @@ const quickSearch = async (destination: string) => {
   }
 };
 
-const handleModalSearch = async () => {
-  if (!from.value || !to.value) return;
+const handleModalSearch = async (data: { from: string; to: string }) => {
+  // Mettre à jour les valeurs locales avec les données du modal
+  from.value = data.from;
+  to.value = data.to;
+
+  if (!data.from || !data.to) return;
 
   const { isCityValid } = await import('~/utils/cities');
   
-  if (!isCityValid(from.value) || !isCityValid(to.value)) {
+  if (!isCityValid(data.from) || !isCityValid(data.to)) {
     await router.push('/destinations-populaires');
     return;
   }
 
   searchStore.setSearchParams({
     type: activeTab.value as 'car' | 'bus',
-    from: from.value,
-    to: to.value,
+    from: data.from,
+    to: data.to,
     date: null
   });
 
   // Convertir les noms de villes en slugs pour l'URL
-  const fromSlug = getSlugFromCity(from.value);
-  const toSlug = getSlugFromCity(to.value);
+  const fromSlug = getSlugFromCity(data.from);
+  const toSlug = getSlugFromCity(data.to);
 
   // Naviguer vers la page de résultats avec les slugs
   await router.push(`/results/${fromSlug}/${toSlug}`);
-};
-
-const swapCities = () => {
-  const tempFrom = from.value;
-  from.value = to.value;
-  to.value = tempFrom;
+  
+  // Fermer le modal
+  showSearchModal.value = false;
 };
 
 onMounted(() => {
