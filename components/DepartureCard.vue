@@ -44,8 +44,9 @@
         </div>
         
         <div class="col-span-5 text-right">
-          <div class="flex items-center justify-end">
+          <div class="flex items-center justify-end gap-1">
             <p class="font-medium text-sm dark:text-gray-200">{{ formatTime(departure.arrival_time) }}</p>
+            <span v-if="daysDifference > 0" class="text-xs font-semibold text-corail-500 dark:text-corail-400">+{{ daysDifference }}</span>
           </div>
           <p class="text-xs text-gray-600 dark:text-gray-400">{{ displayDestination }}</p>
         </div>
@@ -77,6 +78,7 @@ import type { Departure } from '~/server/data';
 import { getComfortChipClasses } from '~/utils/comfort';
 import { Clock as ClockIcon } from 'lucide-vue-next';
 import { getCityFromSlug } from '~/utils/cities';
+import { getDaysDifference } from '~/utils/time';
 
 const props = defineProps<{
   departure: Departure;
@@ -105,6 +107,14 @@ const getInitials = (name?: string) => {
     .toUpperCase()
     .substring(0, 2);
 };
+
+const daysDifference = computed(() => {
+  return getDaysDifference(
+    props.departure.departure_time,
+    props.departure.arrival_time,
+    props.departure.duration
+  );
+});
   
 </script>
 

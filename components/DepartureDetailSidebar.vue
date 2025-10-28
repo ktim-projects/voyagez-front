@@ -67,7 +67,10 @@
                   </div>
                   <div class="w-1/3 text-right">
                     <p class="text-sm text-gray-500">Arrivée</p>
-                    <p class="font-medium">{{ formatTime(modelValue.arrival_time) }}</p>
+                    <div class="flex items-center justify-end gap-1">
+                      <p class="font-medium">{{ formatTime(modelValue.arrival_time) }}</p>
+                      <span v-if="daysDifference > 0" class="text-xs font-semibold text-corail-500">+{{ daysDifference }}</span>
+                    </div>
                     <p class="text-sm text-gray-600">{{ displayDestination }}</p>
                   </div>
                 </div>
@@ -142,6 +145,7 @@
 import { XIcon, PhoneIcon, MailIcon } from 'lucide-vue-next';
 import { getComfortChipClasses, parseComfortDetails } from '~/utils/comfort';
 import { getCityFromSlug } from '~/utils/cities';
+import { getDaysDifference } from '~/utils/time';
 
 interface Company {
   id: string;
@@ -209,6 +213,16 @@ const formatPhoneNumber = (phone: string): string => {
   // Ajouter l'indicatif ivoirien
   return `(+225) ${formatted}`;
 };
+
+const daysDifference = computed(() => {
+  if (!props.modelValue) return 0;
+  
+  return getDaysDifference(
+    props.modelValue.departure_time,
+    props.modelValue.arrival_time,
+    props.modelValue.duration
+  );
+});
 
 watch(() => props.modelValue, (newValue) => {
   if (!process.client) return;
