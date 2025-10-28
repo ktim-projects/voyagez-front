@@ -98,31 +98,21 @@
     <!-- Main Content -->
     <div class="flex-1 mt-12 md:mt-0">
       <div class="container mx-auto px-4 py-6">
-        <!-- Mobile Filters Modal -->
-        <div v-if="shouldShowFilters" class="lg:hidden">
-          <SearchFiltersGroupMobile
-            v-model:show-modal="showFiltersModal"
-            v-model="filters"
-            :companies="carCompanies"
-            :comfort-categories="comfortCategories"
-            :from-city="fromCity"
-            @update:modelValue="debouncedFilterSearch"
-          />
-        </div>
+        <!-- Filters Modal (Mobile & Desktop) -->
+        <SearchFiltersGroupMobile
+          v-if="shouldShowFilters"
+          v-model:show-modal="showFiltersModal"
+          v-model="filters"
+          :companies="carCompanies"
+          :comfort-categories="comfortCategories"
+          :from-city="fromCity"
+          @update:modelValue="debouncedFilterSearch"
+        />
 
         <!-- Main Content Grid -->
         <div class="grid grid-cols-12 gap-6">
           <!-- Results and Filters Section -->
           <div class="col-span-12 lg:col-span-7">
-            <!-- Desktop Filters Section -->
-            <SearchFiltersGroup
-              v-if="shouldShowFilters"
-              v-model="filters"
-              :companies="carCompanies"
-              :comfort-categories="comfortCategories"
-              :from-city="fromCity"
-              @update:modelValue="debouncedFilterSearch"
-            />
 
             <div>
               <div v-if="loading" class="text-center py-8">
@@ -138,8 +128,22 @@
               </div>
 
               <div v-else-if="departures.length > 0" class="space-y-4">
-                <!-- Compteur de résultats -->
-                <div class="flex items-center justify-end mb-4 pb-3 border-b border-gray-200 dark:border-gray-700">
+                <!-- Compteur de résultats et bouton filtres -->
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-200 dark:border-gray-700">
+                  <!-- Bouton Filtres -->
+                  <button
+                    v-if="shouldShowFilters"
+                    @click="showFiltersModal = true"
+                    class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                    </svg>
+                    Filtrer
+                    <span v-if="activeFiltersCount > 0" class="inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-corail-500 rounded-full">{{ activeFiltersCount }}</span>
+                  </button>
+                  
+                  <!-- Compteur de résultats -->
                   <p class="text-sm text-gray-500 dark:text-gray-400">
                     <span class="font-medium text-gray-700 dark:text-gray-300">{{ totalResults }}</span>
                     {{ $t('results.tripFound', { count: totalResults }) }}
@@ -195,7 +199,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import {  RefreshCcw as RefreshCcwIcon, ChevronLeft, ArrowLeftRight } from 'lucide-vue-next';
-import SearchFiltersGroup from './filters/SearchFiltersGroup.vue';
 import SearchFiltersGroupMobile from './filters/SearchFiltersGroupMobile.vue';
 import CityAutocomplete from './CityAutocomplete.vue';
 import CarLoader from './CarLoader.vue';
@@ -260,6 +263,16 @@ const isSearchChanged = computed(() => {
 
 const isSearchDisabled = computed(() => {
   return !fromCity.value || !toCity.value || fromCity.value === toCity.value || (!isSearchChanged.value && hasSearched.value) || loading.value;
+});
+
+const activeFiltersCount = computed(() => {
+  let count = 0;
+  if (filters.value.companies.length > 0) count++;
+  if (filters.value.departurePeriod) count++;
+  if (filters.value.comfortCategories.length > 0) count++;
+  if (filters.value.commune) count++;
+  if (filters.value.maxPrice < 50000) count++;
+  return count;
 });
 
 const shouldShowFilters = computed(() => {

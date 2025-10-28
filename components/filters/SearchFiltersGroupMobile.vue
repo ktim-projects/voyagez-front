@@ -1,58 +1,59 @@
 <template>
   <div>
-    <!-- Mobile Filter Button -->
-    <div class="lg:hidden mb-4">
-      <button 
-        @click="showModal = true"
-        class="w-full bg-white border border-gray-300 text-gray-700 py-2.5 px-4 rounded-lg flex items-center justify-between shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 focus:border-primary-500"
-      >
-        <div class="flex items-center">
-          <FilterIcon class="w-4 h-4 mr-2 text-gray-500" />
-          <span>Filtres</span>
-        </div>
-        <div class="flex items-center">
-          <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary-100 text-primary-700 text-sm font-medium">
-            {{ activeFiltersCount }}
-          </span>
-        </div>
-      </button>
-    </div>
-
-    <!-- Mobile Filters Modal -->
-    <div
-      v-if="showModal"
-      class="fixed inset-0 z-50 overflow-y-auto bg-black/50 lg:hidden"
-      @click.self="showModal = false"
+    <!-- Filters Sidebar/Modal -->
+    <Transition
+      enter-active-class="transition ease-out duration-300"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition ease-in duration-200"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
     >
-      <div 
-        class="bg-white w-full rounded-t-xl absolute bottom-0 max-h-[90vh] overflow-y-auto"
-        @click.stop
+      <div
+        v-if="showModal"
+        class="fixed inset-0 bg-black bg-opacity-25 z-50"
+        @click="closeModal"
       >
-        <div class="p-6">
-          <div class="flex justify-between items-center mb-6">
-            <h3 class="text-lg font-semibold text-gray-800">Filtres</h3>
-            <div class="flex items-center gap-4">
-              <button 
-                v-if="hasActiveFilters"
-                @click="resetFilters"
-                class="text-sm text-gray-600 hover:text-gray-800 flex items-center"
-              >
-                <RefreshCcwIcon class="w-4 h-4 mr-1" />
-                Réinitialiser
-              </button>
-              <button 
-                @click="showModal = false"
-                class="p-2 rounded-lg hover:bg-gray-100 text-gray-500"
-              >
-                <XIcon class="w-5 h-5" />
-              </button>
+        <Transition
+          enter-active-class="transform transition ease-out duration-300"
+          enter-from-class="md:translate-x-full translate-y-full"
+          enter-to-class="md:translate-x-0 translate-y-0"
+          leave-active-class="transform transition ease-in duration-200"
+          leave-from-class="md:translate-x-0 translate-y-0"
+          leave-to-class="md:translate-x-full translate-y-full"
+        >
+          <div
+            class="fixed md:inset-y-0 md:right-0 bottom-0 w-full md:w-96 bg-white dark:bg-gray-800 shadow-xl z-[60] overflow-y-auto md:rounded-none rounded-t-xl max-h-[90vh] md:max-h-full"
+            @click.stop
+          >
+            <!-- Header sticky -->
+            <div class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex justify-between items-center z-10 shadow-sm">
+              <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Filtres</h3>
+              <div class="flex items-center gap-2">
+                <button 
+                  v-if="hasActiveFilters"
+                  @click="resetFilters"
+                  class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 flex items-center transition-colors"
+                >
+                  <RefreshCcwIcon class="w-4 h-4 mr-1" />
+                  Réinitialiser
+                </button>
+                <button 
+                  @click="closeModal"
+                  class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+                >
+                  <XIcon class="w-6 h-6" />
+                </button>
+              </div>
             </div>
-          </div>
 
-          <div class="space-y-6">
+            <!-- Content -->
+            <div class="p-6">
+
+              <div class="space-y-6">
             <!-- Price Filter -->
             <div>
-              <label class="block text-sm font-medium text-gray-600 mb-2">
+              <label class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
                 Prix Maximum
               </label>
               <input 
@@ -63,14 +64,14 @@
                 step="1000"
                 class="w-full"
               >
-              <div class="text-sm text-gray-600 mt-2 text-center">
+              <div class="text-sm text-gray-600 dark:text-gray-400 mt-2 text-center">
                 {{ filters.maxPrice.toLocaleString() }} FCFA
               </div>
             </div>
 
             <!-- Companies Filter -->
             <div>
-              <label class="block text-sm font-medium text-gray-600 mb-2">
+              <label class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
                 Compagnies
               </label>
               <div class="space-y-2">
@@ -83,21 +84,21 @@
                     type="checkbox"
                     v-model="filters.companies"
                     :value="company.id"
-                    class="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                    class="rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500"
                   >
-                  <span class="ml-2 text-sm text-gray-700">{{ company.name }}</span>
+                  <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">{{ company.name }}</span>
                 </label>
               </div>
             </div>
 
             <!-- Departure Time Filter -->
             <div>
-              <label class="block text-sm font-medium text-gray-600 mb-2">
+              <label class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
                 Heure de départ
               </label>
               <select
                 v-model="filters.departurePeriod"
-                class="w-full rounded-lg border-gray-300 focus:border-primary-500 focus:ring-primary-500"
+                class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:border-primary-500 focus:ring-primary-500"
               >
                 <option value="">Toute heure</option>
                 <option value="morning">Matin (6h - 12h)</option>
@@ -130,8 +131,8 @@
             </div> -->
 
             <div v-if="isAbidjan">
-              <label class="block text-sm font-medium text-gray-600 mb-2">
-                Commune
+              <label class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
+                Communes
               </label>
               <div class="space-y-2">
                 <label class="flex items-center">
@@ -139,9 +140,9 @@
                     type="radio"
                     v-model="filters.commune"
                     value=""
-                    class="text-primary-600 focus:ring-primary-500"
+                    class="text-primary-600 focus:ring-primary-500 dark:border-gray-600"
                   >
-                  <span class="ml-2 text-sm text-gray-700">Toutes les communes</span>
+                  <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Toutes les communes</span>
                 </label>
                 
                 <div class="grid grid-cols-2 gap-2">
@@ -154,24 +155,29 @@
                       type="radio"
                       v-model="filters.commune"
                       :value="commune"
-                      class="text-primary-600 focus:ring-primary-500"
+                      class="text-primary-600 focus:ring-primary-500 dark:border-gray-600"
                     >
-                    <span class="ml-2 text-sm text-gray-700">{{ commune }}</span>
+                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">{{ commune }}</span>
                   </label>
                 </div>
               </div>
             </div>
-          </div>
+              </div>
 
-          <button 
-            @click="emitUpdate"
-            class="w-full mt-6 bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-          >
-            Appliquer les filtres
-          </button>
-        </div>
+              <!-- Sticky footer avec bouton -->
+              <div class="sticky bottom-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-6 mt-6">
+                <button 
+                  @click="emitUpdate"
+                  class="w-full bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors font-medium"
+                >
+                  Appliquer les filtres
+                </button>
+              </div>
+            </div>
+          </div>
+        </Transition>
       </div>
-    </div>
+    </Transition>
   </div>
 </template>
 
@@ -198,13 +204,13 @@ const props = defineProps<{
   companies: Company[];
   comfortCategories: string[];
   fromCity: string;
+  showModal: boolean;
 }>();
 
 const emit = defineEmits<{
   (e: 'update:modelValue', filters: Filters): void;
+  (e: 'update:showModal', value: boolean): void;
 }>();
-
-const showModal = ref(false);
 
 const filters = ref<Filters>({
   maxPrice: props.modelValue.maxPrice,
@@ -236,9 +242,13 @@ const activeFiltersCount = computed(() => {
   return count;
 });
 
+const closeModal = () => {
+  emit('update:showModal', false);
+};
+
 const emitUpdate = () => {
   emit('update:modelValue', { ...filters.value });
-  showModal.value = false;
+  closeModal();
 };
 
 const resetFilters = () => {
@@ -253,7 +263,7 @@ const resetFilters = () => {
 };
 
 // Bloquer le scroll du body quand la modale est ouverte
-watch(showModal, (newValue) => {
+watch(() => props.showModal, (newValue) => {
   if (!process.client) return;
   if (newValue) {
     document.body.style.overflow = 'hidden';
