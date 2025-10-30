@@ -58,7 +58,12 @@ export default defineNuxtConfig({
         { name: 'description', content: 'Comparez et trouvez les meilleurs itinéraires de bus et cars en Côte d\'Ivoire' }
       ],
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        // Favicons
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/logos/geyavo_short.png' },
+        { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/logos/geyavo_short.png' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/logos/geyavo_short.png' },
+        { rel: 'manifest', href: '/site.webmanifest' },
+        // Fonts
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap' }

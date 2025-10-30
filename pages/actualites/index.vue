@@ -3,9 +3,9 @@
     <!-- Hero Section -->
     <div class="bg-gradient-to-r from-primary-600 to-primary-800 dark:from-primary-700 dark:to-primary-900 text-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4">Actualités</h1>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Actualité sur transport routier</h1>
         <p class="text-xl text-primary-100 max-w-2xl">
-          Découvrez les dernières nouvelles du transport en Côte d'Ivoire
+          Retrouvez toute l'actualité du transport routier, compagnie de transport, accident de la circulation...
         </p>
       </div>
     </div>
@@ -115,7 +115,7 @@ const totalPages = ref(1);
 const selectedCategory = ref('');
 const isMounted = ref(false);
 
-const categories = ['Transport', 'Actualité', 'Conseils', 'Événements'];
+const categories = ['Transport', 'Actualité', 'Conseils', 'Accidents'];
 
 const visiblePages = computed(() => {
   const pages = [];
