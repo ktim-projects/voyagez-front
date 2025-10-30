@@ -188,9 +188,8 @@
               Pour toute question concernant ces conditions d'utilisation, vous pouvez nous contacter :
             </p>
             <ul class="list-disc list-inside space-y-1 ml-4">
-              <li>Par email : legal@geyavo.com</li>
-              <li>Par email général : contact@geyavo.com</li>
-              <li>Par téléphone : +225 07 66 66 66 66</li>
+              <li>Par email : contact@geyavo.com</li>
+              <li>Par téléphone : +225 01 42 46 77 13</li>
               <li>
                 Via notre 
                 <NuxtLink to="/contact" class="text-primary-600 dark:text-primary-400 hover:underline">

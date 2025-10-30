@@ -209,22 +209,9 @@
           </div>
         </section>
 
-        <!-- Mineurs -->
-        <section>
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">11. Protection des mineurs</h2>
-          <div class="text-gray-700 dark:text-gray-300 space-y-4">
-            <p>
-              Notre service n'est pas destiné aux personnes de moins de 16 ans. 
-              Nous ne collectons pas sciemment d'informations personnelles auprès de mineurs de moins de 16 ans. 
-              Si nous découvrons qu'un mineur nous a fourni des données personnelles, 
-              nous les supprimerons immédiatement.
-            </p>
-          </div>
-        </section>
-
         <!-- Modifications -->
         <section>
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">12. Modifications de cette politique</h2>
+          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">11. Modifications de cette politique</h2>
           <div class="text-gray-700 dark:text-gray-300 space-y-4">
             <p>
               Nous pouvons mettre à jour cette politique de confidentialité de temps à autre. 
@@ -237,16 +224,15 @@
 
         <!-- Contact -->
         <section>
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">13. Nous contacter</h2>
+          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">12. Nous contacter</h2>
           <div class="text-gray-700 dark:text-gray-300 space-y-4">
             <p>
               Si vous avez des questions concernant cette politique de confidentialité ou nos pratiques de traitement des données, 
               vous pouvez nous contacter :
             </p>
             <ul class="list-disc list-inside space-y-1 ml-4">
-              <li>Par email : privacy@geyavo.com</li>
-              <li>Par email général : contact@geyavo.com</li>
-              <li>Par téléphone : +225 07 66 66 66 66</li>
+              <li>Par email : contact@geyavo.com</li>
+              <li>Par téléphone : +225 01 42 46 77 136</li>
               <li>
                 Via notre 
                 <NuxtLink to="/contact" class="text-primary-600 dark:text-primary-400 hover:underline">

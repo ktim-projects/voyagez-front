@@ -16,11 +16,9 @@
         <section>
           <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">1. Éditeur du site</h2>
           <div class="text-gray-700 dark:text-gray-300 space-y-2">
-            <p><strong>Nom de l'entreprise :</strong> Geyavo</p>
-            <p><strong>Forme juridique :</strong> Société à Responsabilité Limitée (SARL)</p>
             <p><strong>Siège social :</strong> Abidjan, Côte d'Ivoire</p>
             <p><strong>Email :</strong> contact@geyavo.com</p>
-            <p><strong>Téléphone :</strong> +225 07 66 66 66 66</p>
+            <p><strong>Téléphone :</strong> +225 01 42 46 77 13</p>
             <p><strong>Directeur de la publication :</strong> Équipe Geyavo</p>
           </div>
         </section>
@@ -150,7 +148,7 @@
             </p>
             <ul class="list-disc list-inside space-y-1 ml-4">
               <li>Par email : contact@geyavo.com</li>
-              <li>Par téléphone : +225 07 66 66 66 66</li>
+              <li>Par téléphone : +225 01 42 46 77 136</li>
               <li>
                 Via notre 
                 <NuxtLink to="/contact" class="text-primary-600 dark:text-primary-400 hover:underline">
