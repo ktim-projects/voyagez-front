@@ -1,5 +1,4 @@
 import { serverSupabaseClient } from '#supabase/server'
-import { createError } from 'h3'
 
 export default defineCachedEventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
@@ -12,7 +11,10 @@ export default defineCachedEventHandler(async (event) => {
 
 
   if (error) {
-    throw createError({ statusMessage: error.message })
+    setResponseStatus(event, 400)
+    return {
+      message: error.message
+    }
   }
 
   return companies

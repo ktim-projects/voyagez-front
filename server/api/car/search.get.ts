@@ -1,5 +1,4 @@
 import { serverSupabaseClient } from '#supabase/server'
-import { createError } from 'h3'
 import { COMMUNE_QUARTIERS, type CommuneAbidjan } from '~/utils/communes'
 
 // 🚀 Cache for companies
@@ -76,10 +75,10 @@ export default defineEventHandler(async (event) => {
   } = queryFromApp; 
   
   if (!from || !to) {
-    throw createError({
-      statusCode: 400,
-      message: 'Les paramètres de départ et d\'arrivée sont requis'
-    });
+    setResponseStatus(event, 400)
+    return {
+      message: 'Arrival and departure parameters are required'
+    }
   }
 
   // 🚀 Verify query cache
@@ -283,7 +282,10 @@ export default defineEventHandler(async (event) => {
       .order('departure_time', { ascending: true })
     
     if (fallbackError) {
-      throw createError({ statusMessage: fallbackError.message })
+      setResponseStatus(event, 400)
+      return {
+        message: fallbackError.message
+      }
     }
     
     // Enrich with companies

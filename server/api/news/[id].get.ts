@@ -6,10 +6,10 @@ export default defineEventHandler(async (event) => {
     const id = getRouterParam(event, 'id')
     
     if (!id) {
-      throw createError({
-        statusCode: 400,
-        message: 'ID manquant'
-      })
+      setResponseStatus(event, 400)
+      return {
+        message: 'ID not found'
+      }
     }
 
     const client = await serverSupabaseClient(event)
@@ -25,18 +25,19 @@ export default defineEventHandler(async (event) => {
     }
 
     if (!news) {
-      throw createError({
-        statusCode: 404,
-        message: 'News non trouvée'
-      })
+      setResponseStatus(event, 404)
+      return {
+        message: 'News not found'
+      }
     }
 
     return news
   } catch (error) {
     console.error('Error fetching news:', error)
-    throw createError({
-      statusCode: error.statusCode || 500,
-      message: error.message || 'Erreur lors de la récupération de la news'
-    })
+    setResponseStatus(event, 500)
+    return {
+      statusCode: 500,
+      message: 'Error fetching news'
+    }
   }
 })

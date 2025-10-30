@@ -35,10 +35,9 @@ export default defineEventHandler(async (event) => {
       }
     }
   } catch (error) {
-    console.error('Error fetching news:', error)
-    throw createError({
-      statusCode: 500,
-      message: 'Erreur lors de la récupération des news'
-    })
+    setResponseStatus(event, 500)
+    return {
+      message: 'Error fetching news'
+    }
   }
 })
