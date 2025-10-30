@@ -1,6 +1,6 @@
 <template>
   <SpeedInsights />
-  <div class="min-h-screen dark:bg-gray-950">
+  <div class="min-h-screen dark:bg-gray-950 overflow-x-hidden">
     <Header v-if="!isSpecialPage" />
     <Analytics />
     <NuxtPage />
