@@ -194,11 +194,30 @@
     <DepartureDetailSidebar
       v-model="departureSelected"
     />
+
+    <!-- Scroll to Top Button -->
+    <Transition
+      enter-active-class="transition ease-out duration-200"
+      enter-from-class="opacity-0 translate-y-2"
+      enter-to-class="opacity-100 translate-y-0"
+      leave-active-class="transition ease-in duration-150"
+      leave-from-class="opacity-100 translate-y-0"
+      leave-to-class="opacity-0 translate-y-2"
+    >
+      <button
+        v-if="showScrollTop"
+        @click="scrollToTop"
+        class="fixed bottom-6 right-6 z-40 p-3 bg-primary-600 hover:bg-primary-700 text-white rounded-full shadow-lg transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+        aria-label="Remonter en haut de la page"
+      >
+        <ArrowUp class="w-5 h-5" />
+      </button>
+    </Transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import {  RefreshCcw as RefreshCcwIcon, ChevronLeft, ArrowLeftRight } from 'lucide-vue-next';
+import {  RefreshCcw as RefreshCcwIcon, ChevronLeft, ArrowLeftRight, ArrowUp } from 'lucide-vue-next';
 import SearchFiltersGroupMobile from './filters/SearchFiltersGroupMobile.vue';
 import CityAutocomplete from './CityAutocomplete.vue';
 import CarLoader from './CarLoader.vue';
@@ -247,6 +266,7 @@ const lastSearchFrom = ref('');
 const lastSearchTo = ref('');
 
 const isFiltering = ref(false);
+const showScrollTop = ref(false);
 
 const filters = ref({
   maxPrice: 50000,
@@ -457,6 +477,29 @@ const swapCities = () => {
   fromCity.value = toCity.value;
   toCity.value = tempFrom;
 }
+
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+};
+
+const handleScroll = () => {
+  showScrollTop.value = window.scrollY > 300;
+};
+
+onMounted(() => {
+  if (process.client) {
+    window.addEventListener('scroll', handleScroll);
+  }
+});
+
+onUnmounted(() => {
+  if (process.client) {
+    window.removeEventListener('scroll', handleScroll);
+  }
+});
 
 const seoData = computed(() => {
   const hasSearchData = fromCity.value && toCity.value;
