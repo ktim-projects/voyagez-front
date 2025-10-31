@@ -78,7 +78,7 @@
 
               <div v-if="modelValue.comfort_info?.category" class="border border-gray-200 rounded-lg p-4">
                 <div class="flex items-center justify-between mb-3">
-                  <h4 class="font-medium text-gray-900">Catégorie de confort</h4>
+                  <h4 class="font-medium text-gray-900">Catégorie</h4>
                   <span 
                     :class="getComfortChipClasses(modelValue.comfort_info.category)"
                     class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium"
