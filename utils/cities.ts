@@ -83,6 +83,8 @@ export const citySlugMap: Record<string, string> = {
   'yamoussoukro': 'Yamoussoukro',
   'zouan-hounien': 'Zouan-Hounien',
   'zuenoula': 'Zuénoula',
+  'bonon': 'Bonon',
+  'guessabo': 'Guessabo'
 }
 
 /**

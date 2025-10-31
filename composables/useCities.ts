@@ -80,6 +80,8 @@ const citiesData: City[] = [
   { name: 'Yamoussoukro' },
   { name: 'Zouan-Hounien' },
   { name: 'Zuénoula' },
+  { name: 'Bonon' },
+  { name: 'Guessabo' },
 ];
 
 

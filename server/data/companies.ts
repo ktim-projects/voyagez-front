@@ -45,4 +45,8 @@ export const carCompanies = [
      "id":"a379346f-bdaf-401d-8221-186c3981a7e0",
      "name":"OT-CI"
   },
+  {
+     "id":"c2f46e0d-18d4-42cb-bf69-b31d9311cac7",
+     "name":"STD"
+  },
 ]
