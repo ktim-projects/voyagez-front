@@ -58,9 +58,9 @@ const partners = [
     size: '80px'
   },
   {
-    name: 'TSR',
-    logo: 'https://xgzetswtddvvgedpxzbx.supabase.co/storage/v1/object/public/companies_logo/tsr_logo.jpg',
-    size: '50px'
+    name: 'NARRE',
+    logo: 'https://xgzetswtddvvgedpxzbx.supabase.co/storage/v1/object/public/companies_logo/narre.jpg',
+    size: '80px'
   },
   {
     name: 'Sido',
@@ -88,13 +88,18 @@ const partners = [
     size: '80px'
   },
   {
-    name: 'UTB 5',
-    logo: 'https://xgzetswtddvvgedpxzbx.supabase.co/storage/v1/object/public/companies_logo/utb.jpg',
+    name: 'SAMA',
+    logo: 'https://xgzetswtddvvgedpxzbx.supabase.co/storage/v1/object/public/companies_logo/sama.jpg',
     size: '80px'
   },
   {
-    name: 'UTB 5',
-    logo: 'https://xgzetswtddvvgedpxzbx.supabase.co/storage/v1/object/public/companies_logo/utb.jpg',
+    name: 'STD',
+    logo: 'https://xgzetswtddvvgedpxzbx.supabase.co/storage/v1/object/public/companies_logo/std.jpg',
+    size: '80px'
+  },
+  {
+    name: 'OT-CI',
+    logo: 'https://xgzetswtddvvgedpxzbx.supabase.co/storage/v1/object/public/companies_logo/otci.jpeg',
     size: '80px'
   }
 ]
