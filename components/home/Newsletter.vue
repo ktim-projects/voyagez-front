@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-corail-50 dark:bg-gray-800 py-16">
+  <div class="bg-white dark:bg-gray-800 py-16">
     <div class="container mx-auto px-4">
       <div class="max-w-2xl mx-auto text-center">
         <h2 class="text-3xl text-primary-900 dark:text-white font-bold mb-4">{{ $t('home.newsletter.title') }}</h2>
@@ -16,15 +16,15 @@
                 'focus:outline-none focus:ring-2 focus:border-transparent',
                 'dark:bg-gray-700 dark:text-white',
                 emailError 
-                  ? 'border-corail-500 focus:ring-corail-500' 
-                  : 'border-gray-300 dark:border-gray-700 focus:ring-corail-500'
+                  ? 'border-red-500 focus:ring-red-500' 
+                  : 'border-gray-300 dark:border-gray-700 focus:ring-primary-700'
               ]"
               :disabled="isLoading"
               requicorail
             />
             
             <!-- Message d'erreur -->
-            <div v-if="emailError" class="text-corail-500 text-sm mt-2 text-left">
+            <div v-if="emailError" class="text-red-500 text-sm mt-2 text-left">
               {{ emailError }}
             </div>
           </div>
@@ -32,7 +32,7 @@
           <div class="sm:self-start">
             <AppButton 
               type="submit"
-              variant="corail" 
+              variant="primary" 
               :label="isLoading ? $t('home.newsletter.sending') : $t('home.newsletter.button')"
               :fullWidth="false"
               :disabled="isLoading || !isValidEmail"
@@ -49,7 +49,7 @@
           </div>
         </div>
 
-        <div v-if="errorMessage" class="mt-4 p-4 bg-corail-100 dark:bg-corail-900 text-corail-700 dark:text-corail-300 rounded-lg">
+        <div v-if="errorMessage" class="mt-4 p-4 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg">
           <div class="flex items-center justify-center gap-2">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
