@@ -24,12 +24,6 @@
               {{ destination.name }}
             </h3>
             <p class="text-white dark:text-gray-400 text-sm mb-4">{{ destination.description }}</p>
-            <!-- <div class="flex items-center justify-between w-full">
-              <p class="text-white dark:text-gray-400 font-medium">
-                <span class="text-corail-300">{{ $t('home.destinations.priceFrom') }}</span> 
-                {{ destination.price }} FCFA
-              </p>
-            </div> -->
           </div>
         </div>
       </div>
@@ -63,10 +57,6 @@
                   {{ destination.name }}
                 </h3>
                 <p class="text-white dark:text-gray-400 text-sm mb-4 line-clamp-2">{{ destination.description }}</p>
-                <p class="text-white dark:text-gray-400 font-medium">
-                  <span class="text-corail-300">{{ $t('home.destinations.priceFrom') }}</span> 
-                  {{ destination.price }} FCFA
-                </p>
               </div>
             </div>
           </div>
@@ -121,6 +111,38 @@ const destinations = [
     description: 'Profitez des plages magnifiques et du port animé de cette ville côtière.',
     image: 'https://images.pexels.com/photos/1998439/pexels-photo-1998439.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
   }
+  // { 
+  //   name: 'Korhogo',
+  //   price: '9000',
+  //   rating: 4.3,
+  //   promotion: null,
+  //   description: 'Découvrez la capitale du Nord, célèbre pour son artisanat et sa culture Sénoufo.',
+  //   image: 'https://images.pexels.com/photos/1268855/pexels-photo-1268855.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
+  // },
+  // { 
+  //   name: 'Daloa',
+  //   price: '7500',
+  //   rating: 4.4,
+  //   promotion: null,
+  //   description: 'Explorez la capitale de la région du Haut-Sassandra et son marché dynamique.',
+  //   image: 'https://images.pexels.com/photos/1105766/pexels-photo-1105766.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
+  // },
+  // { 
+  //   name: 'Man',
+  //   price: '9500',
+  //   rating: 4.7,
+  //   promotion: '-15%',
+  //   description: 'Admirez la ville des 18 montagnes, ses cascades et ses ponts de lianes.',
+  //   image: 'https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
+  // },
+  // { 
+  //   name: 'Grand-Bassam',
+  //   price: '6000',
+  //   rating: 4.9,
+  //   promotion: 'Populaire',
+  //   description: 'Plongez dans l\'histoire coloniale et profitez des plages de cette ville classée UNESCO.',
+  //   image: 'https://images.pexels.com/photos/1007657/pexels-photo-1007657.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
+  // }
 ];
 </script>
 
