@@ -52,7 +52,10 @@
             }"
           >
             <div class="flex items-center justify-between">
-              <span v-html="highlightMatch(suggestion.name)" class="text-gray-700 font-medium"></span>
+              <div class="flex items-center gap-2">
+                <span v-html="highlightMatch(suggestion.name)" class="text-gray-700 font-medium"></span>
+                <span v-if="suggestion.countryFlag" class="text-lg" :title="suggestion.country">{{ suggestion.countryFlag }}</span>
+              </div>
               <span class="text-gray-500 text-sm">{{ suggestion.region }}</span>
             </div>
           </div>
