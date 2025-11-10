@@ -4,7 +4,7 @@
       <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <h3 class="text-gray-900 dark:text-white text-lg font-semibold mb-4">Geyavo</h3>
-          <p class="text-gray-600 dark:text-gray-400">Comparez et trouvez les meilleurs itinéraires de bus et cars en Côte d'Ivoire</p>
+          <p class="text-gray-600 dark:text-gray-400">Comparez et trouvez les meilleurs itinéraires de cars et bus en Côte d'Ivoire et dans la sous-région</p>
         </div>
         <div>
           <h3 class="text-gray-900 dark:text-white text-lg font-semibold mb-4">Liens Rapides</h3>
