@@ -33,29 +33,9 @@
           </div>
         </section>
 
-        <!-- Propriété intellectuelle -->
-        <section>
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">3. Propriété intellectuelle</h2>
-          <div class="text-gray-700 dark:text-gray-300 space-y-4">
-            <p>
-              L'ensemble de ce site relève de la législation ivoirienne et internationale sur le droit d'auteur et la propriété intellectuelle. 
-              Tous les droits de reproduction sont réservés, y compris pour les documents téléchargeables et les représentations iconographiques et photographiques.
-            </p>
-            <p>
-              La reproduction de tout ou partie de ce site sur un support électronique quel qu'il soit est formellement interdite 
-              sauf autorisation expresse du directeur de la publication.
-            </p>
-            <p>
-              Les marques et logos figurant sur le site sont déposés par Geyavo ou éventuellement par ses partenaires. 
-              Toute reproduction totale ou partielle de ces marques ou logos effectuée à partir des éléments du site 
-              sans l'autorisation expresse de Geyavo est donc prohibée.
-            </p>
-          </div>
-        </section>
-
         <!-- Responsabilité -->
         <section>
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">4. Responsabilité</h2>
+          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">3. Responsabilité</h2>
           <div class="text-gray-700 dark:text-gray-300 space-y-4">
             <p>
               Les informations contenues sur ce site sont aussi précises que possible et le site est périodiquement remis à jour, 
@@ -75,7 +55,7 @@
 
         <!-- Liens hypertextes -->
         <section>
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">5. Liens hypertextes</h2>
+          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">4. Liens hypertextes</h2>
           <div class="text-gray-700 dark:text-gray-300 space-y-4">
             <p>
               Les sites internet de tiers auxquels il est fait référence sur le site ne sont pas sous le contrôle de Geyavo. 
@@ -94,7 +74,7 @@
 
         <!-- Services de transport -->
         <section>
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">6. Services de transport</h2>
+          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">5. Services de transport</h2>
           <div class="text-gray-700 dark:text-gray-300 space-y-4">
             <p>
               Geyavo est une plateforme de comparaison et de recherche d'itinéraires de transport en Côte d'Ivoire. 
@@ -110,38 +90,9 @@
           </div>
         </section>
 
-        <!-- Données personnelles -->
-        <section>
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">7. Protection des données personnelles</h2>
-          <div class="text-gray-700 dark:text-gray-300 space-y-4">
-            <p>
-              Geyavo s'engage à protéger la vie privée de ses utilisateurs. 
-              Le traitement des données personnelles est régi par notre 
-              <NuxtLink to="/privacy-policy" class="text-primary-600 dark:text-primary-400 hover:underline">
-                Politique de Confidentialité
-              </NuxtLink>.
-            </p>
-            <p>
-              Conformément à la loi ivoirienne sur la protection des données personnelles, 
-              vous disposez d'un droit d'accès, de rectification et de suppression des données vous concernant.
-            </p>
-          </div>
-        </section>
-
-        <!-- Droit applicable -->
-        <section>
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">8. Droit applicable et juridiction</h2>
-          <div class="text-gray-700 dark:text-gray-300 space-y-4">
-            <p>
-              Tout litige en relation avec l'utilisation du site geyavo.com est soumis au droit ivoirien. 
-              Il est fait attribution exclusive de juridiction aux tribunaux compétents d'Abidjan.
-            </p>
-          </div>
-        </section>
-
         <!-- Contact -->
         <section>
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">9. Contact</h2>
+          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">6. Contact</h2>
           <div class="text-gray-700 dark:text-gray-300 space-y-2">
             <p>
               Pour toute question concernant ces mentions légales, vous pouvez nous contacter :
@@ -157,17 +108,6 @@
               </li>
             </ul>
           </div>
-        </section>
-
-        <!-- Date de mise à jour -->
-        <section class="border-t border-gray-200 dark:border-gray-700 pt-6">
-          <p class="text-sm text-gray-500 dark:text-gray-400">
-            <strong>Dernière mise à jour :</strong> {{ new Date().toLocaleDateString('fr-FR', { 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            }) }}
-          </p>
         </section>
 
       </div>

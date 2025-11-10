@@ -97,23 +97,7 @@
         </section>
 
         <section>
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">6. Propriété intellectuelle</h2>
-          <div class="text-gray-700 dark:text-gray-300 space-y-4">
-            <p>
-              Le contenu du site Geyavo (textes, images, logos, design) est protégé par les droits de propriété intellectuelle. 
-              Vous ne pouvez pas :
-            </p>
-            <ul class="list-disc list-inside space-y-2 ml-4">
-              <li>Reproduire, copier ou distribuer le contenu sans autorisation</li>
-              <li>Utiliser nos marques ou logos sans permission</li>
-              <li>Créer des œuvres dérivées basées sur notre contenu</li>
-              <li>Utiliser le site à des fins commerciales non autorisées</li>
-            </ul>
-          </div>
-        </section>
-
-        <section>
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">7. Protection des données</h2>
+          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">6. Protection des données</h2>
           <div class="text-gray-700 dark:text-gray-300 space-y-4">
             <p>
               La collecte et l'utilisation de vos données personnelles sont régies par notre 
@@ -128,7 +112,7 @@
         </section>
 
         <section>
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">8. Disponibilité du service</h2>
+          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">7. Disponibilité du service</h2>
           <div class="text-gray-700 dark:text-gray-300 space-y-4">
             <p>
               Nous nous efforçons de maintenir le service disponible 24h/24, 7j/7, mais nous ne pouvons garantir :
@@ -145,7 +129,7 @@
         </section>
 
         <section>
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">9. Modifications des conditions</h2>
+          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">8. Modifications des conditions</h2>
           <div class="text-gray-700 dark:text-gray-300 space-y-4">
             <p>
               Nous nous réservons le droit de modifier ces conditions d'utilisation à tout moment. 
@@ -158,7 +142,7 @@
         </section>
 
         <section>
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">10. Résiliation</h2>
+          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">9. Résiliation</h2>
           <div class="text-gray-700 dark:text-gray-300 space-y-4">
             <p>
               Nous nous réservons le droit de suspendre ou de résilier votre accès au service en cas de :
@@ -172,17 +156,7 @@
         </section>
 
         <section>
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">11. Droit applicable</h2>
-          <div class="text-gray-700 dark:text-gray-300 space-y-4">
-            <p>
-              Ces conditions d'utilisation sont régies par le droit ivoirien. 
-              Tout litige sera soumis à la juridiction exclusive des tribunaux compétents d'Abidjan.
-            </p>
-          </div>
-        </section>
-
-        <section>
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">12. Contact</h2>
+          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">10. Contact</h2>
           <div class="text-gray-700 dark:text-gray-300 space-y-4">
             <p>
               Pour toute question concernant ces conditions d'utilisation, vous pouvez nous contacter :
@@ -198,20 +172,6 @@
               </li>
             </ul>
           </div>
-        </section>
-
-        <!-- Date de mise à jour -->
-        <section class="border-t border-gray-200 dark:border-gray-700 pt-6">
-          <p class="text-sm text-gray-500 dark:text-gray-400">
-            <strong>Dernière mise à jour :</strong> {{ new Date().toLocaleDateString('fr-FR', { 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            }) }}
-          </p>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
-            <strong>Version :</strong> 2.0
-          </p>
         </section>
 
       </div>
