@@ -26,12 +26,7 @@ export default defineNuxtConfig({
     }
   },
 
-  modules: [
-    '@nuxtjs/tailwindcss',
-    '@pinia/nuxt',
-    '@nuxtjs/supabase',
-    '@nuxtjs/i18n',
-  ],
+  modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt', '@nuxtjs/supabase', '@nuxtjs/i18n', 'nuxt-gtag'],
   css: [
     '~/assets/css/main.css',
     '~/assets/styles/main.scss'
@@ -73,6 +68,10 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: 'vercel'
+  },
+
+  gtag: {
+    id: 'G-RXTY6M9MGQ'
   },
 
   typescript: {

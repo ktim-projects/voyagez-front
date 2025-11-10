@@ -19,11 +19,11 @@ export default defineEventHandler((event) => {
   // Définit les sources de contenu autorisées
   const cspDirectives = [
     "default-src 'self'",                                    // Par défaut : seulement notre domaine
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://vercel.live", // Scripts : Nuxt + Vercel Analytics
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://vercel.live https://www.googletagmanager.com https://www.google-analytics.com", // Scripts : Nuxt + Vercel Analytics + Google Analytics
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com", // Styles : notre domaine + Google Fonts
     "font-src 'self' https://fonts.gstatic.com data:",      // Fonts : notre domaine + Google Fonts
     "img-src 'self' data: https: blob:",                    // Images : notre domaine + data URLs + HTTPS
-    "connect-src 'self' https://geyavo.com/api https://*.vercel.app https://overpass-api.de/api/interpreter", // APIs autorisées
+    "connect-src 'self' https://geyavo.com/api https://*.vercel.app https://overpass-api.de/api/interpreter https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com", // APIs autorisées + Google Analytics (incluant domaines régionaux)
     "frame-ancestors 'none'",                                // Pas d'iframe (équivalent X-Frame-Options)
     "base-uri 'self'",                                       // URLs de base autorisées
     "form-action 'self'",                                    // Soumission de formulaires
