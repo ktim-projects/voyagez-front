@@ -82,6 +82,7 @@ const citiesData: City[] = [
   { name: 'Zuénoula' },
   { name: 'Bonon' },
   { name: 'Guessabo' },
+  { name: 'Ouaninou' },
 ];
 
 
