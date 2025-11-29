@@ -83,6 +83,7 @@ const citiesData: City[] = [
   { name: 'Bonon' },
   { name: 'Guessabo' },
   { name: 'Ouaninou' },
+  { name: 'Labé', country: 'Guinée', countryFlag: '🇬🇳' },
 ];
 
 
