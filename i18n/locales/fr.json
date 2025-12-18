@@ -85,8 +85,8 @@
         "point2": "Données régulièrement mises à jour"
       },
       "cta": {
-        "title": "Vous voulez voyager en car ou vous déplacer en bus ?",
-        "description": "Nous vous offrons les informations sur les différentes compagnies de transport en car, de même que les informations sur les différentes lignes de la SOTRA",
+        "title": "Vous voulez voyager en car ?",
+        "description": "Trouvez les meilleures offres de transport en car au meilleur prix pour vos déplacements en Côte d'Ivoire avec Geyavo",
         "button": "Rechercher un trajet"
       }
     },
@@ -123,7 +123,7 @@
     },
     "partners": {
       "title": "Toutes les compagnies de transport au même endroit",
-      "description": "Nous centralisons les informations des compagnies de cars et de bus en Côte d'Ivoire pour faciliter vos recherches.",
+      "description": "Nous centralisons les informations des compagnies de transport en Côte d'Ivoire pour faciliter vos recherches et vous aider à trouver le meilleur trajet.",
       "button": "Nous rejoindre"
     },
     "faq": {

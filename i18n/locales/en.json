@@ -86,8 +86,8 @@
         "point3": "Reliable information"
       },
       "cta": {
-        "title": "Want to travel by coach or move by bus?",
-        "description": "We provide information on different coach transport companies, as well as information on different SOTRA bus lines",
+        "title": "Want to travel by car?",
+        "description": "Find the best coach transport offers at the best prices for your travels in Côte d'Ivoire with Geyavo",
         "button": "Search for a trip"
       }
     },
@@ -124,7 +124,7 @@
     },
     "partners": {
       "title": "All travel options on a single platform",
-      "description": "More than 1000 transportation partners for your train, bus, plane, ferry journeys and airport transfers to fully enjoy your trip.",
+      "description": "We connect you with all transportation providers in one place to save you time and effort. Find the best options for your journey and travel with confidence.",
       "button": "Take advantage"
     },
     "faq": {
