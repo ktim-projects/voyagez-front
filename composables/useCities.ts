@@ -21,6 +21,7 @@ const citiesData: City[] = [
   { name: 'Bondoukou' },
   { name: 'Bouaflé' },
   { name: 'Bouaké' },
+  { name: 'Bougouni', country: 'Mali', countryFlag: '🇲🇱' },
   { name: 'Boundiali' },
   { name: 'Conakry', country: 'Guinée', countryFlag: '🇬🇳' },
   { name: 'Cotonou', country: 'Bénin', countryFlag: '🇧🇯' },

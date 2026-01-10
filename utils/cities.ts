@@ -24,6 +24,7 @@ export const citySlugMap: Record<string, string> = {
   'bondoukou': 'Bondoukou',
   'bouafle': 'Bouaflé',
   'bouake': 'Bouaké',
+  'bougouni': 'Bougouni',
   'boundiali': 'Boundiali',
   'conakry': 'Conakry',
   'cotonou': 'Cotonou',
