@@ -52,7 +52,8 @@
         </div>
       </div>
 
-      <div class="flex justify-between items-center pt-1" :class="departure.comfort_info?.category ? 'border-t border-gray-100 dark:border-gray-700' : ''">
+      <div class="flex justify-between items-center pt-3 mt-2 border-t border-gray-100 dark:border-gray-700"
+           :class="{ 'md:hidden': !departure.comfort_info?.category }">
         <div class="flex items-center space-x-2">
           <div v-if="departure.comfort_info?.category" 
                :class="getComfortChipClasses(departure.comfort_info.category)"
@@ -68,6 +69,11 @@
             </div>
           </div>
         </div>
+
+        <button class="flex md:hidden items-center gap-1 pl-3 py-1 text-primary-600 dark:text-primary-400 text-xs font-medium group-hover:underline">
+          Voir détails
+          <ChevronRightIcon class="w-4 h-4" />
+        </button>
       </div>
     </div>
   </div>
@@ -76,7 +82,7 @@
 <script setup lang="ts">
 import type { Departure } from '~/server/data';
 import { getComfortChipClasses } from '~/utils/comfort';
-import { Clock as ClockIcon } from 'lucide-vue-next';
+import { Clock as ClockIcon, ChevronRight as ChevronRightIcon } from 'lucide-vue-next';
 import { getCityFromSlug } from '~/utils/cities';
 import { getDaysDifference } from '~/utils/time';
 
