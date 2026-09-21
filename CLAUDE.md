@@ -5,8 +5,8 @@
 Geyavo compare des horaires de cars interurbains en Côte d'Ivoire et dans la
 sous-région. **Il n'y a ni réservation ni paiement** : le parcours s'arrête à
 l'affichage des départs puis des coordonnées téléphoniques de la compagnie
-(`DepartureDetailSidebar.vue`). Plusieurs textes SEO parlent encore de
-« réservation » — c'est un écart connu, pas une fonctionnalité oubliée.
+(`DepartureDetailSidebar.vue`). Les textes du site ont été alignés là-dessus :
+ne pas réintroduire de promesse de réservation, de paiement ou de billet.
 
 ## Commandes
 
@@ -38,14 +38,18 @@ contiennent `abidjan`, `bouake`... et non les noms accentués. Le client
 envoie donc des slugs à `/api/car/search`, et l'affichage repasse par
 `getCityFromSlug()`.
 
-**La clé d'API frontend est publique.** `runtimeConfig.public.apiKeyFrontend`
-part dans le bundle client : le middleware `server/middleware/security.ts`
-filtre les robots, pas un attaquant. La vraie protection des données doit
-venir des RLS Supabase.
+**Aucune clé d'API ne part au navigateur.** Les routes `/api/` sont servies
+au site via un contrôle first-party (`server/utils/first-party.ts`), pas via
+une clé — elle serait lisible dans le HTML. Ce contrôle bloque l'usage
+cross-site depuis un navigateur, pas un client HTTP quelconque : la vraie
+frontière sur les données est le RLS Supabase
+(`supabase/migrations/enable_rls.sql`, **à appliquer manuellement**).
 
-**Les données sont chargées côté client.** Résultats de recherche et articles
-sont récupérés dans un `watch`/`onMounted`, pas via `useAsyncData` : le HTML
-rendu par le serveur est vide. C'est le principal frein SEO du projet.
+**Les données se chargent au rendu serveur.** Résultats de recherche et
+articles passent par `useAsyncData` : le HTML servi contient les départs et
+le contenu des articles. Tout le SEO du projet en dépend — ne pas revenir à
+un `onMounted` pour ces écrans. Les filtres, le tri et la pagination restent
+impératifs, ils n'ont lieu qu'après interaction.
 
 ## Conventions
 

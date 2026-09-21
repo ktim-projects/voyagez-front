@@ -30,12 +30,18 @@ pnpm install
 cp .env.example .env   # puis renseigner les valeurs
 ```
 
-Les variables attendues sont décrites dans `.env.example`. Pour générer une
-clé d'API frontend :
+Les variables attendues sont décrites dans `.env.example`. Les clés d'API ne
+servent qu'aux appels serveur à serveur et aux routes d'administration : le
+site lui-même n'en utilise aucune. Pour en générer une :
 
 ```bash
-node -p "'API_KEY_FRONTEND=gyv_frontend_' + require('crypto').randomBytes(32).toString('base64url')"
+node -p "'gyv_' + require('crypto').randomBytes(32).toString('base64url')"
 ```
+
+⚠️ Le RLS Supabase (`supabase/migrations/enable_rls.sql`) n'est pas appliqué
+automatiquement. Sans lui, la clé anonyme — publique par conception — donne
+un accès complet en lecture et en écriture aux tables. À relire puis appliquer
+sur un environnement de test avant la production.
 
 ## 🛠️ Développement
 
