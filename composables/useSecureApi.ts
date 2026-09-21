@@ -9,31 +9,28 @@ type ResponseCar = {
   };
 };
 
+/**
+ * Appels vers les routes /api/ du site.
+ *
+ * Aucune clé d'API n'est envoyée depuis le navigateur : elle serait de toute
+ * façon lisible dans le bundle. Le serveur identifie les requêtes du site via
+ * leur origine (cf. server/middleware/security.ts).
+ */
 export const useSecureApi = () => {
-  const config = useRuntimeConfig()
-  
-  const secureApiFetch = async <T>(url: string, options: any = {}): Promise<T> => {
-    const headers = {
-      'x-api-key': config.public.apiKeyFrontend,
-      ...options.headers
-    }
-    
+  const secureApiFetch = async <T>(url: string, options: Record<string, unknown> = {}): Promise<T> => {
     try {
-      const response = await $fetch<T>(url, {
-        ...options,
-        headers
-      })
+      return await $fetch<T>(url, options)
+    } catch (error) {
+      const { statusCode, statusMessage } = error as { statusCode?: number; statusMessage?: string }
 
-      return response
-    } catch (error: any) {
-      if (error.statusCode === 401) {
-        throw new Error('Invalid or missing API key', { cause: error })
-      } else if (error.statusCode === 429) {
+      if (statusCode === 403) {
+        throw new Error('Request rejected', { cause: error })
+      } else if (statusCode === 429) {
         throw new Error('Too many requests, please wait', { cause: error })
-      } else if (error.statusCode === 400 && error.statusMessage?.includes('Malicious')) {
+      } else if (statusCode === 400 && statusMessage?.includes('Malicious')) {
         throw new Error('Invalid request detected', { cause: error })
       }
-      
+
       throw error
     }
   }

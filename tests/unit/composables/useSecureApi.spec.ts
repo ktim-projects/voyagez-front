@@ -5,32 +5,22 @@ describe('useSecureApi', () => {
   beforeEach(() => {
     // Reset mocks avant chaque test
     vi.clearAllMocks()
-    
-    // Mock de useRuntimeConfig
-    ;(global as any).useRuntimeConfig = vi.fn(() => ({
-      public: {
-        apiKeyFrontend: 'test-api-key'
-      }
-    }))
   })
 
   describe('secureApiFetch', () => {
-    it('should add API key to requests', async () => {
+    it('should not send any API key from the browser', async () => {
       const mockResponse = { data: 'test' }
       ;(global as any).$fetch = vi.fn().mockResolvedValue(mockResponse)
 
       const { secureApiFetch } = useSecureApi()
       const result = await secureApiFetch('/api/test')
 
-      expect((global as any).$fetch).toHaveBeenCalledWith('/api/test', {
-        headers: {
-          'x-api-key': 'test-api-key'
-        }
-      })
+      expect((global as any).$fetch).toHaveBeenCalledWith('/api/test', {})
+      expect(JSON.stringify((global as any).$fetch.mock.calls)).not.toContain('x-api-key')
       expect(result).toEqual(mockResponse)
     })
 
-    it('should preserve existing headers', async () => {
+    it('should preserve caller options', async () => {
       const mockResponse = { data: 'test' }
       ;(global as any).$fetch = vi.fn().mockResolvedValue(mockResponse)
 
@@ -43,20 +33,19 @@ describe('useSecureApi', () => {
 
       expect((global as any).$fetch).toHaveBeenCalledWith('/api/test', {
         headers: {
-          'x-api-key': 'test-api-key',
           'Content-Type': 'application/json'
         }
       })
     })
 
-    it('should handle 401 error (invalid API key)', async () => {
-      const error = new Error('Unauthorized')
-      ;(error as any).statusCode = 401
+    it('should handle 403 error (cross-site request)', async () => {
+      const error = new Error('Forbidden')
+      ;(error as any).statusCode = 403
       ;(global as any).$fetch = vi.fn().mockRejectedValue(error)
 
       const { secureApiFetch } = useSecureApi()
 
-      await expect(secureApiFetch('/api/test')).rejects.toThrow('Invalid or missing API key')
+      await expect(secureApiFetch('/api/test')).rejects.toThrow('Request rejected')
     })
 
     it('should handle 429 error (rate limiting)', async () => {
@@ -104,9 +93,6 @@ describe('useSecureApi', () => {
 
       expect((global as any).$fetch).toHaveBeenCalledWith('/api/car/search', {
         query: { from: 'abidjan', to: 'bouake' },
-        headers: {
-          'x-api-key': 'test-api-key'
-        }
       })
       expect(result).toEqual(mockResponse)
     })
@@ -126,9 +112,6 @@ describe('useSecureApi', () => {
           email: 'test@example.com',
           source: 'homepage'
         },
-        headers: {
-          'x-api-key': 'test-api-key'
-        }
       })
       expect(result).toEqual(mockResponse)
     })
@@ -146,9 +129,6 @@ describe('useSecureApi', () => {
           email: 'test@example.com',
           source: 'footer'
         },
-        headers: {
-          'x-api-key': 'test-api-key'
-        }
       })
       expect(result).toEqual(mockResponse)
     })
@@ -166,9 +146,6 @@ describe('useSecureApi', () => {
           email: 'test@example.com',
           source: 'homepage'
         },
-        headers: {
-          'x-api-key': 'test-api-key'
-        }
       })
     })
 
@@ -214,9 +191,6 @@ describe('useSecureApi', () => {
       expect((global as any).$fetch).toHaveBeenCalledWith('/api/contact', {
         method: 'POST',
         body: contactData,
-        headers: {
-          'x-api-key': 'test-api-key'
-        }
       })
       expect(result).toEqual(mockResponse)
     })
