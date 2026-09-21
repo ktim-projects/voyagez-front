@@ -10,8 +10,8 @@
       :next-departures="data.nextDepartures"
     />
 
-    <div class="container mx-auto px-4 lg:px-10 py-6 lg:py-9 grid gap-6 lg:gap-9 items-start lg:grid-cols-[1.5fr_.8fr]">
-      <div>
+    <div class="container mx-auto px-4 lg:px-10 py-6 lg:py-9 grid gap-6 lg:gap-9 items-start lg:grid-cols-[minmax(0,1.5fr)_minmax(320px,.8fr)]">
+      <div class="min-w-0">
         <CompanySchedule
           :routes="data.routes"
           :cities="data.cities"

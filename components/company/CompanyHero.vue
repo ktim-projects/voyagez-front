@@ -13,8 +13,8 @@
         </ol>
       </nav>
 
-      <div class="grid gap-6 lg:gap-9 items-start lg:grid-cols-[1.15fr_.85fr]">
-        <div>
+      <div class="grid gap-6 lg:gap-9 items-start lg:grid-cols-[minmax(0,1.15fr)_minmax(0,.85fr)]">
+        <div class="min-w-0">
           <div class="flex items-center gap-3.5">
             <div
               class="shrink-0 flex items-center justify-center overflow-hidden rounded-2xl h-[58px] w-[58px] lg:h-[76px] lg:w-[76px] font-bold text-xl lg:text-[26px] tracking-[-0.02em]"
