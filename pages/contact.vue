@@ -241,7 +241,7 @@ useHead({
     // Données structurées JSON-LD pour ContactPage
     {
       type: 'application/ld+json',
-      children: JSON.stringify({
+      innerHTML: JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'ContactPage',
         name: 'Contact Geyavo',

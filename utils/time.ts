@@ -22,10 +22,12 @@ export function getDaysDifference(departureTime: string, arrivalTime: string, du
   // Calculate the number of complete days based on the duration
   const daysFromDuration = Math.floor(duration / (24 * 60));
   
-  // Convert hours to minutes since midnight
-  const [depHours, depMinutes] = departureTime.split(':').map(Number);
-  const [arrHours, arrMinutes] = arrivalTime.split(':').map(Number);
-  
+  // Convert hours to minutes since midnight.
+  // split() ne garantit pas deux éléments : une heure malformée donnerait NaN
+  // silencieusement, on retombe donc sur 0.
+  const [depHours = 0, depMinutes = 0] = departureTime.split(':').map(Number);
+  const [arrHours = 0, arrMinutes = 0] = arrivalTime.split(':').map(Number);
+
   const depTotalMinutes = depHours * 60 + depMinutes;
   const arrTotalMinutes = arrHours * 60 + arrMinutes;
   
