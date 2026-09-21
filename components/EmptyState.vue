@@ -5,7 +5,7 @@
     </div>
     <h3 class="text-lg font-medium text-gray-900 mb-2">{{ title }}</h3>
     <p class="text-sm text-gray-500 text-center max-w-sm">{{ description }}</p>
-    <slot name="action"></slot>
+    <slot name="action"/>
   </div>
 </template>
 

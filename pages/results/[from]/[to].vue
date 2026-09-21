@@ -9,7 +9,6 @@ import { useSearchStore } from '~/stores/search';
 import { getCityFromSlug } from '~/utils/cities';
 
 const route = useRoute();
-const router = useRouter();
 const searchStore = useSearchStore();
 
 // Récupérer les slugs depuis l'URL

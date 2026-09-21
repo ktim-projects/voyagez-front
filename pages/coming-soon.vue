@@ -7,7 +7,7 @@
           src="/logos/geyavo_full.png" 
           alt="Geyavo" 
           class="h-24 md:h-32 w-auto"
-        />
+        >
       </div>
 
       <div class="text-center mb-12">
@@ -66,7 +66,7 @@
             </p>
           </div>
 
-          <form @submit.prevent="handleSubmit" class="space-y-4">
+          <form class="space-y-4" @submit.prevent="handleSubmit">
             <div>
               <input
                 v-model="email"
@@ -75,7 +75,7 @@
                 class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-corail-500 focus:ring-2 focus:ring-corail-200 outline-none transition-all"
                 :class="{ 'border-red-500': emailError }"
                 :disabled="isLoading"
-              />
+              >
               <p v-if="emailError" class="text-red-500 text-sm mt-2">{{ emailError }}</p>
             </div>
 

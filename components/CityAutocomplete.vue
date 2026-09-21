@@ -4,22 +4,22 @@
       ref="inputRef"
       type="text"
       :value="displayValue"
+      :placeholder="placeholder"
+      class="w-full px-4 py-3 pr-16 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-corail-500 focus:border-transparent"
+      :class="{ 'cursor-pointer': !isSearching, 'cursor-text': isSearching }"
+      autocomplete="off"
       @input="handleInput"
       @focus="handleFocus"
       @blur="handleBlur"
       @click="handleClick"
       @keydown="handleKeydown"
-      :placeholder="placeholder"
-      class="w-full px-4 py-3 pr-16 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-corail-500 focus:border-transparent"
-      :class="{ 'cursor-pointer': !isSearching, 'cursor-text': isSearching }"
-      autocomplete="off"
-    />
+    >
     <div class="absolute inset-y-0 right-0 flex items-center pr-3">
       <button
         v-if="isSearching && searchValue"
-        @click="clearSearch"
         class="mr-1 p-1 hover:bg-gray-100 rounded-full transition-colors"
         type="button"
+        @click="clearSearch"
       >
         <X class="h-4 w-4 text-gray-400 hover:text-gray-600" />
       </button>
@@ -37,23 +37,23 @@
         @scroll="handleScroll"
       >
         <!-- Virtual scroll spacer top -->
-        <div :style="{ height: `${topSpacer}px` }"></div>
+        <div :style="{ height: `${topSpacer}px` }"/>
         
         <!-- Visible items -->
         <div class="py-2">
           <div 
-            v-for="(suggestion, index) in visibleSuggestions" 
+            v-for="suggestion in visibleSuggestions" 
             :key="suggestion.name"
-            @click="handleSelect(suggestion)"
             class="px-4 py-2 hover:bg-corail-50 cursor-pointer transition-colors"
             :class="{
               'bg-corail-50': suggestion.originalIndex === selectedIndex,
               'bg-corail-100': normalizeText(suggestion.name) === normalizeText(props.modelValue)
             }"
+            @click="handleSelect(suggestion)"
           >
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
-                <span v-html="highlightMatch(suggestion.name)" class="text-gray-700 font-medium"></span>
+                <span class="text-gray-700 font-medium" v-html="highlightMatch(suggestion.name)"/>
                 <span v-if="suggestion.countryFlag" class="text-lg" :title="suggestion.country">{{ suggestion.countryFlag }}</span>
               </div>
               <span class="text-gray-500 text-sm">{{ suggestion.region }}</span>
@@ -62,7 +62,7 @@
         </div>
         
         <!-- Virtual scroll spacer bottom -->
-        <div :style="{ height: `${bottomSpacer}px` }"></div>
+        <div :style="{ height: `${bottomSpacer}px` }"/>
       </div>
     </div>
   </div>

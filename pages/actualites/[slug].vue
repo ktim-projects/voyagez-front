@@ -3,13 +3,13 @@
     <!-- Loading -->
     <div v-if="loading" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div class="animate-pulse">
-        <div class="h-8 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-4"></div>
-        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-8"></div>
-        <div class="h-96 bg-gray-200 dark:bg-gray-700 rounded mb-8"></div>
+        <div class="h-8 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-4"/>
+        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-8"/>
+        <div class="h-96 bg-gray-200 dark:bg-gray-700 rounded mb-8"/>
         <div class="space-y-3">
-          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
-          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
-          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded"/>
+          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded"/>
+          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"/>
         </div>
       </div>
     </div>
@@ -44,7 +44,7 @@
           <!-- Auteur -->
           <div class="flex items-center gap-3">
             <div v-if="article.author.avatar" class="w-12 h-12 rounded-full overflow-hidden">
-              <img :src="article.author.avatar" :alt="article.author.name" class="w-full h-full object-cover" />
+              <img :src="article.author.avatar" :alt="article.author.name" class="w-full h-full object-cover" >
             </div>
             <div v-else class="w-12 h-12 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center">
               <span class="text-lg font-medium text-primary-600 dark:text-primary-400">
@@ -82,12 +82,12 @@
           :src="article.cover_image" 
           :alt="article.title"
           class="w-full h-auto"
-        />
+        >
       </div>
 
       <!-- Contenu -->
       <div class="prose prose-lg dark:prose-invert max-w-none mb-12">
-        <div v-html="article.content"></div>
+        <div v-html="article.content"/>
       </div>
 
       <!-- Tags -->

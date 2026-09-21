@@ -3,7 +3,7 @@
     <nav class="container mx-auto px-4 h-16 flex items-center justify-between">
       <div class="flex items-center">
         <NuxtLink to="/" class="text-2xl font-bold text-corail-600 hover:text-corail-700 dark:text-corail-500 dark:hover:text-corail-400 transition-colors">
-          <img :src="logoPath" alt="Geyavo" class="h-20" />
+          <img :src="logoPath" alt="Geyavo" class="h-20" >
         </NuxtLink>
       </div>
       
@@ -14,8 +14,8 @@
 
       <div class="md:hidden flex items-center gap-3">
         <button 
-          @click="isMenuOpen = !isMenuOpen" 
-          class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-800"
+          class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-800" 
+          @click="isMenuOpen = !isMenuOpen"
         >
           <Menu v-if="!isMenuOpen" class="h-6 w-6" />
           <X v-else class="h-6 w-6" />
@@ -33,8 +33,8 @@
     >
       <div v-if="isMenuOpen" class="md:hidden bg-white dark:bg-gray-900 border-t dark:border-gray-800 shadow-md">
         <div class="container mx-auto px-4 py-2 space-y-1">
-          <NuxtLink @click="closeMenu" to="/actualites" class="block text-gray-700 hover:text-corail-600 dark:text-gray-300 dark:hover:text-corail-500 py-2">Actualités</NuxtLink>
-          <NuxtLink @click="closeMenu" to="/contact" class="block text-gray-700 hover:text-corail-600 dark:text-gray-300 dark:hover:text-corail-500 py-2">{{ $t('header.contact') }}</NuxtLink>
+          <NuxtLink to="/actualites" class="block text-gray-700 hover:text-corail-600 dark:text-gray-300 dark:hover:text-corail-500 py-2" @click="closeMenu">Actualités</NuxtLink>
+          <NuxtLink to="/contact" class="block text-gray-700 hover:text-corail-600 dark:text-gray-300 dark:hover:text-corail-500 py-2" @click="closeMenu">{{ $t('header.contact') }}</NuxtLink>
         </div>
       </div>
     </Transition>

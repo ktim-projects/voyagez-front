@@ -9,9 +9,9 @@
             <div class="relative">
               <CityAutocomplete
                 v-model="from"
-                @select="handleFromSelect"
                 :placeholder="$t('search.departurePlaceholder')"
                 class="w-full rounded-xl border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 transition-all duration-300"
+                @select="handleFromSelect"
               />
             </div>
           </div>
@@ -21,9 +21,9 @@
             <div class="relative">
               <CityAutocomplete
                 v-model="to"
-                @select="handleToSelect"
                 :placeholder="$t('search.arrivalPlaceholder')"
                 class="w-full rounded-xl border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 transition-all duration-300"
+                @select="handleToSelect"
               />
             </div>
           </div>
@@ -45,8 +45,8 @@
             <button 
               v-for="(city, index) in popularCities" 
               :key="index"
-              @click="quickSearch(city)"
               class="px-3 py-1 text-xs rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-300"
+              @click="quickSearch(city)"
             >
               {{ city }}
             </button>
@@ -68,6 +68,7 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { getSlugFromCity } from '~/utils/cities';
+import type { City } from '~/types';
 
 const router = useRouter();
 
@@ -82,13 +83,13 @@ const isSearchEnabled = computed(() => {
   return from.value && to.value;
 });
 
-const handleFromSelect = (city: any) => {
+const handleFromSelect = (city: City) => {
   searchStore.setSearchParams({
     from: city.name
   });
 };
 
-const handleToSelect = (city: any) => {
+const handleToSelect = (city: City) => {
   searchStore.setSearchParams({
     to: city.name
   });
@@ -117,7 +118,7 @@ const handleSearch = async () => {
 };
 
 const quickSearch = async (destination: string) => {
-  const isMobile = process.client ? window.innerWidth < 768 : false;
+  const isMobile = import.meta.client ? window.innerWidth < 768 : false;
   
   if (isMobile) {
     to.value = destination;

@@ -10,7 +10,7 @@
           <h3 class="text-gray-900 dark:text-white text-lg font-semibold mb-4">Liens Rapides</h3>
           <ul class="space-y-2">
             <li><NuxtLink to="/" class="hover:text-corail-600 dark:hover:text-corail-500">Accueil</NuxtLink></li>
-            <li><NuxtLink @click="scrollToDestinations" class="hover:text-corail-600 dark:hover:text-corail-500 cursor-pointer">Destinations</NuxtLink></li>
+            <li><NuxtLink class="hover:text-corail-600 dark:hover:text-corail-500 cursor-pointer" @click="scrollToDestinations">Destinations</NuxtLink></li>
             <li><NuxtLink to="/contact" class="hover:text-corail-600 dark:hover:text-corail-500">Contact</NuxtLink></li>
           </ul>
         </div>
@@ -114,7 +114,7 @@
 <script setup lang="ts">
 
 const scrollToDestinations = () => {
-  if (!process.client) return;
+  if (!import.meta.client) return;
   const destinations = document.querySelector('.popular-destinations-section');
   if (destinations) {
     destinations.scrollIntoView({ behavior: 'smooth' });

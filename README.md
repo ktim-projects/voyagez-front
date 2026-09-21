@@ -1,95 +1,95 @@
-# VoyagezCi - Plateforme de Réservation de Transport
+# Geyavo — Comparateur de transport en Côte d'Ivoire
 
-[![CI](https://github.com/VOTRE_USERNAME/voyagez-front/workflows/CI/badge.svg)](https://github.com/VOTRE_USERNAME/voyagez-front/actions)
-[![Tests](https://github.com/VOTRE_USERNAME/voyagez-front/workflows/Tests/badge.svg)](https://github.com/VOTRE_USERNAME/voyagez-front/actions)
-[![Coverage](https://img.shields.io/badge/coverage-89%20tests-brightgreen)](./tests)
+[![CI](https://github.com/ktim-projects/voyagez-front/actions/workflows/ci.yml/badge.svg)](https://github.com/ktim-projects/voyagez-front/actions/workflows/ci.yml)
 
-Plateforme web moderne pour la réservation de trajets en car et bus en Côte d'Ivoire.
+Application web de recherche et de comparaison de trajets en car interurbain
+en Côte d'Ivoire et dans la sous-région (Ghana, Mali, Burkina Faso, Guinée,
+Togo, Bénin).
 
-## 🚀 Technologies
+L'utilisateur recherche un trajet ville à ville, filtre les départs (prix,
+compagnie, plage horaire, catégorie de confort, commune d'Abidjan) et obtient
+les coordonnées de la compagnie. **La réservation et le paiement en ligne ne
+font pas partie du périmètre actuel.**
 
-- **Framework:** Nuxt 3
-- **Language:** TypeScript
-- **State Management:** Pinia
-- **Styling:** TailwindCSS
-- **Testing:** Vitest
-- **CI/CD:** GitHub Actions
+## 🚀 Stack
 
-## 📊 Tests
-
-- **89 tests unitaires** passant avec succès
-- **3 fichiers de tests** (composables, stores, utils)
-- **Couverture de code** générée automatiquement
-
-Voir la [documentation des tests](./tests/README.md) pour plus d'informations.
+| Domaine | Choix |
+|---|---|
+| Framework | Nuxt 3 (SSR), Vue 3, TypeScript strict |
+| État | Pinia + `pinia-plugin-persistedstate` |
+| Styles | TailwindCSS (`darkMode: 'class'`) |
+| Données | Supabase (`departure`, `company`, `articles`, `news`) |
+| Emails | Brevo (newsletter, formulaire de contact) + webhook Slack |
+| Tests | Vitest + happy-dom |
+| Hébergement | Vercel (preset Nitro `vercel`) |
 
 ## 📦 Installation
 
-Installer les dépendances avec pnpm :
-
 ```bash
 pnpm install
+cp .env.example .env   # puis renseigner les valeurs
+```
+
+Les variables attendues sont décrites dans `.env.example`. Pour générer une
+clé d'API frontend :
+
+```bash
+node -p "'API_KEY_FRONTEND=gyv_frontend_' + require('crypto').randomBytes(32).toString('base64url')"
 ```
 
 ## 🛠️ Développement
 
-Lancer le serveur de développement sur http://localhost:3000 :
-
 ```bash
-pnpm dev
+pnpm dev          # http://localhost:3000
+pnpm lint         # ESLint 9 (flat config)
+pnpm lint:fix     # corrige ce qui est auto-corrigeable
 ```
 
 ## 🧪 Tests
 
-### Lancer tous les tests
 ```bash
-pnpm test:run
+pnpm test           # lance la suite une fois
+pnpm test:dev       # mode watch
+pnpm test:ui        # interface interactive
+pnpm test:coverage  # rapport de couverture (coverage/)
 ```
 
-### Mode watch (développement)
-```bash
-pnpm test
-```
-
-### Interface UI interactive
-```bash
-pnpm test:ui
-```
-
-### Générer le rapport de couverture
-```bash
-pnpm test:coverage
-```
+Un hook `pre-commit` (husky) lance les tests puis `lint-staged` sur les
+fichiers modifiés.
 
 ## 🏗️ Production
 
-Build de l'application pour la production :
-
 ```bash
 pnpm build
-```
-
-Prévisualiser le build de production localement :
-
-```bash
 pnpm preview
 ```
 
-## 📚 Documentation
+Le déploiement est automatique : la CI tourne sur `main`, puis le workflow
+`deploy.yml` publie sur Vercel.
 
-- [Tests Unitaires](./tests/README.md)
-- [GitHub Actions CI/CD](./.github/README.md)
-- [Nuxt 3 Documentation](https://nuxt.com/docs)
+## 📁 Organisation
+
+```
+components/      composants UI (CarSearchResults est le cœur de la recherche)
+composables/     useCities (liste des villes), useSecureApi (appels API)
+pages/           routes ; /results/[from]/[to] est la page de résultats
+server/api/      endpoints Nitro (recherche, articles, contact, newsletter)
+server/middleware/  sécurité (clé d'API, rate limiting) et en-têtes HTTP
+stores/          état de recherche Pinia
+utils/           slugs de villes, confort, communes, formatage
+achives/         pages archivées (auth, réservation) — hors build
+```
+
+⚠️ Les villes vivent à deux endroits qui doivent rester synchronisés :
+`composables/useCities.ts` (ce que voit l'autocomplete) et `utils/cities.ts`
+(`citySlugMap`, qui fait foi pour les URLs et la validation). Des tests
+verrouillent leur cohérence — en ajoutant une ville, mettre à jour les deux.
 
 ## 🤝 Contribution
 
-1. Fork le projet
-2. Créer une branche feature (`git checkout -b feature/AmazingFeature`)
-3. Commit les changements (`git commit -m 'Add some AmazingFeature'`)
-4. Push vers la branche (`git push origin feature/AmazingFeature`)
-5. Ouvrir une Pull Request
+1. Créer une branche depuis `main`
+2. Vérifier avant de pousser :
 
-Assurez-vous que tous les tests passent avant de soumettre une PR :
 ```bash
-pnpm test:run && pnpm build
+pnpm lint && pnpm test:run && pnpm build
 ```

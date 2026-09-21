@@ -33,12 +33,12 @@
             <CityAutocomplete
               v-model="from"
               :placeholder="$t('search.departurePlaceholder')"
-              :autoFocus="false"
+              :auto-focus="false"
             />
             <CityAutocomplete
               v-model="to"
               :placeholder="$t('search.arrivalPlaceholder')"
-              :autoFocus="false"
+              :auto-focus="false"
             />
           </div>
           <AppButton
@@ -62,12 +62,12 @@
           <div
             v-for="destination in popularDestinations"
             :key="`${destination.from}-${destination.to}`"
-            @click="quickSearch(destination.from, destination.to)"
             class="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden cursor-pointer transform hover:scale-105 border border-gray-200 dark:border-gray-700"
+            @click="quickSearch(destination.from, destination.to)"
           >
             <!-- Header avec gradient -->
             <div class="h-32 bg-gradient-to-br from-primary-600 to-corail-500 relative overflow-hidden">
-              <div class="absolute inset-0 bg-black/10"></div>
+              <div class="absolute inset-0 bg-black/10"/>
               <div class="absolute inset-0 flex items-center justify-center">
                 <BusIcon class="w-16 h-16 text-white/80" />
               </div>
@@ -84,14 +84,14 @@
               <div class="flex items-center justify-between mb-4">
                 <div class="flex-1">
                   <div class="flex items-center gap-2 mb-2">
-                    <div class="w-3 h-3 rounded-full bg-primary-600 dark:bg-primary-400"></div>
+                    <div class="w-3 h-3 rounded-full bg-primary-600 dark:bg-primary-400"/>
                     <span class="font-semibold text-gray-900 dark:text-white">{{ destination.from }}</span>
                   </div>
                   <div class="flex items-center gap-2 ml-5">
                     <ArrowDownIcon class="w-4 h-4 text-gray-400" />
                   </div>
                   <div class="flex items-center gap-2 mt-2">
-                    <div class="w-3 h-3 rounded-full bg-corail-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-corail-500"/>
                     <span class="font-semibold text-gray-900 dark:text-white">{{ destination.to }}</span>
                   </div>
                 </div>
@@ -156,7 +156,6 @@
 <script setup lang="ts">
 import { 
   ArrowLeftIcon, 
-  MapPinIcon, 
   BusIcon, 
   ArrowDownIcon, 
   ChevronRightIcon, 

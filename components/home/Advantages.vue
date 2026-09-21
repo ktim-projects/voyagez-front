@@ -38,8 +38,8 @@
       
       <!-- Bannière d'appel à l'action -->
       <div class="mt-16 bg-primary-600 dark:bg-primary-700 rounded-2xl p-8 text-white relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-64 h-64 bg-primary-500 dark:bg-primary-600 rounded-full opacity-30 transform translate-x-1/3 -translate-y-1/3"></div>
-        <div class="absolute bottom-0 left-0 w-48 h-48 bg-primary-700 dark:bg-primary-800 rounded-full opacity-30 transform -translate-x-1/3 translate-y-1/3"></div>
+        <div class="absolute top-0 right-0 w-64 h-64 bg-primary-500 dark:bg-primary-600 rounded-full opacity-30 transform translate-x-1/3 -translate-y-1/3"/>
+        <div class="absolute bottom-0 left-0 w-48 h-48 bg-primary-700 dark:bg-primary-800 rounded-full opacity-30 transform -translate-x-1/3 translate-y-1/3"/>
         
         <div class="relative z-10 flex flex-col md:flex-row items-center justify-between">
           <div class="mb-6 md:mb-0 md:mr-8">
@@ -95,7 +95,7 @@ const advantages = [
 ];
 
 const scrollToSearch = () => {
-  if (!process.client) return;
+  if (!import.meta.client) return;
   const searchForm = document.querySelector('.search-form-section');
   if (searchForm) {
     searchForm.scrollIntoView({ behavior: 'smooth' });

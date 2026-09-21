@@ -14,9 +14,9 @@
         <div 
           class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" 
           :style="{ backgroundImage: `url(${destination.image})` }"
-        ></div>
+        />
         
-        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300"/>
         
         <div class="absolute bottom-0 left-0 right-0 p-6 transform transition-transform duration-500 group-hover:translate-y-0">
           <div class="flex flex-col items-start">
@@ -47,9 +47,9 @@
             <div 
               class="absolute inset-0 bg-cover bg-center" 
               :style="{ backgroundImage: `url(${destination.image})` }"
-            ></div>
+            />
             
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"/>
           
             <div class="absolute bottom-0 left-0 right-0 p-6">
               <div class="flex flex-col items-start">
@@ -69,14 +69,9 @@
 <script setup>
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Pagination, EffectCards } from 'swiper/modules';
-import { useRouter } from 'vue-router';
-import { StarIcon, ArrowRightIcon } from 'lucide-vue-next';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-cards';
-
-const searchStore = useSearchStore();
-const router = useRouter();
 
 const destinations = [
   { 

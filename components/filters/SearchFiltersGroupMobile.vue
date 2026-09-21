@@ -15,6 +15,7 @@
         @click="closeModal"
       >
         <Transition
+          appear
           enter-active-class="transform transition ease-out duration-300"
           enter-from-class="md:translate-x-full translate-y-full"
           enter-to-class="md:translate-x-0 translate-y-0"
@@ -32,15 +33,15 @@
               <div class="flex items-center gap-2">
                 <button 
                   v-if="hasActiveFilters"
-                  @click="resetFilters"
                   class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 flex items-center transition-colors"
+                  @click="resetFilters"
                 >
                   <RefreshCcwIcon class="w-4 h-4 mr-1" />
                   Réinitialiser
                 </button>
                 <button 
-                  @click="closeModal"
                   class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+                  @click="closeModal"
                 >
                   <XIcon class="w-6 h-6" />
                 </button>
@@ -57,8 +58,8 @@
                 Prix Maximum
               </label>
               <input 
-                type="range" 
                 v-model="filters.maxPrice" 
+                type="range" 
                 min="0" 
                 :max="MAX_PRICE_FILTER" 
                 step="1000"
@@ -81,8 +82,8 @@
                   class="flex items-center"
                 >
                   <input
-                    type="checkbox"
                     v-model="filters.companies"
+                    type="checkbox"
                     :value="company.id"
                     class="rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500"
                   >
@@ -137,8 +138,8 @@
               <div class="space-y-2">
                 <label class="flex items-center">
                   <input
-                    type="radio"
                     v-model="filters.commune"
+                    type="radio"
                     value=""
                     class="text-primary-600 focus:ring-primary-500 dark:border-gray-600"
                   >
@@ -152,8 +153,8 @@
                     class="flex items-center"
                   >
                     <input
-                      type="radio"
                       v-model="filters.commune"
+                      type="radio"
                       :value="commune"
                       class="text-primary-600 focus:ring-primary-500 dark:border-gray-600"
                     >
@@ -167,8 +168,8 @@
               <!-- Sticky footer avec bouton -->
               <div class="sticky bottom-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-6 mt-6">
                 <button 
-                  @click="emitUpdate"
                   class="w-full bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors font-medium"
+                  @click="emitUpdate"
                 >
                   Appliquer les filtres
                 </button>
@@ -183,7 +184,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onUnmounted } from 'vue';
-import { FilterIcon, RefreshCcw as RefreshCcwIcon, X as XIcon } from 'lucide-vue-next';
+import { RefreshCcw as RefreshCcwIcon, X as XIcon } from 'lucide-vue-next';
 import { ABIDJAN_COMMUNES } from '~/utils/communes';
 import { MAX_PRICE_FILTER } from '~/utils';
 
@@ -233,16 +234,6 @@ const hasActiveFilters = computed(() => {
          filters.value.commune !== '';
 });
 
-const activeFiltersCount = computed(() => {
-  let count = 0;
-  if (filters.value.maxPrice !== MAX_PRICE_FILTER) count++;
-  if (filters.value.companies.length > 0) count++;
-  if (filters.value.departurePeriod !== '') count++;
-  if (filters.value.comfortCategories.length > 0) count++;
-  if (filters.value.commune !== '') count++;
-  return count;
-});
-
 const closeModal = () => {
   emit('update:showModal', false);
 };
@@ -265,7 +256,7 @@ const resetFilters = () => {
 
 // Bloquer le scroll du body quand la modale est ouverte
 watch(() => props.showModal, (newValue) => {
-  if (!process.client) return;
+  if (!import.meta.client) return;
   if (newValue) {
     document.body.style.overflow = 'hidden';
   } else {
@@ -275,7 +266,7 @@ watch(() => props.showModal, (newValue) => {
 
 // Nettoyer au démontage
 onUnmounted(() => {
-  if (process.client) {
+  if (import.meta.client) {
     document.body.style.overflow = '';
   }
 });

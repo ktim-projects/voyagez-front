@@ -5,7 +5,7 @@
       <!-- Icône de maintenance -->
       <div class="mb-8 flex justify-center">
         <div class="relative">
-          <div class="absolute inset-0 bg-white/10 rounded-full blur-2xl"></div>
+          <div class="absolute inset-0 bg-white/10 rounded-full blur-2xl"/>
           <div class="relative bg-white/10 backdrop-blur-sm rounded-full p-8 border border-white/20">
             <Settings class="w-20 h-20 text-white animate-spin-slow" />
           </div>
@@ -62,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-import { Settings, Info, Clock, Mail } from 'lucide-vue-next'
+import { Settings, Info, Mail } from 'lucide-vue-next'
 
 // SEO pour la page de maintenance
 useHead({

@@ -87,11 +87,6 @@ export default defineEventHandler(async (event) => {
   const cachedQuery = queryCache.get(cacheKey)
   
   if (cachedQuery && (now - cachedQuery.timestamp) < QUERY_CACHE_TTL) {
-    console.info('Cache infos:', {
-      cacheHit: true,
-      cacheAge: Math.round((now - cachedQuery.timestamp) / 1000)
-    })
-    
     return {
       ...cachedQuery.data,
     }
@@ -313,20 +308,12 @@ export default defineEventHandler(async (event) => {
       },
     }
 
-    console.info('Performance:',  {
-      method: 'fallback_with_cache',
-      cacheHits: companyCache.size,
-      queryTime: 'optimized'
-    })
-    
     // Add to cache
     queryCache.set(cacheKey, { data: result, timestamp: now })
     
     return result
   }
 
-  console.log('join');
-  
   // ✅ Success with JOIN
   const result = {
     departures,
@@ -338,12 +325,6 @@ export default defineEventHandler(async (event) => {
     },
   }
 
-  console.info('Performance:', {
-    method: 'optimized_join',
-    cacheHits: companyCache.size,
-    queryTime: 'fast'
-  })
-  
   // Add to cache
   queryCache.set(cacheKey, { data: result, timestamp: now })
   

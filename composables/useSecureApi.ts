@@ -27,14 +27,11 @@ export const useSecureApi = () => {
       return response
     } catch (error: any) {
       if (error.statusCode === 401) {
-        console.error('🔐 Error API key')
-        throw new Error('Invalid or missing API key')
+        throw new Error('Invalid or missing API key', { cause: error })
       } else if (error.statusCode === 429) {
-        console.error('🚫 Rate limit exceeded')
-        throw new Error('Too many requests, please wait')
+        throw new Error('Too many requests, please wait', { cause: error })
       } else if (error.statusCode === 400 && error.statusMessage?.includes('Malicious')) {
-        console.error('🛡️ Security violation detected')
-        throw new Error('Invalid request detected')
+        throw new Error('Invalid request detected', { cause: error })
       }
       
       throw error

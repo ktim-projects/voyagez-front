@@ -12,7 +12,7 @@
               {{ $t('home.partners.description') }}
             </p>
             <NuxtLink to="/contact">
-              <AppButton variant="corail" :label="$t('home.partners.button')" :fullWidth="false" />
+              <AppButton variant="corail" :label="$t('home.partners.button')" :full-width="false" />
             </NuxtLink>
           </div>
 

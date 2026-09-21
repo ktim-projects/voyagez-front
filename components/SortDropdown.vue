@@ -1,12 +1,12 @@
 <template>
-  <div class="relative" ref="dropdownRef">
+  <div ref="dropdownRef" class="relative">
     <button
-      @click="toggleMenu"
       :disabled="disabled"
       class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors"
       :class="disabled 
         ? 'text-gray-400 dark:text-gray-600 bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 cursor-not-allowed' 
         : 'text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'"
+      @click="toggleMenu"
     >
       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
@@ -34,11 +34,11 @@
           <button
             v-for="option in sortOptions"
             :key="option.value"
-            @click="handleSelect(option.value)"
             class="w-full text-left px-4 py-2 text-sm transition-colors"
             :class="modelValue === option.value 
               ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 font-medium' 
               : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'"
+            @click="handleSelect(option.value)"
           >
             {{ option.label }}
           </button>

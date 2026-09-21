@@ -23,7 +23,7 @@
               variant="outline" 
               size="small"
               :label="$t('common.modify')"
-              :fullWidth="false"
+              :full-width="false"
               class="!text-white !border-white hover:!bg-white/10"
               @click="showSearchModal = true"
             />
@@ -34,7 +34,7 @@
       <!-- Desktop Search Form -->
       <div class="hidden md:block">
         <div class="container mx-auto px-4 py-4">
-          <form @submit.prevent="handleSearch" class="grid gap-2 md:grid-cols-4">
+          <form class="grid gap-2 md:grid-cols-4" @submit.prevent="handleSearch">
             <div class="relative">
               <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">{{ $t('common.departure') }}</label>
               <CityAutocomplete
@@ -45,9 +45,9 @@
               <!-- Swap Cities Button -->
               <button
                 type="button"
-                @click="swapCities"
                 :disabled="!fromCity || !toCity"
                 class="absolute -right-5 top-9 z-10 p-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                @click="swapCities"
               >
                 <ArrowLeftRight class="w-4 h-4 text-gray-600 dark:text-gray-300" />
               </button>
@@ -84,7 +84,7 @@
         </div>
       </div>
 
-      <div class="border-b border-gray-200 dark:border-gray-800 hidden md:block"></div>
+      <div class="border-b border-gray-200 dark:border-gray-800 hidden md:block"/>
     </div>
 
     <!-- Search Form Modal -->
@@ -106,7 +106,7 @@
           :companies="carCompanies"
           :comfort-categories="comfortCategories"
           :from-city="fromCity"
-          @update:modelValue="debouncedFilterSearch"
+          @update:model-value="debouncedFilterSearch"
         />
 
         <div class="grid grid-cols-12 gap-6">
@@ -115,8 +115,8 @@
                   <div class="flex items-center justify-between mb-2">
                     <button
                       v-if="shouldShowFilters"
-                      @click="showFiltersModal = true"
                       class="flex items-center gap-2 px-4 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      @click="showFiltersModal = true"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -160,9 +160,9 @@
 
                 <div v-if="hasMoreResults" class="flex justify-center mt-8 mb-4">
                   <button 
-                    @click="loadMoreResults"
                     :disabled="loadingMore"
                     class="px-6 py-2.5 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-lg text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all duration-200"
+                    @click="loadMoreResults"
                   >
                     <RefreshCcwIcon v-if="loadingMore" class="w-4 h-4 animate-spin" />
                     <span>{{ loadingMore ? $t('common.loading') : $t('common.showMore') }}</span>
@@ -206,9 +206,9 @@
     >
       <button
         v-if="showScrollTop"
-        @click="scrollToTop"
         class="fixed bottom-6 right-6 z-40 p-3 bg-primary-600 hover:bg-primary-700 text-white rounded-full shadow-lg transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
         aria-label="Remonter en haut de la page"
+        @click="scrollToTop"
       >
         <ArrowUp class="w-5 h-5" />
       </button>
@@ -378,7 +378,7 @@ const performSearch = async (isFilteringParam = false) => {
   }
   departures.value = [];
   
-  if (process.client) {
+  if (import.meta.client) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
   
@@ -400,7 +400,7 @@ const performSearch = async (isFilteringParam = false) => {
     totalResults.value = response._meta.total || 0;
     totalPages.value = Math.ceil((response._meta.total || 0) / limit);
     
-  } catch (error) {
+  } catch {
     departures.value = [];
     totalResults.value = 0;
     totalPages.value = 0;
@@ -433,7 +433,7 @@ const loadMoreResults = async () => {
     totalResults.value = response._meta.total || 0;
     totalPages.value = Math.ceil((response._meta.total || 0) / limit);
     
-  } catch (error) {
+  } catch {
     page.value--; // Revert page increment on error
   } finally {
     loadingMore.value = false;
@@ -443,7 +443,7 @@ const loadMoreResults = async () => {
 // Watch sur les paramètres de route pour déclencher la recherche
 watch(
   () => ({ from: route.params.from, to: route.params.to }),
-  (newParams, oldParams) => {
+  (newParams) => {
     const { from: newFrom, to: newTo } = newParams;
     // Mettre à jour les villes depuis l'URL, en repassant par le mapping
     // officiel pour restituer accents et majuscules ("bouake" -> "Bouaké").
@@ -491,13 +491,13 @@ const handleScroll = () => {
 };
 
 onMounted(() => {
-  if (process.client) {
+  if (import.meta.client) {
     window.addEventListener('scroll', handleScroll);
   }
 });
 
 onUnmounted(() => {
-  if (process.client) {
+  if (import.meta.client) {
     window.removeEventListener('scroll', handleScroll);
   }
 });

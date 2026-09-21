@@ -5,7 +5,7 @@
         <h2 class="text-3xl text-primary-900 dark:text-white font-bold mb-4">{{ $t('home.newsletter.title') }}</h2>
         <p class="text-gray-600 dark:text-gray-400 mb-8">{{ $t('home.newsletter.subtitle') }}</p>
         
-        <form @submit.prevent="handleSubmit" class="flex flex-col sm:flex-row gap-4">
+        <form class="flex flex-col sm:flex-row gap-4" @submit.prevent="handleSubmit">
           <div class="flex-1">
             <input 
               v-model="email"
@@ -21,7 +21,7 @@
               ]"
               :disabled="isLoading"
               requicorail
-            />
+            >
             
             <!-- Message d'erreur -->
             <div v-if="emailError" class="text-red-500 text-sm mt-2 text-left">
@@ -34,7 +34,7 @@
               type="submit"
               variant="primary" 
               :label="isLoading ? $t('home.newsletter.sending') : $t('home.newsletter.button')"
-              :fullWidth="false"
+              :full-width="false"
               :disabled="isLoading || !isValidEmail"
             />
           </div>
@@ -106,7 +106,7 @@ async function handleSubmit() {
   try {
     // Utiliser useSecureApi pour l'authentification
     const { subscribeNewsletter } = useSecureApi()
-    const response = await subscribeNewsletter(email.value, 'homepage')
+    await subscribeNewsletter(email.value, 'homepage')
 
     const subscribedEmail = email.value
 

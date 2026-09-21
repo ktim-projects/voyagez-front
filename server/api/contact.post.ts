@@ -75,7 +75,7 @@ export default defineEventHandler(async (event): Promise<ContactResponse> => {
       
       // Vérifier le statut du dernier message
       if (existingContact.body.attributes?.STATUS === 'pending') {
-        console.warn('⚠️ [Contact] User has pending message:', email)
+        console.warn('⚠️ [Contact] Message déjà en attente pour ce contact')
         setResponseStatus(event, 409)
         return {
           success: false,
@@ -105,7 +105,6 @@ export default defineEventHandler(async (event): Promise<ContactResponse> => {
 
     try {
       await contactsApi.createContact(createContact)
-      console.log('✅ [Contact] Contact created/updated in Brevo:', email)
     } catch (brevoError: any) {
       // Si erreur autre que "contact existe déjà", on log mais on continue
       console.warn('⚠️ [Contact] Brevo contact creation warning:', brevoError.message)
@@ -176,7 +175,6 @@ export default defineEventHandler(async (event): Promise<ContactResponse> => {
     `
 
     await emailApi.sendTransacEmail(sendSmtpEmail)
-    console.log('✅ [Contact] Email sent to contact@geyavo.com from:', email)
 
     // 4. Envoyer notification Slack (optionnel, ne bloque pas si erreur)
     if (config.slackWebhookUrl) {
@@ -234,7 +232,6 @@ export default defineEventHandler(async (event): Promise<ContactResponse> => {
             ]
           }
         })
-        console.log('✅ [Contact] Slack notification sent')
       } catch (slackError: any) {
         console.warn('⚠️ [Contact] Slack notification failed:', slackError.message)
         // On ne bloque pas l'envoi du message si Slack échoue

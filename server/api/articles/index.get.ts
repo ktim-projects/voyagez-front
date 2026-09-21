@@ -1,4 +1,3 @@
-import type { Article } from '~/types/article';
 import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {

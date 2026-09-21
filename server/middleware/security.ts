@@ -3,6 +3,8 @@
  * Version simplifiée et fonctionnelle
  */
 
+import type { H3Event } from 'h3'
+
 // Cache simple pour le rate limiting
 const rateLimitCache = new Map<string, { count: number; resetTime: number }>()
 
@@ -30,6 +32,22 @@ const securityStats = {
   invalidApiKeys: 0
 }
 
+/**
+ * Erreur de sécurité : createError() + un champ `type` exploitable par le
+ * logger, sans avoir à caster l'erreur à chaque appel.
+ */
+type SecurityErrorType =
+  | 'MISSING_API_KEY'
+  | 'INVALID_API_KEY'
+  | 'RATE_LIMIT_EXCEEDED'
+  | 'INJECTION_ATTEMPT'
+  | 'INVALID_PARAMETER'
+  | 'SECURITY_VIOLATION'
+
+function securityError(statusCode: number, statusMessage: string, type: SecurityErrorType) {
+  return Object.assign(createError({ statusCode, statusMessage }), { type })
+}
+
 export default defineEventHandler(async (event) => {
   const url = getRequestURL(event)
   
@@ -54,12 +72,12 @@ export default defineEventHandler(async (event) => {
     // ✅ 4. VALIDATION DES PARAMÈTRES
     validateRequestParameters(event)
     
-  } catch (error: any) {
+  } catch (error) {
     securityStats.blockedRequests++
     
     // Logger l'incident
     console.warn('🚨 SECURITY INCIDENT:', {
-      type: error.type || 'SECURITY_VIOLATION',
+      type: (error as { type?: SecurityErrorType }).type || 'SECURITY_VIOLATION',
       ip: clientIP.substring(0, 8) + '***', // Masquer l'IP
       url: url.pathname,
       timestamp: new Date().toISOString()
@@ -72,7 +90,7 @@ export default defineEventHandler(async (event) => {
 /**
  * 🔐 Vérification de l'authentification API
  */
-function checkApiAuthentication(event: any) {
+function checkApiAuthentication(event: H3Event) {
   const apiKey = getHeader(event, 'x-api-key')
   const url = getRequestURL(event)
   
@@ -91,22 +109,12 @@ function checkApiAuthentication(event: any) {
   }
   
   if (!apiKey) {
-    const error = createError({
-      statusCode: 401,
-      statusMessage: 'API Key required'
-    })
-    ;(error as any).type = 'MISSING_API_KEY'
-    throw error
+    throw securityError(401, 'API Key required', 'MISSING_API_KEY')
   }
   
   if (!validApiKeys.has(apiKey)) {
     securityStats.invalidApiKeys++
-    const error = createError({
-      statusCode: 401,
-      statusMessage: 'Invalid API Key'
-    })
-    ;(error as any).type = 'INVALID_API_KEY'
-    throw error
+    throw securityError(401, 'Invalid API Key', 'INVALID_API_KEY')
   }
 }
 
@@ -139,12 +147,7 @@ function checkRateLimit(clientIP: string) {
   
   if (clientData.count >= maxRequests) {
     securityStats.rateLimitHits++
-    const error = createError({
-      statusCode: 429,
-      statusMessage: 'Too Many Requests'
-    })
-    ;(error as any).type = 'RATE_LIMIT_EXCEEDED'
-    throw error
+    throw securityError(429, 'Too Many Requests', 'RATE_LIMIT_EXCEEDED')
   }
   
   clientData.count++
@@ -153,19 +156,14 @@ function checkRateLimit(clientIP: string) {
 /**
  * 🔍 Détection des tentatives d'injection
  */
-async function checkForInjectionAttempts(event: any) {
+async function checkForInjectionAttempts(event: H3Event) {
   const query = getQuery(event)
   const paramString = JSON.stringify(query).toLowerCase()
   
   for (const pattern of suspiciousPatterns) {
     if (pattern.test(paramString)) {
       securityStats.injectionAttempts++
-      const error = createError({
-        statusCode: 400,
-        statusMessage: 'Malicious request detected'
-      })
-      ;(error as any).type = 'INJECTION_ATTEMPT'
-      throw error
+      throw securityError(400, 'Malicious request detected', 'INJECTION_ATTEMPT')
     }
   }
 }
@@ -173,7 +171,7 @@ async function checkForInjectionAttempts(event: any) {
 /**
  * ✅ Validation des paramètres de requête
  */
-function validateRequestParameters(event: any) {
+function validateRequestParameters(event: H3Event) {
   const query = getQuery(event)
   const url = getRequestURL(event)
   
@@ -182,43 +180,23 @@ function validateRequestParameters(event: any) {
     // Valider from/to
     if (query.from && typeof query.from === 'string') {
       if (query.from.length > 100 || !/^[a-zA-ZÀ-ÿ\s-]+$/.test(query.from)) {
-        const error = createError({
-          statusCode: 400,
-          statusMessage: 'Invalid from parameter'
-        })
-        ;(error as any).type = 'INVALID_PARAMETER'
-        throw error
+        throw securityError(400, 'Invalid from parameter', 'INVALID_PARAMETER')
       }
     }
     
     if (query.to && typeof query.to === 'string') {
       if (query.to.length > 100 || !/^[a-zA-ZÀ-ÿ\s-]+$/.test(query.to)) {
-        const error = createError({
-          statusCode: 400,
-          statusMessage: 'Invalid to parameter'
-        })
-        ;(error as any).type = 'INVALID_PARAMETER'
-        throw error
+        throw securityError(400, 'Invalid to parameter', 'INVALID_PARAMETER')
       }
     }
     
     // Valider les paramètres numériques
     if (query.page && (isNaN(Number(query.page)) || Number(query.page) < 1 || Number(query.page) > 1000)) {
-      const error = createError({
-        statusCode: 400,
-        statusMessage: 'Invalid page parameter'
-      })
-      ;(error as any).type = 'INVALID_PARAMETER'
-      throw error
+      throw securityError(400, 'Invalid page parameter', 'INVALID_PARAMETER')
     }
     
     if (query.limit && (isNaN(Number(query.limit)) || Number(query.limit) < 1 || Number(query.limit) > 25)) {
-      const error = createError({
-        statusCode: 400,
-        statusMessage: 'Invalid limit parameter'
-      })
-      ;(error as any).type = 'INVALID_PARAMETER'
-      throw error
+      throw securityError(400, 'Invalid limit parameter', 'INVALID_PARAMETER')
     }
   }
 }

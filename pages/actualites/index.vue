@@ -15,22 +15,22 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex flex-wrap gap-3">
           <button
-            @click="selectedCategory = ''"
             :class="selectedCategory === '' 
               ? 'bg-primary-600 text-white' 
               : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'"
             class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            @click="selectedCategory = ''"
           >
             Tous
           </button>
           <button
             v-for="category in categories"
             :key="category"
-            @click="selectedCategory = category"
             :class="selectedCategory === category 
               ? 'bg-primary-600 text-white' 
               : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'"
             class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            @click="selectedCategory = category"
           >
             {{ category }}
           </button>
@@ -43,10 +43,10 @@
       <!-- Loading -->
       <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <div v-for="i in 6" :key="i" class="animate-pulse">
-          <div class="bg-gray-200 dark:bg-gray-700 h-48 rounded-t-xl"></div>
+          <div class="bg-gray-200 dark:bg-gray-700 h-48 rounded-t-xl"/>
           <div class="bg-white dark:bg-gray-800 p-6 rounded-b-xl">
-            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
-            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"/>
+            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"/>
           </div>
         </div>
       </div>
@@ -72,9 +72,9 @@
       <!-- Pagination -->
       <div v-if="totalPages > 1" class="flex justify-center mt-12 gap-2">
         <button
-          @click="goToPage(currentPage - 1)"
           :disabled="currentPage === 1"
           class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+          @click="goToPage(currentPage - 1)"
         >
           Précédent
         </button>
@@ -82,19 +82,19 @@
         <button
           v-for="page in visiblePages"
           :key="page"
-          @click="goToPage(page)"
           :class="currentPage === page 
             ? 'bg-primary-600 text-white' 
             : 'border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'"
           class="px-4 py-2 rounded-lg transition-colors"
+          @click="goToPage(page)"
         >
           {{ page }}
         </button>
 
         <button
-          @click="goToPage(currentPage + 1)"
           :disabled="currentPage === totalPages"
           class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+          @click="goToPage(currentPage + 1)"
         >
           Suivant
         </button>
