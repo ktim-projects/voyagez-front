@@ -186,7 +186,7 @@ useHead({
     // Données structurées JSON-LD pour la page d'accueil
     {
       type: 'application/ld+json',
-      children: JSON.stringify({
+      innerHTML: JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'WebSite',
         name: 'Geyavo',
@@ -241,7 +241,7 @@ useHead({
     // Données structurées pour l'organisation
     {
       type: 'application/ld+json',
-      children: JSON.stringify({
+      innerHTML: JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'Organization',
         name: 'Geyavo',

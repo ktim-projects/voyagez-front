@@ -15,9 +15,9 @@ font pas partie du périmètre actuel.**
 
 | Domaine | Choix |
 |---|---|
-| Framework | Nuxt 3 (SSR), Vue 3, TypeScript strict |
+| Framework | Nuxt 4 (SSR), Vue 3, TypeScript strict |
 | État | Pinia + `pinia-plugin-persistedstate` |
-| Styles | TailwindCSS (`darkMode: 'class'`) |
+| Styles | TailwindCSS 3 (`darkMode: 'class'`) |
 | Données | Supabase (`departure`, `company`, `articles`, `news`) |
 | Emails | Brevo (newsletter, formulaire de contact) + webhook Slack |
 | Tests | Vitest + happy-dom |
@@ -47,8 +47,9 @@ sur un environnement de test avant la production.
 
 ```bash
 pnpm dev          # http://localhost:3000
-pnpm lint         # ESLint 9 (flat config)
+pnpm lint         # ESLint (flat config)
 pnpm lint:fix     # corrige ce qui est auto-corrigeable
+pnpm typecheck    # vue-tsc sur tout le projet
 ```
 
 ## 🧪 Tests
@@ -97,5 +98,5 @@ verrouillent leur cohérence — en ajoutant une ville, mettre à jour les deux.
 2. Vérifier avant de pousser :
 
 ```bash
-pnpm lint && pnpm test:run && pnpm build
+pnpm lint && pnpm typecheck && pnpm test:run && pnpm build
 ```

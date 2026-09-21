@@ -1,4 +1,4 @@
-import * as brevo from '@getbrevo/brevo'
+import { BrevoClient, BrevoError } from '@getbrevo/brevo'
 
 // Types TypeScript
 interface ContactRequest {
@@ -12,6 +12,9 @@ interface ContactResponse {
   success: boolean
   message: string
 }
+
+// Liste Brevo « Geyavo Contact »
+const CONTACT_LIST_ID = 6
 
 // Validation email
 function isValidEmail(email: string): boolean {
@@ -67,14 +70,19 @@ export default defineEventHandler(async (event): Promise<ContactResponse> => {
 
   try {
     // 1. Vérifier si l'utilisateur a déjà un message non traité
-    const contactsApi = new brevo.ContactsApi()
-    contactsApi.setApiKey(brevo.ContactsApiApiKeys.apiKey, config.brevoApiKey)
+    const brevo = new BrevoClient({ apiKey: config.brevoApiKey })
 
     try {
-      const existingContact = await contactsApi.getContactInfo(email.toLowerCase().trim())
-      
-      // Vérifier le statut du dernier message
-      if (existingContact.body.attributes?.STATUS === 'pending') {
+      const existingContact = await brevo.contacts.getContactInfo({
+        identifier: email.toLowerCase().trim()
+      })
+
+      // Vérifier le statut du dernier message.
+      // STATUS est un attribut personnalisé du compte Brevo : le SDK ne le
+      // connaît pas, d'où la lecture explicite.
+      const attributes = existingContact.attributes as Record<string, unknown> | undefined
+
+      if (attributes?.STATUS === 'pending') {
         console.warn('⚠️ [Contact] Message déjà en attente pour ce contact')
         setResponseStatus(event, 409)
         return {
@@ -82,44 +90,38 @@ export default defineEventHandler(async (event): Promise<ContactResponse> => {
           message: 'You already have a pending message. Please wait for a response before sending another one.'
         }
       }
-    } catch (error: any) {
+    } catch (error) {
       // Si le contact n'existe pas (404), c'est OK, on continue
-      if (error.status !== 404) {
+      if (!(error instanceof BrevoError) || error.statusCode !== 404) {
         throw error
       }
     }
 
     // 2. Créer/Mettre à jour le contact dans Brevo avec le nouveau message
-    const createContact = new brevo.CreateContact()
-    createContact.email = email.toLowerCase().trim()
-    createContact.listIds = [6] // Liste "Geyavo Contact" (à créer dans Brevo)
-    createContact.attributes = {
-      NOM: name,
-      SUJET: subject,
-      MESSAGE: message,
-      DATE_CONTACT: new Date().toISOString(),
-      IP: clientIP,
-      STATUS: 'pending' // pending, in_progress, resolved
-    }
-    createContact.updateEnabled = true // Mettre à jour si existe déjà
-
     try {
-      await contactsApi.createContact(createContact)
-    } catch (brevoError: any) {
+      await brevo.contacts.createContact({
+        email: email.toLowerCase().trim(),
+        listIds: [CONTACT_LIST_ID],
+        attributes: {
+          NOM: name,
+          SUJET: subject,
+          MESSAGE: message,
+          DATE_CONTACT: new Date().toISOString(),
+          IP: clientIP,
+          STATUS: 'pending' // pending, in_progress, resolved
+        },
+        updateEnabled: true // Mettre à jour si existe déjà
+      })
+    } catch (brevoError) {
       // Si erreur autre que "contact existe déjà", on log mais on continue
-      console.warn('⚠️ [Contact] Brevo contact creation warning:', brevoError.message)
+      console.warn(
+        '⚠️ [Contact] Brevo contact creation warning:',
+        brevoError instanceof Error ? brevoError.message : String(brevoError)
+      )
     }
 
     // 3. Envoyer l'email transactionnel à contact@geyavo.com
-    const emailApi = new brevo.TransactionalEmailsApi()
-    emailApi.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, config.brevoApiKey)
-
-    const sendSmtpEmail = new brevo.SendSmtpEmail()
-    sendSmtpEmail.subject = `[Geyavo Contact] ${subject}`
-    sendSmtpEmail.sender = { name: 'Geyavo Contact', email: 'info@geyavo.com' }
-    sendSmtpEmail.to = [{ email: 'contact@geyavo.com', name: 'Geyavo Support' }]
-    sendSmtpEmail.replyTo = { email: email, name: name }
-    sendSmtpEmail.htmlContent = `
+    const htmlContent = `
       <!DOCTYPE html>
       <html>
       <head>
@@ -174,7 +176,13 @@ export default defineEventHandler(async (event): Promise<ContactResponse> => {
       </html>
     `
 
-    await emailApi.sendTransacEmail(sendSmtpEmail)
+    await brevo.transactionalEmails.sendTransacEmail({
+      subject: `[Geyavo Contact] ${subject}`,
+      sender: { name: 'Geyavo Contact', email: 'info@geyavo.com' },
+      to: [{ email: 'contact@geyavo.com', name: 'Geyavo Support' }],
+      replyTo: { email, name },
+      htmlContent
+    })
 
     // 4. Envoyer notification Slack (optionnel, ne bloque pas si erreur)
     if (config.slackWebhookUrl) {
@@ -243,10 +251,10 @@ export default defineEventHandler(async (event): Promise<ContactResponse> => {
       message: 'Message sent successfully'
     }
 
-  } catch (brevoError: any) {
+  } catch (brevoError) {
     console.error('❌ [Contact] Brevo error:', {
-      status: brevoError.status,
-      message: brevoError.response?.body?.message || brevoError.message
+      status: brevoError instanceof BrevoError ? brevoError.statusCode : undefined,
+      message: brevoError instanceof Error ? brevoError.message : String(brevoError)
     })
 
     setResponseStatus(event, 500)

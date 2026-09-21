@@ -1,4 +1,4 @@
-import * as brevo from '@getbrevo/brevo'
+import { BrevoClient, BrevoError } from '@getbrevo/brevo'
 
 // Types TypeScript
 interface NewsletterRequest {
@@ -10,6 +10,24 @@ interface NewsletterResponse {
   success: boolean
   message: string
   contactId?: string
+}
+
+// Liste Brevo « Newsletter »
+const NEWSLETTER_LIST_ID = 4
+
+/**
+ * Brevo renvoie un 400 lorsque l'email est déjà rattaché à un contact et que
+ * updateEnabled vaut false. Le message se trouve dans le corps de la réponse,
+ * dont la forme n'est pas typée par le SDK.
+ */
+function isDuplicateContactError(error: unknown): boolean {
+  if (!(error instanceof BrevoError) || error.statusCode !== 400) {
+    return false
+  }
+
+  const message = (error.body as { message?: string } | undefined)?.message ?? error.message
+
+  return message.includes('email is already associated with another Contact')
 }
 
 // Validation email
@@ -66,32 +84,28 @@ export default defineEventHandler(async (event): Promise<NewsletterResponse> => 
   const acceptLanguage = getHeader(event, 'accept-language') || ''
   const langue = acceptLanguage.includes('en') ? 'en' : 'fr'
 
-  // Configuration de l'API Brevo
-  const apiInstance = new brevo.ContactsApi()
-  apiInstance.setApiKey(brevo.ContactsApiApiKeys.apiKey, config.brevoApiKey)
-
-  // Créer le contact dans Brevo
-  const createContact = new brevo.CreateContact()
-  createContact.email = email.toLowerCase().trim()
-  createContact.listIds = [4]
-  createContact.attributes = {
-    SOURCE: source,
-    LANGUE: langue,
-    DATE_INSCRIPTION: new Date().toISOString(),
-    IP: clientIP
-  }
-  createContact.updateEnabled = false // Ne pas mettre à jour si existe déjà
+  const brevo = new BrevoClient({ apiKey: config.brevoApiKey })
 
   try {
-    await apiInstance.createContact(createContact)
+    await brevo.contacts.createContact({
+      email: email.toLowerCase().trim(),
+      listIds: [NEWSLETTER_LIST_ID],
+      attributes: {
+        SOURCE: source,
+        LANGUE: langue,
+        DATE_INSCRIPTION: new Date().toISOString(),
+        IP: clientIP
+      },
+      updateEnabled: false // Ne pas mettre à jour si existe déjà
+    })
 
     return {
       success: true,
       message: 'Successfully subscribed to newsletter',
     }
 
-  } catch (brevoError: any) {
-    if (brevoError.status === 400 && brevoError.response?.data?.message?.includes('email is already associated with another Contact')) {
+  } catch (brevoError) {
+    if (isDuplicateContactError(brevoError)) {
       console.warn('⚠️ [Newsletter] Email déjà inscrit')
       setResponseStatus(event, 409)
       return {
@@ -102,8 +116,8 @@ export default defineEventHandler(async (event): Promise<NewsletterResponse> => 
 
     // Autre erreur Brevo
     console.error('❌ [Newsletter] Brevo error:', {
-      status: brevoError.status,
-      message: brevoError.response?.body?.message || brevoError.message
+      status: brevoError instanceof BrevoError ? brevoError.statusCode : undefined,
+      message: brevoError instanceof Error ? brevoError.message : String(brevoError)
     })
 
     setResponseStatus(event, 500)

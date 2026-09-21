@@ -27,7 +27,7 @@ export default defineNuxtRouteMiddleware((to) => {
     
     // Si x-forwarded-for contient plusieurs IPs, prendre la première
     if (clientIP && clientIP.includes(',')) {
-      clientIP = clientIP.split(',')[0].trim()
+      clientIP = clientIP.split(',')[0]?.trim() ?? clientIP
     }
     
     // Nettoyer l'IP (enlever le port si présent, ex: ::1:12345 -> ::1)
