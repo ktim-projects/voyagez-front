@@ -24,7 +24,18 @@ export default defineNuxtConfig({
     }
   },
 
-  modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt', '@nuxtjs/supabase', '@nuxtjs/i18n', 'nuxt-gtag'],
+  modules: [
+    '@nuxtjs/tailwindcss',
+    '@pinia/nuxt',
+    '@nuxtjs/supabase',
+    '@nuxtjs/i18n',
+    'nuxt-gtag',
+    // Depuis leur v2, Analytics et Speed Insights sont des modules Nuxt :
+    // ils injectent leur plugin client eux-mêmes, il n'y a plus de composant
+    // à monter dans app.vue.
+    '@vercel/analytics/nuxt',
+    '@vercel/speed-insights/nuxt'
+  ],
   css: [
     '~/assets/css/main.css',
     '~/assets/styles/main.scss'
@@ -74,8 +85,18 @@ export default defineNuxtConfig({
 
   typescript: {
     strict: true,
-    shim: false
+    shim: false,
+    // `ignore` sort achives/ du build mais pas du tsconfig généré : sans ça,
+    // `pnpm typecheck` type des pages archivées qui référencent du code
+    // supprimé depuis.
+    tsConfig: {
+      exclude: ['../achives']
+    }
   },
+
+  // achives/ (sic) contient des pages archivées hors build : Nuxt ne doit ni
+  // les compiler ni les typer.
+  ignore: ['achives/**'],
 
   supabase: {
     redirect: false,

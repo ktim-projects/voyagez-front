@@ -30,8 +30,8 @@ export default defineEventHandler(async (event) => {
       pagination: {
         page,
         limit,
-        total: count,
-        totalPages: Math.ceil(count / limit)
+        total: count ?? 0,
+        totalPages: Math.ceil((count ?? 0) / limit)
       }
     }
   } catch {

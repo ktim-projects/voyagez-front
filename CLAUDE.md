@@ -13,11 +13,15 @@ ne pas réintroduire de promesse de réservation, de paiement ou de billet.
 ```bash
 pnpm dev
 pnpm lint            # doit rester à 0 erreur
+pnpm typecheck       # doit rester à 0 erreur
 pnpm test:run        # doit rester vert
 pnpm build
 ```
 
-Avant de pousser : `pnpm lint && pnpm test:run && pnpm build`.
+Avant de pousser : `pnpm lint && pnpm typecheck && pnpm test:run && pnpm build`.
+
+`pnpm build` ne type pas le code : seul `typecheck` le fait. C'est lui qui
+attrape les ruptures d'API des SDK serveur, que rien n'exécute au build.
 
 ## Pièges connus
 
@@ -54,11 +58,15 @@ impératifs, ils n'ont lieu qu'après interaction.
 ## Conventions
 
 - Commentaires et libellés en français, code et noms de variables en anglais.
-- ESLint 9 en flat config (`eslint.config.mjs`) ; `.eslintrc` n'est plus lu.
+- ESLint en flat config (`eslint.config.mjs`) ; `.eslintrc` n'est plus lu.
 - Les `any` restants sont des warnings assumés, concentrés sur les réponses
   Supabase non typées et les mocks de tests. Ne pas en ajouter ailleurs.
 - `achives/` (sic) contient des pages archivées hors build : ne pas s'en
-  servir comme référence de code actuel.
+  servir comme référence de code actuel. Elles sont exclues via
+  `ignore` et `typescript.tsConfig.exclude` dans `nuxt.config.ts`.
+- Tailwind est volontairement resté en v3 : la v4 change de modèle de
+  configuration (CSS-first) et renomme des utilitaires, ce qui demande une
+  migration à part avec vérification visuelle.
 
 ## Git
 

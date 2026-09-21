@@ -238,8 +238,11 @@ const handleKeydown = (event: KeyboardEvent) => {
       break;
     case 'Enter':
       event.preventDefault();
-      if (selectedIndex.value >= 0 && selectedIndex.value < suggestions.value.length) {
-        handleSelect(suggestions.value[selectedIndex.value]);
+      {
+        const selected = suggestions.value[selectedIndex.value];
+        if (selectedIndex.value >= 0 && selected) {
+          handleSelect(selected);
+        }
       }
       break;
     case 'Escape':

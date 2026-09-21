@@ -26,7 +26,9 @@ export const getComfortChipClasses = (category: string): string => {
   ];
   
   const index = Math.abs(hash) % colorPalette.length;
-  return colorPalette[index];
+
+  // Le modulo garantit un index valide, mais TypeScript ne peut pas le prouver.
+  return colorPalette[index] ?? colorPalette[0]!;
 };
 
 /**
