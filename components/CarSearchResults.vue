@@ -231,7 +231,8 @@ import {  useDebounceFn } from '@vueuse/core';
 import { useSearchStore } from '~/stores/search';
 import { useRouter } from 'vue-router';
 import SearchFormModal from './SearchFormModal.vue';
-import { getSlugFromCity } from '~/utils/cities';
+import { getCityFromSlug, getSlugFromCity } from '~/utils/cities';
+import { MAX_PRICE_FILTER } from '~/utils';
 
 const router = useRouter();
 const route = useRoute();
@@ -269,7 +270,7 @@ const isFiltering = ref(false);
 const showScrollTop = ref(false);
 
 const filters = ref({
-  maxPrice: 50000,
+  maxPrice: MAX_PRICE_FILTER,
   companies: [] as string[],
   departurePeriod: '',
   comfortCategories: [] as string[],
@@ -292,7 +293,7 @@ const activeFiltersCount = computed(() => {
   if (filters.value.departurePeriod) count++;
   if (filters.value.comfortCategories.length > 0) count++;
   if (filters.value.commune) count++;
-  if (filters.value.maxPrice < 50000) count++;
+  if (filters.value.maxPrice < MAX_PRICE_FILTER) count++;
   return count;
 });
 
@@ -388,7 +389,7 @@ const performSearch = async (isFilteringParam = false) => {
         to: getSlugFromCity(toCity.value),
         page: page.value,
         limit,
-        maxPrice: filters.value.maxPrice,
+        maxPrice: filters.value.maxPrice < MAX_PRICE_FILTER ? filters.value.maxPrice : undefined,
         companies: [...filters.value.companies],
         departurePeriod: filters.value.departurePeriod,
         comfortCategories: [...filters.value.comfortCategories],
@@ -421,7 +422,7 @@ const loadMoreResults = async () => {
         to: getSlugFromCity(toCity.value),
         page: page.value,
         limit,
-        maxPrice: filters.value.maxPrice,
+        maxPrice: filters.value.maxPrice < MAX_PRICE_FILTER ? filters.value.maxPrice : undefined,
         companies: [...filters.value.companies],
         departurePeriod: filters.value.departurePeriod,
         comfortCategories: [...filters.value.comfortCategories],
@@ -445,16 +446,17 @@ watch(
   () => ({ from: route.params.from, to: route.params.to }),
   (newParams, oldParams) => {
     const { from: newFrom, to: newTo } = newParams;
-    // Mettre à jour les villes depuis l'URL
+    // Mettre à jour les villes depuis l'URL, en repassant par le mapping
+    // officiel pour restituer accents et majuscules ("bouake" -> "Bouaké").
     if (newFrom && typeof newFrom === 'string') {
-      const newFromCity = newFrom.charAt(0).toUpperCase() + newFrom.slice(1);
-      if (fromCity.value !== newFromCity) {
+      const newFromCity = getCityFromSlug(newFrom);
+      if (newFromCity && fromCity.value !== newFromCity) {
         fromCity.value = newFromCity;
       }
     }
     if (newTo && typeof newTo === 'string') {
-      const newToCity = newTo.charAt(0).toUpperCase() + newTo.slice(1);
-      if (toCity.value !== newToCity) {
+      const newToCity = getCityFromSlug(newTo);
+      if (newToCity && toCity.value !== newToCity) {
         toCity.value = newToCity;
       }
     }

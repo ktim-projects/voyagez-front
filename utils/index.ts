@@ -18,3 +18,11 @@ export const formatDuration = (minutes: number): string => {
     // Combine les parties avec un espace si les deux existent
     return [hoursPart, minutesPart].filter(Boolean).join(" ");
   }
+
+/**
+ * Plafond du filtre "prix maximum" (en FCFA).
+ * Quand le curseur est à cette valeur, le filtre est considéré comme inactif
+ * et n'est pas envoyé à l'API : sans cela, tout départ au-dessus du plafond
+ * serait silencieusement masqué.
+ */
+export const MAX_PRICE_FILTER = 50000;

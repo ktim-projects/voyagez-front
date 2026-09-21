@@ -6,8 +6,13 @@ export default {
     './layouts/**/*.vue',
     './pages/**/*.vue',
     './plugins/**/*.{js,ts}',
+    // utils/ et composables/ construisent des classes dynamiquement
+    // (ex: utils/comfort.ts pour les pastilles de confort) : sans eux,
+    // ces classes sont purgées du CSS final.
+    './utils/**/*.{js,ts}',
+    './composables/**/*.{js,ts}',
     './app.vue',
-
+    './error.vue',
   ],
   darkMode: 'class',
   theme: {

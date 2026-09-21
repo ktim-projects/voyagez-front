@@ -60,7 +60,7 @@
                 type="range" 
                 v-model="filters.maxPrice" 
                 min="0" 
-                max="50000" 
+                :max="MAX_PRICE_FILTER" 
                 step="1000"
                 class="w-full"
               >
@@ -185,6 +185,7 @@
 import { ref, computed, watch, onUnmounted } from 'vue';
 import { FilterIcon, RefreshCcw as RefreshCcwIcon, X as XIcon } from 'lucide-vue-next';
 import { ABIDJAN_COMMUNES } from '~/utils/communes';
+import { MAX_PRICE_FILTER } from '~/utils';
 
 interface Company {
   id: string;
@@ -225,7 +226,7 @@ const isAbidjan = computed(() => {
 });
 
 const hasActiveFilters = computed(() => {
-  return filters.value.maxPrice !== 50000 || 
+  return filters.value.maxPrice !== MAX_PRICE_FILTER || 
          filters.value.companies.length > 0 || 
          filters.value.departurePeriod !== '' ||
          filters.value.comfortCategories.length > 0 ||
@@ -234,7 +235,7 @@ const hasActiveFilters = computed(() => {
 
 const activeFiltersCount = computed(() => {
   let count = 0;
-  if (filters.value.maxPrice !== 50000) count++;
+  if (filters.value.maxPrice !== MAX_PRICE_FILTER) count++;
   if (filters.value.companies.length > 0) count++;
   if (filters.value.departurePeriod !== '') count++;
   if (filters.value.comfortCategories.length > 0) count++;
@@ -253,7 +254,7 @@ const emitUpdate = () => {
 
 const resetFilters = () => {
   filters.value = {
-    maxPrice: 50000,
+    maxPrice: MAX_PRICE_FILTER,
     companies: [],
     departurePeriod: '',
     comfortCategories: [],
