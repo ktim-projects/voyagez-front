@@ -1,38 +1,6 @@
 
 export type { City } from '~/types';
 
-export interface BusStop {
-  id: string;
-  name: string;
-  latitude: number;
-  longitude: number;
-  description: string;
-}
-
-export interface BusLine {
-  id: string;
-  number: string;
-  name: string;
-  color: string;
-  stops: BusStop[];
-}
-
-export interface BusRoute {
-  id: string;
-  from: string;
-  to: string;
-  duration: string;
-  distance: string;
-  steps: {
-    type: 'walk' | 'bus';
-    line?: string;
-    duration: string;
-    description: string;
-    color: string;
-    path: [number, number][];
-  }[];
-}
-
 export interface CarCompany {
   id: string;
   name: string;

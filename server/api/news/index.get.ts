@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
         totalPages: Math.ceil(count / limit)
       }
     }
-  } catch (error) {
+  } catch {
     setResponseStatus(event, 500)
     return {
       message: 'Error fetching news'

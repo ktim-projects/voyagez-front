@@ -1,6 +1,6 @@
 <template>
   <TransitionRoot appear :show="show" as="template">
-    <Dialog as="div" @close="$emit('update:show', false)" class="relative z-50">
+    <Dialog as="div" class="relative z-50" @close="$emit('update:show', false)">
       <TransitionChild
         enter="duration-300 ease-out"
         enter-from="opacity-0"
@@ -27,23 +27,23 @@
                 Modifier votre recherche
               </DialogTitle>
 
-              <form @submit.prevent="handleSubmit" class="space-y-4">
+              <form class="space-y-4" @submit.prevent="handleSubmit">
                 <div class="relative">
                   <label class="block text-sm font-medium text-gray-600 mb-2">Départ</label>
                   <CityAutocomplete
                     v-model="localFromCity"
-                    @select="handleFromSelect"
                     placeholder="Ville de départ"
                     :auto-focus="!localFromCity"
+                    @select="handleFromSelect"
                   />
                   
                   <!-- Swap Cities Button -->
                   <button
                     type="button"
-                    @click="handleSwapCities"
                     :disabled="!localFromCity || !localToCity"
                     class="absolute -bottom-9 left-1/2 transform -translate-x-1/2 z-1000 p-2 bg-white border border-gray-300 rounded-full shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                     title="Inverser les villes"
+                    @click="handleSwapCities"
                   >
                     <ArrowLeftRight class="w-4 h-4 text-gray-600 rotate-90" />
                   </button>
@@ -53,9 +53,9 @@
                   <label class="block text-sm font-medium text-gray-600 mb-2">Arrivée</label>
                   <CityAutocomplete
                     v-model="localToCity"
-                    @select="handleToSelect"
                     placeholder="Ville d'arrivée"
                     :auto-focus="!localToCity"
+                    @select="handleToSelect"
                   />
                 </div>
                 
@@ -75,7 +75,7 @@
                     label="Rechercher"
                     type="submit"
                     icon="Search"
-                    :fullWidth="true"
+                    :full-width="true"
                     :disabled="isSearchDisabled"
                   />
                 </div>

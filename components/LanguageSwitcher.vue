@@ -1,9 +1,9 @@
 <template>
   <div class="relative inline-block text-left">
     <button 
-      @click="isOpen = !isOpen" 
       type="button" 
-      class="inline-flex items-center justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+      class="inline-flex items-center justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100" 
+      @click="isOpen = !isOpen"
     >
       {{ currentLocale.name }}
       <svg class="-mr-1 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -23,10 +23,10 @@
         <button 
           v-for="locale in availableLocales" 
           :key="locale.code"
-          @click="switchLanguage(locale.code)"
-          class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" 
+          class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
           role="menuitem" 
-          tabindex="-1"
+          tabindex="-1" 
+          @click="switchLanguage(locale.code)"
         >
           {{ locale.name }}
         </button>

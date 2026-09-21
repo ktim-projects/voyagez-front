@@ -9,14 +9,17 @@ export default defineConfig({
     environment: 'happy-dom',
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      // json-summary alimente le commentaire de couverture des PR (CI)
+      reporter: ['text', 'json', 'json-summary', 'html'],
       exclude: [
         'node_modules/',
         'tests/',
         '**/*.spec.ts',
         '**/*.config.ts',
         '.nuxt/',
-        'dist/'
+        '.output/',
+        'dist/',
+        'achives/'
       ]
     },
     setupFiles: ['./tests/setup.ts']

@@ -4,7 +4,7 @@
     <Header v-if="!isSpecialPage" />
     <Analytics />
     <NuxtPage />
-    <Footer v-if="!isSpecialPage" :class="{ 'hidden md:block': isBusResultsPage }" />
+    <Footer v-if="!isSpecialPage" />
   </div>
 </template>
 
@@ -19,7 +19,4 @@ const route = useRoute()
 const isSpecialPage = computed(() => 
   route.path === '/maintenance' || route.path === '/coming-soon'
 )
-
-// Masquer Footer en mobile sur les pages de résultats de bus
-const isBusResultsPage = computed(() => route.path.startsWith('/results/bus/'))
 </script>

@@ -13,17 +13,17 @@
 <script setup lang="ts">
 // SEO optimisé pour la page d'accueil
 useHead({
-  title: 'Geyavo - Réservation de transport en car et bus en Côte d\'Ivoire',
+  title: 'Geyavo - Horaires et prix des cars en Côte d\'Ivoire',
   meta: [
     // Description principale
     {
       name: 'description',
-      content: 'Réservez vos trajets en car et bus en Côte d\'Ivoire avec Geyavo. Comparez les prix, horaires et compagnies. Transport fiable entre Abidjan, Yamoussoukro, Bouaké et toutes les villes.'
+      content: 'Comparez les horaires, les prix et les compagnies de car en Côte d\'Ivoire avec Geyavo, puis contactez directement la compagnie. Trajets entre Abidjan, Yamoussoukro, Bouaké et toutes les villes.'
     },
     // Keywords
     {
       name: 'keywords',
-      content: 'transport Côte d\'Ivoire, car, bus, réservation, voyage, Abidjan, Yamoussoukro, Bouaké, San Pedro, Korhogo, horaires, prix, compagnies transport'
+      content: 'transport Côte d\'Ivoire, car, comparateur, horaires, prix, voyage, Abidjan, Yamoussoukro, Bouaké, San Pedro, Korhogo, compagnies transport'
     },
     // Robots
     {
@@ -43,11 +43,11 @@ useHead({
     // Open Graph
     {
       property: 'og:title',
-      content: 'Geyavo - Transport en car et bus en Côte d\'Ivoire'
+      content: 'Geyavo - Comparateur de cars en Côte d\'Ivoire'
     },
     {
       property: 'og:description',
-      content: 'La plateforme de référence pour réserver vos trajets en car et bus en Côte d\'Ivoire. Comparez et réservez en quelques clics.'
+      content: 'La plateforme de référence pour comparer les trajets en car en Côte d\'Ivoire. Horaires, prix et coordonnées des compagnies en quelques clics.'
     },
     {
       property: 'og:type',
@@ -88,11 +88,11 @@ useHead({
     },
     {
       name: 'twitter:title',
-      content: 'Geyavo - Transport en car et bus en Côte d\'Ivoire'
+      content: 'Geyavo - Comparateur de cars en Côte d\'Ivoire'
     },
     {
       name: 'twitter:description',
-      content: 'Réservez vos trajets en car et bus en Côte d\'Ivoire. Comparez les prix et horaires des meilleures compagnies.'
+      content: 'Comparez les horaires et les prix des cars en Côte d\'Ivoire parmi les meilleures compagnies.'
     },
     {
       name: 'twitter:image',
@@ -190,7 +190,7 @@ useHead({
         '@context': 'https://schema.org',
         '@type': 'WebSite',
         name: 'Geyavo',
-        description: 'Plateforme de réservation de transport en car et bus en Côte d\'Ivoire',
+        description: 'Comparateur d\'horaires et de prix des cars en Côte d\'Ivoire',
         url: 'https://geyavo.com',
         potentialAction: {
           '@type': 'SearchAction',
@@ -210,7 +210,7 @@ useHead({
             width: 300,
             height: 100
           },
-          description: 'Plateforme de réservation de transport en Côte d\'Ivoire',
+          description: 'Comparateur de transport en car en Côte d\'Ivoire',
           address: {
             '@type': 'PostalAddress',
             addressCountry: 'CI',
@@ -224,8 +224,8 @@ useHead({
         },
         mainEntity: {
           '@type': 'Service',
-          name: 'Réservation de transport',
-          description: 'Service de réservation de trajets en car et bus en Côte d\'Ivoire',
+          name: 'Comparaison de trajets en car',
+          description: 'Service de comparaison d\'horaires et de prix des cars en Côte d\'Ivoire',
           provider: {
             '@type': 'Organization',
             name: 'Geyavo'
@@ -234,7 +234,7 @@ useHead({
             '@type': 'Country',
             name: 'Côte d\'Ivoire'
           },
-          serviceType: 'Transport booking'
+          serviceType: 'Travel comparison'
         }
       })
     },
@@ -247,7 +247,7 @@ useHead({
         name: 'Geyavo',
         url: 'https://geyavo.com',
         logo: 'https://geyavo.com/logo.png',
-        description: 'Plateforme de réservation de transport en car et bus en Côte d\'Ivoire',
+        description: 'Comparateur d\'horaires et de prix des cars en Côte d\'Ivoire',
         address: {
           '@type': 'PostalAddress',
           addressCountry: 'CI'
@@ -258,8 +258,7 @@ useHead({
         },
         knowsAbout: [
           'Transport en car',
-          'Transport en bus',
-          'Réservation de voyage',
+          'Comparaison de trajets',
           'Côte d\'Ivoire',
           'Abidjan',
           'Yamoussoukro',

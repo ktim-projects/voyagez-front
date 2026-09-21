@@ -1,10 +1,6 @@
 <template>
   <div class="min-h-screen dark:bg-gray-950">
-    <CarSearchResults v-if="searchStore.type === 'car'" />
-    <BusSearchResults v-else-if="searchStore.type === 'bus'" />
-    <div v-else class="text-center py-8">
-      <p class="text-gray-500 dark:text-gray-400">Aucune recherche en cours</p>
-    </div>
+    <CarSearchResults />
   </div>
 </template>
 
@@ -13,7 +9,6 @@ import { useSearchStore } from '~/stores/search';
 import { getCityFromSlug } from '~/utils/cities';
 
 const route = useRoute();
-const router = useRouter();
 const searchStore = useSearchStore();
 
 // Récupérer les slugs depuis l'URL
@@ -32,7 +27,6 @@ if (!from || !to) {
 
 // Synchroniser le store avec les noms de villes officiels (avec accents)
 searchStore.setSearchParams({
-  type: 'car',
   from,
   to
 });
@@ -46,10 +40,10 @@ const seoData = computed(() => {
   return {
     title: `Trajet ${fromCity} – ${toCity} en car | Geyavo`,
     description: `Comparez les horaires et prix des cars ${fromCity} – ${toCity} avec Geyavo, le comparateur de transport en Côte d'Ivoire.`,
-    keywords: `${fromCity}, ${toCity}, car, transport, voyage, Côte d'Ivoire, horaires, prix, réservation`,
+    keywords: `${fromCity}, ${toCity}, car, transport, voyage, Côte d'Ivoire, horaires, prix, compagnies`,
     canonical: `/results/${fromSlug}/${toSlug}`,
     ogTitle: `Trajets en car ${fromCity} → ${toCity}`,
-    ogDescription: `Trouvez et comparez les meilleurs trajets en car de ${fromCity} à ${toCity}. Réservez votre voyage en Côte d'Ivoire.`,
+    ogDescription: `Comparez les horaires, les prix et les compagnies de car entre ${fromCity} et ${toCity}.`,
   };
 });
 
@@ -184,7 +178,7 @@ useHead(() => ({
           '@type': 'Organization',
           name: 'Geyavo',
           url: 'https://geyavo.com',
-          description: 'Plateforme de comparaison de trajets de car et de bus en Côte d\'Ivoire'
+          description: 'Comparateur de trajets en car en Côte d\'Ivoire'
         }
       })
     }

@@ -1,4 +1,3 @@
-import type { CarCompany } from './types';
 
 export const carCompanies = [
   {

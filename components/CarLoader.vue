@@ -1,9 +1,9 @@
 <template>
-  <div class="bus-loader-container">
+  <div class="car-loader-container">
       <svg 
         xmlns="http://www.w3.org/2000/svg" 
         viewBox="0 0 150 75" 
-        class="bus-icon"
+        class="car-icon"
       >
 
         <rect 
@@ -13,7 +13,7 @@
           height="40" 
           rx="5" 
           fill="#2563EB" 
-          class="bus-body"
+          class="car-body"
         />
 
         <rect x="25" y="30" width="20" height="15" fill="#93C5FD" class="window" />
@@ -30,7 +30,7 @@
 </template>
 
 <style scoped>
-.bus-loader-container {
+.car-loader-container {
   width: 100%; 
   max-width: 150px;
   margin: 0 auto; 
@@ -38,12 +38,12 @@
   position: relative;
 }
 
-.bus-icon {
+.car-icon {
   width: 100%; 
-  animation: busMove 2s infinite linear;
+  animation: carMove 2s infinite linear;
 }
 
-@keyframes busMove {
+@keyframes carMove {
   0% { 
     transform: translateX(-150%); /* Part avant le début de l'écran */
   }

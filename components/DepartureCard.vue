@@ -12,7 +12,7 @@
               :src="departure.company.logo_url" 
               :alt="departure.company.name" 
               class="h-8 w-8 object-contain"
-            />
+            >
             <span v-else class="text-sm font-bold text-primary-600 dark:text-primary-400">
               {{ getInitials(departure.company?.name) }}
             </span>
@@ -39,7 +39,7 @@
         
         <div class="col-span-2 flex flex-col items-center justify-center">
           <p class="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap sm:whitespace-normal">{{ formatDuration(departure.duration) }}</p>
-          <div class="w-full h-px bg-gray-200 dark:bg-gray-700 my-1"></div>
+          <div class="w-full h-px bg-gray-200 dark:bg-gray-700 my-1"/>
           <ClockIcon class="h-3 w-3 text-gray-400 dark:text-gray-500" />
         </div>
         
@@ -52,10 +52,12 @@
         </div>
       </div>
 
-      <div class="flex justify-between items-center pt-3 mt-2 border-t border-gray-100 dark:border-gray-700"
+      <div
+class="flex justify-between items-center pt-3 mt-2 border-t border-gray-100 dark:border-gray-700"
            :class="{ 'md:hidden': !departure.comfort_info?.category }">
         <div class="flex items-center space-x-2">
-          <div v-if="departure.comfort_info?.category" 
+          <div
+v-if="departure.comfort_info?.category" 
                :class="getComfortChipClasses(departure.comfort_info.category)"
                class="px-2 py-1 rounded-full text-xs font-medium cursor-help transition-all duration-200 hover:scale-105 relative"
                @click.stop
@@ -65,7 +67,7 @@
             
             <div v-show="showTooltip" class="absolute bottom-full mb-2 px-3 py-2 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-lg shadow-lg transition-opacity duration-200 pointer-events-none z-10 left-0 transform w-max" style="max-width: 400px;">
               {{ departure.comfort_info.details }}
-              <div class="absolute top-full left-4 border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
+              <div class="absolute top-full left-4 border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"/>
             </div>
           </div>
         </div>
@@ -90,7 +92,7 @@ const props = defineProps<{
   departure: Departure;
 }>();
 
-const emit = defineEmits<{
+defineEmits<{
   click: [departure: Departure];
 }>();
 

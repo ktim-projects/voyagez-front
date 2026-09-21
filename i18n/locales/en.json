@@ -13,7 +13,6 @@
   "header": {
     "home": "Home",
     "car": "Coach",
-    "bus": "Bus",
     "about": "About",
     "contact": "Contact",
     "appName": "Transport CI"
@@ -27,9 +26,7 @@
     "searchButton": "Search",
     "dailyDepartures": "Departures every day",
     "tabs": {
-      "car": "Car",
-      "bus": "Bus",
-      "train": "Train"
+      "car": "Car"
     },
     "popularSearches": "Popular searches"
   },
@@ -82,8 +79,7 @@
         "title": "Reliability",
         "description": "Up-to-date and verified information for worry-free travel.",
         "point1": "Information collected from different companies",
-        "point2": "Regularly updated data",
-        "point3": "Reliable information"
+        "point2": "Regularly updated data"
       },
       "cta": {
         "title": "Want to travel by car?",
@@ -93,22 +89,22 @@
     },
     "howItWorks": {
       "title": "How it works",
-      "subtitle": "Book your trip in 4 simple steps",
+      "subtitle": "Find your coach in 4 simple steps",
       "step1": {
         "title": "Search",
-        "description": "Enter your departure point, destination and travel date"
+        "description": "Enter your departure city and your destination"
       },
       "step2": {
         "title": "Compare",
         "description": "View all available options and choose the one that suits you"
       },
       "step3": {
-        "title": "Book",
-        "description": "Select your trip and proceed to secure payment"
+        "title": "Get in touch",
+        "description": "Call the company directly from the departure details to book your seat"
       },
       "step4": {
         "title": "Travel",
-        "description": "Receive your ticket by email and prepare for your journey"
+        "description": "Show up at the station at the scheduled time and hit the road"
       }
     },
     "destinations": {
@@ -153,26 +149,6 @@
       "emailRequired": "Email address is required",
       "invalidEmail": "Please enter a valid email address",
       "alreadySubscribed": "This email address is already subscribed"
-    }
-  },
-  "busSearch": {
-    "title": "Bus search",
-    "busNumber": "Bus number",
-    "busNumberPlaceholder": "Ex: 81",
-    "searchButton": "Search",
-    "searchingMessage": "Searching...",
-    "noResults": "No results found",
-    "noResultsDescription": "Try modifying your search criteria",
-    "modify": "Modify",
-    "line": "Line",
-    "express": "Express",
-    "selectRoute": "Select a route:",
-    "stops": "Stops",
-    "routeInfo": {
-      "origin": "Origin",
-      "destination": "Destination",
-      "stopsCount": "Number of stops",
-      "duration": "Duration"
     }
   },
   "contact": {

@@ -5,9 +5,7 @@ import { vi } from 'vitest'
 
 // Mock de useRuntimeConfig pour Nuxt
 ;(global as any).useRuntimeConfig = vi.fn(() => ({
-  public: {
-    apiKeyFrontend: 'test-api-key-frontend'
-  }
+  public: {}
 }))
 
 // Mock de useRouter et useRoute pour Vue Router

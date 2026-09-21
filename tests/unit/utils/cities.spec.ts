@@ -433,5 +433,31 @@ describe('cities utils', () => {
 
       expect(slugMapCities).toEqual(citiesDataNames)
     })
+
+    // Regression : les clés 'adzopé' et 'tafiri' ne correspondaient pas au slug
+    // de leur valeur, rendant Adzopé et Tafiré introuvables alors qu'elles
+    // étaient proposées dans l'autocomplete.
+    it('should have every key equal to the slug of its value', () => {
+      const mismatched = Object.entries(citySlugMap)
+        .filter(([slug, name]) => getSlugFromCity(name) !== slug)
+        .map(([slug, name]) => `${slug} -> ${name} (attendu: ${getSlugFromCity(name)})`)
+
+      expect(mismatched).toEqual([])
+    })
+
+    it('should consider every city of the autocomplete as valid', () => {
+      const { cities } = useCities()
+      const invalid = cities.map(c => c.name).filter(name => !isCityValid(name))
+
+      expect(invalid).toEqual([])
+    })
+
+    it('should resolve every autocomplete city through a slug round-trip', () => {
+      const { cities } = useCities()
+
+      cities.forEach(city => {
+        expect(getCityFromSlug(getSlugFromCity(city.name))).toBe(city.name)
+      })
+    })
   })
 })

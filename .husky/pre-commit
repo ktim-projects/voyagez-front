@@ -1,17 +1,10 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
+echo "🔍 Vérifications pre-commit..."
 
-echo "🔍 Running pre-commit checks..."
-
-# Exécuter les tests
-echo "🧪 Running tests..."
-pnpm test:run
-
-# Si les tests passent, continuer avec lint-staged
-if [ $? -eq 0 ]; then
-  echo "✅ Tests passed!"
-  pnpm lint-staged
-else
-  echo "❌ Tests failed! Commit aborted."
+echo "🧪 Tests..."
+pnpm test:run || {
+  echo "❌ Tests en échec, commit annulé."
   exit 1
-fi
+}
+
+echo "🧹 Lint des fichiers modifiés..."
+pnpm lint-staged

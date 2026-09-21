@@ -3,39 +3,46 @@ import type { Article } from '~/types/article'
 
 export default defineEventHandler(async (event) => {
   const slug = getRouterParam(event, 'slug');
-  
+
   if (!slug) {
-    setResponseStatus(event, 400)
-    return {
+    throw createError({
       statusCode: 400,
-      message: 'Slug is required'
-    };
+      statusMessage: 'Slug is required'
+    });
   }
-  
+
   const client = await serverSupabaseClient(event);
-  
+
   const { data, error } = await client
     .from('articles')
     .select('*')
     .eq('slug', slug)
     .eq('published', true)
     .single();
-  
+
   const article = data as Article | null;
-  
+
   if (error || !article) {
-    setResponseStatus(event, 404)
-    return {
+    // Un vrai 404 : la page rend error.vue et le statut HTTP est correct
+    // pour les moteurs de recherche.
+    throw createError({
       statusCode: 404,
-      message: 'Article not found'
-    };
+      statusMessage: 'Article not found'
+    });
   }
-  
-  await (client as any)
-    .from('articles')
-    .update({ views: (article.views || 0) + 1 })
-    .eq('id', article.id);
-  
+
+  // Incrément atomique côté base : évite de perdre des vues en cas d'accès
+  // simultanés et n'exige pas de droit d'écriture sur la table
+  // (cf. supabase/migrations/enable_rls.sql).
+  const { error: viewsError } = await client.rpc('increment_article_views', {
+    article_id: article.id
+  });
+
+  if (viewsError) {
+    // Le compteur de vues ne doit jamais empêcher la lecture de l'article
+    console.warn('⚠️ [Articles] Incrément des vues impossible:', viewsError.message);
+  }
+
   return {
     article: {
       ...article,

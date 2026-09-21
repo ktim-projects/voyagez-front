@@ -10,7 +10,7 @@
       <!-- Étapes -->
       <div class="relative">
         <!-- Ligne de connexion -->
-        <div class="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 via-corail-500 to-primary-500 transform -translate-y-1/2 z-0"></div>
+        <div class="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 via-corail-500 to-primary-500 transform -translate-y-1/2 z-0"/>
         
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
           <div 
@@ -47,7 +47,7 @@
             alt="Comment ça marche" 
             class="absolute inset-0 w-full h-full object-cover"
             onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=2069&auto=format&fit=crop'; this.onerror=null;"
-          />
+          >
           
           <!-- Bouton de lecture vidéo -->
           <div class="absolute inset-0 flex items-center justify-center dark:text-white">
@@ -55,7 +55,7 @@
               class="w-16 h-16 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-lg transform transition-transform duration-300 hover:scale-110"
               @click="playVideo"
             >
-              <div class="w-0 h-0 border-t-[8px] border-t-transparent border-l-[16px] border-l-corail-500 border-b-[8px] border-b-transparent ml-1"></div>
+              <div class="w-0 h-0 border-t-[8px] border-t-transparent border-l-[16px] border-l-corail-500 border-b-[8px] border-b-transparent ml-1"/>
             </button>
           </div>
         </div>

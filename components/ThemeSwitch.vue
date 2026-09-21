@@ -1,9 +1,9 @@
 <template>
   <button 
-    @click="toggleTheme" 
-    class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+    class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" 
     :title="$t(isDark ? 'common.lightMode' : 'common.darkMode')"
     aria-label="Toggle theme"
+    @click="toggleTheme"
   >
     <Moon v-if="isDark" class="h-5 w-5 text-gray-600 dark:text-gray-300" />
     <SunMoon v-else class="h-5 w-5 text-gray-600 dark:text-gray-300" />
@@ -11,11 +11,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import { Moon, SunMoon } from 'lucide-vue-next';
-import { useI18n } from 'vue-i18n';
 
-const { t } = useI18n();
 const isDark = ref(false);
 
 // Fonction pour basculer entre les thèmes
@@ -27,7 +25,7 @@ const toggleTheme = () => {
 // Fonction pour mettre à jour le thème
 const updateTheme = () => {
   // Vérifier qu'on est côté client
-  if (!process.client) return;
+  if (!import.meta.client) return;
   
   // Mettre à jour les classes sur le document
   if (isDark.value) {

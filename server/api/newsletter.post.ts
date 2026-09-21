@@ -83,13 +83,7 @@ export default defineEventHandler(async (event): Promise<NewsletterResponse> => 
   createContact.updateEnabled = false // Ne pas mettre à jour si existe déjà
 
   try {
-    const response = await apiInstance.createContact(createContact)
-    
-    console.log('✅ [Newsletter] Contact added to Brevo:', {
-      email: email.toLowerCase().trim(),
-      contactId: response.body?.id,
-      source
-    })
+    await apiInstance.createContact(createContact)
 
     return {
       success: true,
@@ -98,7 +92,7 @@ export default defineEventHandler(async (event): Promise<NewsletterResponse> => 
 
   } catch (brevoError: any) {
     if (brevoError.status === 400 && brevoError.response?.data?.message?.includes('email is already associated with another Contact')) {
-      console.warn('⚠️ [Newsletter] Email already subscribed:', email)
+      console.warn('⚠️ [Newsletter] Email déjà inscrit')
       setResponseStatus(event, 409)
       return {
         success: false,

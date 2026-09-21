@@ -23,7 +23,7 @@
               variant="outline" 
               size="small"
               :label="$t('common.modify')"
-              :fullWidth="false"
+              :full-width="false"
               class="!text-white !border-white hover:!bg-white/10"
               @click="showSearchModal = true"
             />
@@ -34,7 +34,7 @@
       <!-- Desktop Search Form -->
       <div class="hidden md:block">
         <div class="container mx-auto px-4 py-4">
-          <form @submit.prevent="handleSearch" class="grid gap-2 md:grid-cols-4">
+          <form class="grid gap-2 md:grid-cols-4" @submit.prevent="handleSearch">
             <div class="relative">
               <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">{{ $t('common.departure') }}</label>
               <CityAutocomplete
@@ -45,9 +45,9 @@
               <!-- Swap Cities Button -->
               <button
                 type="button"
-                @click="swapCities"
                 :disabled="!fromCity || !toCity"
                 class="absolute -right-5 top-9 z-10 p-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                @click="swapCities"
               >
                 <ArrowLeftRight class="w-4 h-4 text-gray-600 dark:text-gray-300" />
               </button>
@@ -84,7 +84,7 @@
         </div>
       </div>
 
-      <div class="border-b border-gray-200 dark:border-gray-800 hidden md:block"></div>
+      <div class="border-b border-gray-200 dark:border-gray-800 hidden md:block"/>
     </div>
 
     <!-- Search Form Modal -->
@@ -106,7 +106,7 @@
           :companies="carCompanies"
           :comfort-categories="comfortCategories"
           :from-city="fromCity"
-          @update:modelValue="debouncedFilterSearch"
+          @update:model-value="debouncedFilterSearch"
         />
 
         <div class="grid grid-cols-12 gap-6">
@@ -115,8 +115,8 @@
                   <div class="flex items-center justify-between mb-2">
                     <button
                       v-if="shouldShowFilters"
-                      @click="showFiltersModal = true"
                       class="flex items-center gap-2 px-4 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      @click="showFiltersModal = true"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -160,9 +160,9 @@
 
                 <div v-if="hasMoreResults" class="flex justify-center mt-8 mb-4">
                   <button 
-                    @click="loadMoreResults"
                     :disabled="loadingMore"
                     class="px-6 py-2.5 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-lg text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all duration-200"
+                    @click="loadMoreResults"
                   >
                     <RefreshCcwIcon v-if="loadingMore" class="w-4 h-4 animate-spin" />
                     <span>{{ loadingMore ? $t('common.loading') : $t('common.showMore') }}</span>
@@ -206,9 +206,9 @@
     >
       <button
         v-if="showScrollTop"
-        @click="scrollToTop"
         class="fixed bottom-6 right-6 z-40 p-3 bg-primary-600 hover:bg-primary-700 text-white rounded-full shadow-lg transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
         aria-label="Remonter en haut de la page"
+        @click="scrollToTop"
       >
         <ArrowUp class="w-5 h-5" />
       </button>
@@ -231,13 +231,14 @@ import {  useDebounceFn } from '@vueuse/core';
 import { useSearchStore } from '~/stores/search';
 import { useRouter } from 'vue-router';
 import SearchFormModal from './SearchFormModal.vue';
-import { getSlugFromCity } from '~/utils/cities';
+import { getCityFromSlug, getSlugFromCity, isCityValid } from '~/utils/cities';
+import { MAX_PRICE_FILTER } from '~/utils';
 
 const router = useRouter();
 const route = useRoute();
 
 const searchStore = useSearchStore();
-const loading = ref(true);
+const loading = ref(false);
 const departures = ref<Departure[]>([]);
 const showFiltersModal = ref(false);
 const departureSelected = ref<Departure | null>(null);
@@ -249,7 +250,6 @@ const page = ref(1);
 const limit = 25;
 
 const { searchCars } = useSecureApi()
-  const { isCityValid } = await import('~/utils/cities');
 
 const hasMoreResults = computed(() => {
   return page.value < totalPages.value;
@@ -269,7 +269,7 @@ const isFiltering = ref(false);
 const showScrollTop = ref(false);
 
 const filters = ref({
-  maxPrice: 50000,
+  maxPrice: MAX_PRICE_FILTER,
   companies: [] as string[],
   departurePeriod: '',
   comfortCategories: [] as string[],
@@ -292,12 +292,70 @@ const activeFiltersCount = computed(() => {
   if (filters.value.departurePeriod) count++;
   if (filters.value.comfortCategories.length > 0) count++;
   if (filters.value.commune) count++;
-  if (filters.value.maxPrice < 50000) count++;
+  if (filters.value.maxPrice < MAX_PRICE_FILTER) count++;
   return count;
 });
 
 const shouldShowFilters = computed(() => {
   return hasSearched.value && (departures.value.length > 0 || isFiltering.value);
+});
+
+/**
+ * Paramètres envoyés à /api/car/search. Les filtres inactifs ne sont pas
+ * transmis (cf. MAX_PRICE_FILTER) pour ne pas restreindre la requête.
+ */
+const buildSearchParams = (fromSlug: string, toSlug: string, pageNumber: number) => ({
+  from: fromSlug,
+  to: toSlug,
+  page: pageNumber,
+  limit,
+  maxPrice: filters.value.maxPrice < MAX_PRICE_FILTER ? filters.value.maxPrice : undefined,
+  companies: [...filters.value.companies],
+  departurePeriod: filters.value.departurePeriod,
+  comfortCategories: [...filters.value.comfortCategories],
+  commune: filters.value.commune,
+  sort: currentSort.value
+});
+
+/**
+ * Recherche initiale, exécutée pendant le rendu serveur.
+ *
+ * Avant, la recherche partait d'un watcher asynchrone que le SSR n'attendait
+ * pas : le HTML servi ne contenait qu'un loader, jamais les départs. Or c'est
+ * sur ces pages /results/:from/:to que repose tout le référencement.
+ *
+ * Les changements de filtres, de tri et la pagination restent impératifs :
+ * ils n'ont lieu qu'après interaction, donc côté client.
+ */
+const { data: initialResults, pending: initialPending } = await useAsyncData(
+  `car-search-${route.params.from}-${route.params.to}`,
+  () => {
+    const fromSlug = String(route.params.from || '');
+    const toSlug = String(route.params.to || '');
+
+    if (!fromSlug || !toSlug) {
+      return Promise.resolve({ departures: [], _meta: { total: 0, page: 1, limit } });
+    }
+
+    return searchCars(buildSearchParams(fromSlug, toSlug, 1));
+  },
+  {
+    watch: [() => route.params.from, () => route.params.to],
+    default: () => ({ departures: [], _meta: { total: 0, page: 1, limit } })
+  }
+);
+
+watch(initialResults, (results) => {
+  departures.value = results?.departures || [];
+  totalResults.value = results?._meta.total || 0;
+  totalPages.value = Math.ceil((results?._meta.total || 0) / limit);
+  page.value = 1;
+  hasSearched.value = true;
+  loading.value = false;
+}, { immediate: true });
+
+watch(initialPending, (isPending) => {
+  loading.value = isPending;
 });
 
 const debouncedFilterSearch = useDebounceFn(() => {
@@ -361,7 +419,6 @@ const performSearch = async (isFilteringParam = false) => {
   }
   
   searchStore.setSearchParams({
-    type: 'car',
     from: fromCity.value,
     to: toCity.value
   });
@@ -378,29 +435,20 @@ const performSearch = async (isFilteringParam = false) => {
   }
   departures.value = [];
   
-  if (process.client) {
+  if (import.meta.client) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
   
   try {
-    const response = await searchCars({
-      from: getSlugFromCity(fromCity.value),
-        to: getSlugFromCity(toCity.value),
-        page: page.value,
-        limit,
-        maxPrice: filters.value.maxPrice,
-        companies: [...filters.value.companies],
-        departurePeriod: filters.value.departurePeriod,
-        comfortCategories: [...filters.value.comfortCategories],
-        commune: filters.value.commune,
-        sort: currentSort.value
-    })
-    
+    const response = await searchCars(
+      buildSearchParams(getSlugFromCity(fromCity.value), getSlugFromCity(toCity.value), page.value)
+    )
+
     departures.value = response.departures || [];
     totalResults.value = response._meta.total || 0;
     totalPages.value = Math.ceil((response._meta.total || 0) / limit);
     
-  } catch (error) {
+  } catch {
     departures.value = [];
     totalResults.value = 0;
     totalPages.value = 0;
@@ -416,58 +464,47 @@ const loadMoreResults = async () => {
   page.value++;
   
   try {
-    const response = await searchCars({
-      from: getSlugFromCity(fromCity.value),
-        to: getSlugFromCity(toCity.value),
-        page: page.value,
-        limit,
-        maxPrice: filters.value.maxPrice,
-        companies: [...filters.value.companies],
-        departurePeriod: filters.value.departurePeriod,
-        comfortCategories: [...filters.value.comfortCategories],
-        commune: filters.value.commune,
-        sort: currentSort.value
-    })
-    
+    const response = await searchCars(
+      buildSearchParams(getSlugFromCity(fromCity.value), getSlugFromCity(toCity.value), page.value)
+    )
+
     departures.value = [...departures.value, ...(response.departures || [])];
     totalResults.value = response._meta.total || 0;
     totalPages.value = Math.ceil((response._meta.total || 0) / limit);
     
-  } catch (error) {
+  } catch {
     page.value--; // Revert page increment on error
   } finally {
     loadingMore.value = false;
   }
 }
 
-// Watch sur les paramètres de route pour déclencher la recherche
+// Synchronise les champs du formulaire avec l'URL.
+//
+// La recherche elle-même n'est plus déclenchée ici : useAsyncData surveille
+// les mêmes paramètres de route et s'en charge, y compris côté serveur.
 watch(
   () => ({ from: route.params.from, to: route.params.to }),
-  (newParams, oldParams) => {
-    const { from: newFrom, to: newTo } = newParams;
-    // Mettre à jour les villes depuis l'URL
+  ({ from: newFrom, to: newTo }) => {
+    // Repasser par le mapping officiel pour restituer accents et majuscules
+    // ("bouake" -> "Bouaké").
     if (newFrom && typeof newFrom === 'string') {
-      const newFromCity = newFrom.charAt(0).toUpperCase() + newFrom.slice(1);
-      if (fromCity.value !== newFromCity) {
+      const newFromCity = getCityFromSlug(newFrom);
+      if (newFromCity && fromCity.value !== newFromCity) {
         fromCity.value = newFromCity;
       }
     }
     if (newTo && typeof newTo === 'string') {
-      const newToCity = newTo.charAt(0).toUpperCase() + newTo.slice(1);
-      if (toCity.value !== newToCity) {
+      const newToCity = getCityFromSlug(newTo);
+      if (newToCity && toCity.value !== newToCity) {
         toCity.value = newToCity;
       }
     }
-    
-    // Faire la recherche si on a les deux villes et qu'elles ont changé
-    if (fromCity.value && toCity.value) {
-      // Ne rechercher que si les villes ont vraiment changé
-      if (fromCity.value !== lastSearchFrom.value || toCity.value !== lastSearchTo.value) {
-        lastSearchFrom.value = fromCity.value;
-        lastSearchTo.value = toCity.value;
-        performSearch();
-      }
-    }
+
+    // Mémoriser la recherche courante pour que le bouton « Rechercher »
+    // reste désactivé tant que l'utilisateur n'a rien changé.
+    lastSearchFrom.value = fromCity.value;
+    lastSearchTo.value = toCity.value;
   },
   { immediate: true }
 )
@@ -490,13 +527,13 @@ const handleScroll = () => {
 };
 
 onMounted(() => {
-  if (process.client) {
+  if (import.meta.client) {
     window.addEventListener('scroll', handleScroll);
   }
 });
 
 onUnmounted(() => {
-  if (process.client) {
+  if (import.meta.client) {
     window.removeEventListener('scroll', handleScroll);
   }
 });
@@ -515,7 +552,7 @@ const seoData = computed(() => {
         : `${baseTitle} - Recherche de trajets en car | Geyavo`,
       
       description: hasResults
-        ? `Trouvez les meilleurs trajets en car de ${fromCity.value} à ${toCity.value}. ${resultCount} options disponibles avec horaires, prix et compagnies. Réservez votre voyage en Côte d'Ivoire.`
+        ? `Comparez les trajets en car de ${fromCity.value} à ${toCity.value} : ${resultCount} départs avec horaires, prix et coordonnées des compagnies.`
         : `Recherchez des trajets en car de ${fromCity.value} à ${toCity.value}. Comparez les prix, horaires et compagnies de transport en Côte d'Ivoire sur Geyavo.`,
       
       keywords: `${fromCity.value}, ${toCity.value}, car, transport, voyage, Côte d'Ivoire, horaires, prix`,
@@ -527,18 +564,18 @@ const seoData = computed(() => {
         : `Trajets en car ${baseTitle}`,
       
       ogDescription: hasResults
-        ? `Découvrez ${resultCount} options de voyage de ${fromCity.value} à ${toCity.value}. Comparez et réservez votre trajet.`
+        ? `Découvrez ${resultCount} départs de ${fromCity.value} à ${toCity.value}. Comparez horaires et prix.`
         : `Recherchez et comparez les trajets en car de ${fromCity.value} à ${toCity.value} en Côte d'Ivoire.`,
     };
   }
   
   return {
     title: 'Recherche de trajets en car - Geyavo',
-    description: 'Trouvez et comparez les meilleurs trajets en car en Côte d\'Ivoire. Réservez votre voyage avec les meilleures compagnies de transport.',
-    keywords: 'car, transport, voyage, Côte d\'Ivoire, réservation, trajets',
+    description: 'Comparez les horaires et les prix des cars en Côte d\'Ivoire parmi les meilleures compagnies de transport.',
+    keywords: 'car, transport, voyage, Côte d\'Ivoire, horaires, prix, trajets',
     canonical: '/results',
     ogTitle: 'Recherche de trajets en car en Côte d\'Ivoire',
-    ogDescription: 'Comparez et réservez vos trajets en car en Côte d\'Ivoire avec Geyavo.',
+    ogDescription: 'Comparez les horaires et les prix des cars en Côte d\'Ivoire avec Geyavo.',
   };
 });
 
@@ -669,7 +706,7 @@ useHead(() => ({
           '@type': 'Organization',
           name: 'Geyavo',
           url: 'https://geyavo.com',
-          description: 'Plateforme de réservation de trajets en car en Côte d\'Ivoire'
+          description: 'Comparateur de trajets en car en Côte d\'Ivoire'
         }
       })
     }

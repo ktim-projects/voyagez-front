@@ -15,22 +15,22 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex flex-wrap gap-3">
           <button
-            @click="selectedCategory = ''"
             :class="selectedCategory === '' 
               ? 'bg-primary-600 text-white' 
               : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'"
             class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            @click="selectCategory('')"
           >
             Tous
           </button>
           <button
             v-for="category in categories"
             :key="category"
-            @click="selectedCategory = category"
             :class="selectedCategory === category 
               ? 'bg-primary-600 text-white' 
               : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'"
             class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            @click="selectCategory(category)"
           >
             {{ category }}
           </button>
@@ -43,10 +43,10 @@
       <!-- Loading -->
       <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <div v-for="i in 6" :key="i" class="animate-pulse">
-          <div class="bg-gray-200 dark:bg-gray-700 h-48 rounded-t-xl"></div>
+          <div class="bg-gray-200 dark:bg-gray-700 h-48 rounded-t-xl"/>
           <div class="bg-white dark:bg-gray-800 p-6 rounded-b-xl">
-            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
-            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"/>
+            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"/>
           </div>
         </div>
       </div>
@@ -72,9 +72,9 @@
       <!-- Pagination -->
       <div v-if="totalPages > 1" class="flex justify-center mt-12 gap-2">
         <button
-          @click="goToPage(currentPage - 1)"
           :disabled="currentPage === 1"
           class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+          @click="goToPage(currentPage - 1)"
         >
           Précédent
         </button>
@@ -82,19 +82,19 @@
         <button
           v-for="page in visiblePages"
           :key="page"
-          @click="goToPage(page)"
           :class="currentPage === page 
             ? 'bg-primary-600 text-white' 
             : 'border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'"
           class="px-4 py-2 rounded-lg transition-colors"
+          @click="goToPage(page)"
         >
           {{ page }}
         </button>
 
         <button
-          @click="goToPage(currentPage + 1)"
           :disabled="currentPage === totalPages"
           class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+          @click="goToPage(currentPage + 1)"
         >
           Suivant
         </button>
@@ -108,74 +108,66 @@ import type { Article, ArticleListResponse } from '~/types/article';
 
 const { getArticles } = useSecureApi();
 
-const articles = ref<Article[]>([]);
-const loading = ref(true);
 const currentPage = ref(1);
-const totalPages = ref(1);
 const selectedCategory = ref('');
-const isMounted = ref(false);
 
 const categories = ['Transport', 'Actualité', 'Conseils', 'Accidents'];
+
+// useAsyncData recupere la liste pendant le rendu serveur : avec le fetch
+// en onMounted precedent, le HTML servi ne contenait aucun article.
+// `watch` relance la requete quand la page ou la categorie change, ce qui
+// remplace les watchers manuels et le garde-fou isMounted.
+const { data, pending: loading } = await useAsyncData(
+  'articles-list',
+  () => getArticles({
+    page: currentPage.value,
+    limit: 12,
+    category: selectedCategory.value || undefined
+  }) as Promise<ArticleListResponse>,
+  {
+    watch: [currentPage, selectedCategory],
+    default: () => ({ articles: [], _meta: { total: 0, page: 1, limit: 12 } })
+  }
+);
+
+const articles = computed<Article[]>(() => data.value?.articles ?? []);
+
+const totalPages = computed(() => {
+  const meta = data.value?._meta;
+  if (!meta?.limit) return 1;
+  return Math.max(1, Math.ceil(meta.total / meta.limit));
+});
 
 const visiblePages = computed(() => {
   const pages = [];
   const start = Math.max(1, currentPage.value - 2);
   const end = Math.min(totalPages.value, currentPage.value + 2);
-  
+
   for (let i = start; i <= end; i++) {
     pages.push(i);
   }
-  
+
   return pages;
 });
 
-const fetchArticles = async () => {
-  loading.value = true;
-  
-  try {
-    const response = await getArticles({
-      page: currentPage.value,
-      limit: 12,
-      category: selectedCategory.value || undefined
-    }) as ArticleListResponse;
-    
-    articles.value = response.articles;
-    totalPages.value = Math.ceil(response._meta.total / response._meta.limit);
-  } catch (error) {
-    console.error('Erreur lors du chargement des articles:', error);
-    articles.value = [];
-  } finally {
-    loading.value = false;
-  }
+// Changer de categorie remet la pagination a 1 : sans cela, filtrer depuis
+// la page 3 demandait la page 3 d'une liste qui n'en a peut-etre qu'une.
+// Les deux refs sont modifiees avant que useAsyncData ne relance la requete,
+// donc une seule requete part.
+const selectCategory = (category: string) => {
+  if (selectedCategory.value === category) return;
+  currentPage.value = 1;
+  selectedCategory.value = category;
 };
 
 const goToPage = (page: number) => {
   if (page >= 1 && page <= totalPages.value) {
     currentPage.value = page;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (import.meta.client) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 };
-
-// Watch pour recharger les articles (seulement après le montage)
-watch(selectedCategory, () => {
-  if (!isMounted.value) return;
-  currentPage.value = 1;
-  fetchArticles();
-});
-
-watch(currentPage, () => {
-  if (!isMounted.value) return;
-  fetchArticles();
-});
-
-// Charger les articles au montage
-onMounted(() => {
-  fetchArticles();
-  // Activer les watchers après le premier chargement
-  nextTick(() => {
-    isMounted.value = true;
-  });
-});
 
 // SEO
 useHead({
@@ -183,11 +175,11 @@ useHead({
   meta: [
     {
       name: 'description',
-      content: 'Découvrez les dernières actualités du transport en Côte d\'Ivoire. Conseils, événements et informations utiles pour vos voyages en car et bus.'
+      content: 'Découvrez les dernières actualités du transport en Côte d\'Ivoire. Conseils, événements et informations utiles pour vos voyages en car.'
     },
     {
       name: 'keywords',
-      content: 'actualités transport, blog voyage, Côte d\'Ivoire, conseils voyage, transport Abidjan, car Côte d\'Ivoire, bus Abidjan, Geyavo'
+      content: 'actualités transport, blog voyage, Côte d\'Ivoire, conseils voyage, transport Abidjan, car Côte d\'Ivoire, compagnies de car, Geyavo'
     },
     {
       name: 'robots',

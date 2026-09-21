@@ -20,7 +20,7 @@ export default defineNuxtRouteMiddleware((to) => {
   // Si le mode maintenance est activé
   if (isMaintenanceMode) {
     // Vérifier l'IP du client (côté serveur uniquement)
-    if (process.server) {
+    if (import.meta.server) {
       const event = useRequestEvent()
       const clientIP = event?.node.req.headers['x-forwarded-for'] || 
                        event?.node.req.headers['x-real-ip'] || 

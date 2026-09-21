@@ -7,10 +7,10 @@
         backgroundImage: `url('${currentImage}')`,
         transform: `translateY(${scrollY * 0.2}px) scale(1.1)`
       }"
-    ></div>
+    />
     
     <!-- Overlay avec dégradé -->
-    <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"/>
     
     <!-- Contenu -->
     <div class="container mx-auto px-4 relative z-10 h-full flex flex-col justify-center items-center text-center">
@@ -71,7 +71,7 @@ const scrollY = ref(0);
 
 // Fonction pour faire défiler jusqu'au formulaire de recherche
 const scrollToSearch = () => {
-  if (!process.client) return;
+  if (!import.meta.client) return;
   const searchForm = document.querySelector('.search-form-section');
   if (searchForm) {
     searchForm.scrollIntoView({ behavior: 'smooth' });
@@ -80,7 +80,7 @@ const scrollToSearch = () => {
 
 // Fonction pour faire défiler jusqu'aux destinations populaires
 const scrollToDestinations = () => {
-  if (!process.client) return;
+  if (!import.meta.client) return;
   const destinations = document.querySelector('.popular-destinations-section');
   if (destinations) {
     destinations.scrollIntoView({ behavior: 'smooth' });
@@ -89,7 +89,7 @@ const scrollToDestinations = () => {
 
 // Effet de parallaxe au défilement
 const handleScroll = () => {
-  if (process.client) {
+  if (import.meta.client) {
     scrollY.value = window.scrollY;
   }
 };

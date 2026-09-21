@@ -8,8 +8,8 @@
         class="border-b dark:border-gray-700 bg-white dark:bg-gray-800 rounded-md overflow-hidden"
       >
         <button
-          @click="toggle(index)"
           class="w-full flex justify-between items-center px-5 py-5 text-left text-gray-700 dark:text-gray-300 font-medium transition-all hover:text-corail-600 dark:hover:text-corail-500 hover:bg-corail-50 dark:hover:bg-gray-700"
+          @click="toggle(index)"
         >
           <span class="flex items-center">
             <component :is="item.icon" class="w-5 h-5 mr-3 text-corail-600 dark:text-corail-500" />

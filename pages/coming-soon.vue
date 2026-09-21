@@ -7,7 +7,7 @@
           src="/logos/geyavo_full.png" 
           alt="Geyavo" 
           class="h-24 md:h-32 w-auto"
-        />
+        >
       </div>
 
       <div class="text-center mb-12">
@@ -23,7 +23,7 @@
         </h1>
         
         <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-          Toutes les informations sur les compagnies de transport et les lignes de bus réunies en un seul endroit. 
+          Toutes les informations sur les compagnies de car et leurs départs réunies en un seul endroit. 
           Une nouvelle façon de voyager arrive bientôt.
         </p>
       </div>
@@ -66,7 +66,7 @@
             </p>
           </div>
 
-          <form @submit.prevent="handleSubmit" class="space-y-4">
+          <form class="space-y-4" @submit.prevent="handleSubmit">
             <div>
               <input
                 v-model="email"
@@ -75,7 +75,7 @@
                 class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-corail-500 focus:ring-2 focus:ring-corail-200 outline-none transition-all"
                 :class="{ 'border-red-500': emailError }"
                 :disabled="isLoading"
-              />
+              >
               <p v-if="emailError" class="text-red-500 text-sm mt-2">{{ emailError }}</p>
             </div>
 
@@ -178,17 +178,17 @@ useHead({
   meta: [
     { 
       name: 'description', 
-      content: 'Geyavo arrive bientôt ! La première plateforme de comparaison de transport en car et bus en Côte d\'Ivoire. Inscrivez-vous pour être notifié du lancement.' 
+      content: 'Geyavo arrive bientôt ! La première plateforme de comparaison de trajets en car en Côte d\'Ivoire. Inscrivez-vous pour être notifié du lancement.' 
     },
     { name: 'robots', content: 'noindex, nofollow' },
     // Open Graph
     { property: 'og:title', content: 'Bientôt disponible - Geyavo' },
-    { property: 'og:description', content: 'La première plateforme de comparaison de transport en car et bus en Côte d\'Ivoire arrive bientôt !' },
+    { property: 'og:description', content: 'La première plateforme de comparaison de trajets en car en Côte d\'Ivoire arrive bientôt !' },
     { property: 'og:type', content: 'website' },
     // Twitter
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:title', content: 'Bientôt disponible - Geyavo' },
-    { name: 'twitter:description', content: 'La première plateforme de comparaison de transport en car et bus en Côte d\'Ivoire arrive bientôt !' }
+    { name: 'twitter:description', content: 'La première plateforme de comparaison de trajets en car en Côte d\'Ivoire arrive bientôt !' }
   ]
 })
 </script>

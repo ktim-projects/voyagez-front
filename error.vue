@@ -8,7 +8,7 @@
             src="/images/404.svg" 
             alt="404 - Page non trouvée" 
             class="w-full max-w-2xl h-auto"
-          />
+          >
         </div>
 
         <!-- Titre -->
@@ -69,9 +69,9 @@
 </template>
 
 <script setup lang="ts">
-import { HomeIcon, ArrowLeftIcon } from 'lucide-vue-next';
+import { HomeIcon } from 'lucide-vue-next';
 
-const props = defineProps({
+defineProps({
   error: {
     type: Object,
     default: () => ({})
@@ -83,7 +83,7 @@ useHead({
   meta: [
     {
       name: 'description',
-      content: 'La page que vous recherchez n\'existe pas. Retournez à l\'accueil pour trouver votre trajet en car ou en bus en Côte d\'Ivoire.'
+      content: 'La page que vous recherchez n\'existe pas. Retournez à l\'accueil pour trouver votre trajet en car en Côte d\'Ivoire.'
     },
     {
       name: 'robots',

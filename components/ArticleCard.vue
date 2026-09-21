@@ -8,7 +8,7 @@
         :src="article.cover_image" 
         :alt="article.title"
         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-      />
+      >
       <div class="absolute top-4 left-4">
         <span class="px-3 py-1 bg-primary-600 text-white text-xs font-medium rounded-full">
           {{ article.category }}
