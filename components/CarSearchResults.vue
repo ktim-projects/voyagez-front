@@ -552,7 +552,7 @@ const seoData = computed(() => {
         : `${baseTitle} - Recherche de trajets en car | Geyavo`,
       
       description: hasResults
-        ? `Trouvez les meilleurs trajets en car de ${fromCity.value} à ${toCity.value}. ${resultCount} options disponibles avec horaires, prix et compagnies. Réservez votre voyage en Côte d'Ivoire.`
+        ? `Comparez les trajets en car de ${fromCity.value} à ${toCity.value} : ${resultCount} départs avec horaires, prix et coordonnées des compagnies.`
         : `Recherchez des trajets en car de ${fromCity.value} à ${toCity.value}. Comparez les prix, horaires et compagnies de transport en Côte d'Ivoire sur Geyavo.`,
       
       keywords: `${fromCity.value}, ${toCity.value}, car, transport, voyage, Côte d'Ivoire, horaires, prix`,
@@ -564,18 +564,18 @@ const seoData = computed(() => {
         : `Trajets en car ${baseTitle}`,
       
       ogDescription: hasResults
-        ? `Découvrez ${resultCount} options de voyage de ${fromCity.value} à ${toCity.value}. Comparez et réservez votre trajet.`
+        ? `Découvrez ${resultCount} départs de ${fromCity.value} à ${toCity.value}. Comparez horaires et prix.`
         : `Recherchez et comparez les trajets en car de ${fromCity.value} à ${toCity.value} en Côte d'Ivoire.`,
     };
   }
   
   return {
     title: 'Recherche de trajets en car - Geyavo',
-    description: 'Trouvez et comparez les meilleurs trajets en car en Côte d\'Ivoire. Réservez votre voyage avec les meilleures compagnies de transport.',
-    keywords: 'car, transport, voyage, Côte d\'Ivoire, réservation, trajets',
+    description: 'Comparez les horaires et les prix des cars en Côte d\'Ivoire parmi les meilleures compagnies de transport.',
+    keywords: 'car, transport, voyage, Côte d\'Ivoire, horaires, prix, trajets',
     canonical: '/results',
     ogTitle: 'Recherche de trajets en car en Côte d\'Ivoire',
-    ogDescription: 'Comparez et réservez vos trajets en car en Côte d\'Ivoire avec Geyavo.',
+    ogDescription: 'Comparez les horaires et les prix des cars en Côte d\'Ivoire avec Geyavo.',
   };
 });
 
@@ -706,7 +706,7 @@ useHead(() => ({
           '@type': 'Organization',
           name: 'Geyavo',
           url: 'https://geyavo.com',
-          description: 'Plateforme de réservation de trajets en car en Côte d\'Ivoire'
+          description: 'Comparateur de trajets en car en Côte d\'Ivoire'
         }
       })
     }

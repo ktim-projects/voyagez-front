@@ -175,11 +175,11 @@ useHead({
   meta: [
     {
       name: 'description',
-      content: 'Découvrez les dernières actualités du transport en Côte d\'Ivoire. Conseils, événements et informations utiles pour vos voyages en car et bus.'
+      content: 'Découvrez les dernières actualités du transport en Côte d\'Ivoire. Conseils, événements et informations utiles pour vos voyages en car.'
     },
     {
       name: 'keywords',
-      content: 'actualités transport, blog voyage, Côte d\'Ivoire, conseils voyage, transport Abidjan, car Côte d\'Ivoire, bus Abidjan, Geyavo'
+      content: 'actualités transport, blog voyage, Côte d\'Ivoire, conseils voyage, transport Abidjan, car Côte d\'Ivoire, compagnies de car, Geyavo'
     },
     {
       name: 'robots',

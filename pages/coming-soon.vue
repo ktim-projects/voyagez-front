@@ -23,7 +23,7 @@
         </h1>
         
         <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-          Toutes les informations sur les compagnies de transport et les lignes de bus réunies en un seul endroit. 
+          Toutes les informations sur les compagnies de car et leurs départs réunies en un seul endroit. 
           Une nouvelle façon de voyager arrive bientôt.
         </p>
       </div>
@@ -178,17 +178,17 @@ useHead({
   meta: [
     { 
       name: 'description', 
-      content: 'Geyavo arrive bientôt ! La première plateforme de comparaison de transport en car et bus en Côte d\'Ivoire. Inscrivez-vous pour être notifié du lancement.' 
+      content: 'Geyavo arrive bientôt ! La première plateforme de comparaison de trajets en car en Côte d\'Ivoire. Inscrivez-vous pour être notifié du lancement.' 
     },
     { name: 'robots', content: 'noindex, nofollow' },
     // Open Graph
     { property: 'og:title', content: 'Bientôt disponible - Geyavo' },
-    { property: 'og:description', content: 'La première plateforme de comparaison de transport en car et bus en Côte d\'Ivoire arrive bientôt !' },
+    { property: 'og:description', content: 'La première plateforme de comparaison de trajets en car en Côte d\'Ivoire arrive bientôt !' },
     { property: 'og:type', content: 'website' },
     // Twitter
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:title', content: 'Bientôt disponible - Geyavo' },
-    { name: 'twitter:description', content: 'La première plateforme de comparaison de transport en car et bus en Côte d\'Ivoire arrive bientôt !' }
+    { name: 'twitter:description', content: 'La première plateforme de comparaison de trajets en car en Côte d\'Ivoire arrive bientôt !' }
   ]
 })
 </script>

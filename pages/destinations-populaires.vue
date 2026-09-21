@@ -239,7 +239,7 @@ useHead({
   meta: [
     {
       name: 'description',
-      content: 'Découvrez les trajets les plus populaires en Côte d\'Ivoire. Réservez votre voyage en car entre Abidjan, Yamoussoukro, Bouaké et plus encore.'
+      content: 'Découvrez les trajets en car les plus populaires en Côte d\'Ivoire. Horaires, prix et compagnies entre Abidjan, Yamoussoukro, Bouaké et bien d\'autres.'
     },
     {
       name: 'keywords',

@@ -13,7 +13,6 @@
   "header": {
     "home": "Accueil",
     "car": "Car",
-    "bus": "Bus",
     "about": "À propos",
     "contact": "Contact",
     "appName": "Transport CI"
@@ -27,9 +26,7 @@
     "searchButton": "Rechercher",
     "dailyDepartures": "Départs tous les jours",
     "tabs": {
-      "car": "Car",
-      "bus": "Bus",
-      "train": "Train"
+      "car": "Car"
     },
     "popularSearches": "Recherches populaires"
   },
@@ -92,22 +89,22 @@
     },
     "howItWorks": {
       "title": "Comment ça marche",
-      "subtitle": "Réserver votre voyage en 4 étapes simples",
+      "subtitle": "Trouvez votre car en 4 étapes simples",
       "step1": {
         "title": "Recherchez",
-        "description": "Indiquez votre point de départ, votre destination et votre date de voyage"
+        "description": "Indiquez votre ville de départ et votre destination"
       },
       "step2": {
         "title": "Comparez",
         "description": "Consultez toutes les options disponibles et choisissez celle qui vous convient"
       },
       "step3": {
-        "title": "Réservez",
-        "description": "Sélectionnez votre trajet et procédez au paiement en toute sécurité"
+        "title": "Contactez",
+        "description": "Appelez directement la compagnie depuis la fiche du départ pour réserver votre place"
       },
       "step4": {
         "title": "Voyagez",
-        "description": "Recevez votre billet par email et préparez-vous pour votre voyage"
+        "description": "Présentez-vous à la gare à l'heure indiquée et prenez la route"
       }
     },
     "destinations": {
@@ -154,26 +151,6 @@
       "alreadySubscribed": "Cette adresse email est déjà inscrite"
     }
   },
-  "busSearch": {
-    "title": "Recherche de bus",
-    "busNumber": "Numéro de bus",
-    "busNumberPlaceholder": "Ex: 81",
-    "searchButton": "Rechercher",
-    "searchingMessage": "Recherche en cours...",
-    "noResults": "Aucun résultat trouvé",
-    "noResultsDescription": "Essayez de modifier vos critères de recherche",
-    "modify": "Modifier",
-    "line": "Ligne",
-    "express": "Express",
-    "selectRoute": "Sélectionnez un itinéraire :",
-    "stops": "Arrêts",
-    "routeInfo": {
-      "origin": "Origine",
-      "destination": "Destination",
-      "stopsCount": "Nombre d'arrêts",
-      "duration": "Durée"
-    }
-  },
   "contact": {
     "title": "Contactez-nous",
     "subtitle": "Une question ? Un retour ? N'hésitez pas à nous contacter, nous vous répondrons dans les plus brefs délais.",
@@ -209,9 +186,5 @@
         "address": "contactvoyagez.fr"
       }
     }
-  },
-  "label": {
-    "list": "Liste",
-    "map": "Carte"
   }
 }

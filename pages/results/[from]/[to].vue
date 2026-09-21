@@ -40,10 +40,10 @@ const seoData = computed(() => {
   return {
     title: `Trajet ${fromCity} – ${toCity} en car | Geyavo`,
     description: `Comparez les horaires et prix des cars ${fromCity} – ${toCity} avec Geyavo, le comparateur de transport en Côte d'Ivoire.`,
-    keywords: `${fromCity}, ${toCity}, car, transport, voyage, Côte d'Ivoire, horaires, prix, réservation`,
+    keywords: `${fromCity}, ${toCity}, car, transport, voyage, Côte d'Ivoire, horaires, prix, compagnies`,
     canonical: `/results/${fromSlug}/${toSlug}`,
     ogTitle: `Trajets en car ${fromCity} → ${toCity}`,
-    ogDescription: `Trouvez et comparez les meilleurs trajets en car de ${fromCity} à ${toCity}. Réservez votre voyage en Côte d'Ivoire.`,
+    ogDescription: `Comparez les horaires, les prix et les compagnies de car entre ${fromCity} et ${toCity}.`,
   };
 });
 
@@ -178,7 +178,7 @@ useHead(() => ({
           '@type': 'Organization',
           name: 'Geyavo',
           url: 'https://geyavo.com',
-          description: 'Plateforme de comparaison de trajets de car et de bus en Côte d\'Ivoire'
+          description: 'Comparateur de trajets en car en Côte d\'Ivoire'
         }
       })
     }

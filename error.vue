@@ -83,7 +83,7 @@ useHead({
   meta: [
     {
       name: 'description',
-      content: 'La page que vous recherchez n\'existe pas. Retournez à l\'accueil pour trouver votre trajet en car ou en bus en Côte d\'Ivoire.'
+      content: 'La page que vous recherchez n\'existe pas. Retournez à l\'accueil pour trouver votre trajet en car en Côte d\'Ivoire.'
     },
     {
       name: 'robots',

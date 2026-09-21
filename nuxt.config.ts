@@ -48,7 +48,7 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Comparez et trouvez les meilleurs itinéraires de bus et cars en Côte d\'Ivoire' }
+        { name: 'description', content: 'Comparez les horaires et les prix des cars en Côte d\'Ivoire' }
       ],
       link: [
         // Favicons
