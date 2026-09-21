@@ -4,6 +4,7 @@
  */
 
 import { useCities } from '~/composables/useCities';
+import { getCompanySlug } from '~/utils/companies';
 import { serverSupabaseClient } from '#supabase/server';
 
 export default defineEventHandler(async (event) => {
@@ -21,6 +22,7 @@ export default defineEventHandler(async (event) => {
     { url: '/contact', priority: '0.9', changefreq: 'monthly' },
     { url: '/actualites', priority: '0.8', changefreq: 'weekly' },
     { url: '/destinations-populaires', priority: '0.9', changefreq: 'weekly' },
+    { url: '/compagnies', priority: '0.8', changefreq: 'weekly' },
     { url: '/legal-notice', priority: '0.3', changefreq: 'yearly' },
     { url: '/privacy-policy', priority: '0.3', changefreq: 'yearly' },
   ];
@@ -33,6 +35,19 @@ export default defineEventHandler(async (event) => {
     .eq('published', true)
     .order('published_at', { ascending: false });
   
+  // Pages compagnie : une URL par compagnie référencée
+  const { data: companies } = await client
+    .from('company')
+    .select('*');
+
+  const companyRoutes = ((companies || []) as Array<{ name?: string; slug?: string }>)
+    .filter(company => company.name?.trim())
+    .map(company => ({
+      url: `/compagnies/${getCompanySlug(company)}`,
+      priority: '0.8',
+      changefreq: 'weekly'
+    }));
+
   // Pages articles
   const articleRoutes = (articles || []).map((article: any) => ({
     url: `/actualites/${article.slug}`,
@@ -71,6 +86,12 @@ ${staticPages.map(page => `  <url>
     <lastmod>${today}</lastmod>
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority}</priority>
+  </url>`).join('\n')}
+${companyRoutes.map(route => `  <url>
+    <loc>${baseUrl}${route.url}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${route.changefreq}</changefreq>
+    <priority>${route.priority}</priority>
   </url>`).join('\n')}
 ${articleRoutes.map(route => `  <url>
     <loc>${baseUrl}${route.url}</loc>

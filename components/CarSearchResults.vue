@@ -232,6 +232,7 @@ import { useSearchStore } from '~/stores/search';
 import { useRouter } from 'vue-router';
 import SearchFormModal from './SearchFormModal.vue';
 import { getCityFromSlug, getSlugFromCity, isCityValid } from '~/utils/cities';
+import { resolveCompanyFilter } from '~/utils/companies';
 import { MAX_PRICE_FILTER } from '~/utils';
 
 const router = useRouter();
@@ -268,9 +269,22 @@ const lastSearchTo = ref('');
 const isFiltering = ref(false);
 const showScrollTop = ref(false);
 
+/**
+ * Filtre compagnie pré-sélectionné depuis l'URL.
+ *
+ * Les pages compagnie (/compagnies/:slug) renvoient vers un trajet avec
+ * `?compagnie=<slug>` : le visiteur doit atterrir sur les seuls départs de
+ * cette compagnie, sinon la page perd son intérêt. Le slug est résolu vers
+ * l'identifiant attendu par l'API, qui filtre sur `operator`.
+ */
+const preselectedCompanyIds = resolveCompanyFilter(
+  route.query.compagnie as string | undefined,
+  carCompanies
+);
+
 const filters = ref({
   maxPrice: MAX_PRICE_FILTER,
-  companies: [] as string[],
+  companies: preselectedCompanyIds,
   departurePeriod: '',
   comfortCategories: [] as string[],
   commune: ''

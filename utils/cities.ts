@@ -147,3 +147,20 @@ export const getAllCities = (): string[] => {
 export const getAllCitySlugs = (): string[] => {
   return Object.keys(citySlugMap)
 }
+
+/**
+ * Visuels disponibles dans `public/images/destinations/`.
+ *
+ * Une ville absente de cette table n'a pas de photo : les tuiles de la page
+ * compagnie retombent alors sur un aplat de la couleur de la compagnie. Ne
+ * rien inventer ici — une clé sans fichier donnerait une image cassée.
+ */
+const cityPhotoMap: Record<string, string> = {
+  'bouake': '/images/destinations/bouake.png',
+  'san-pedro': '/images/destinations/san-pedro.png',
+  'yamoussoukro': '/images/destinations/yakro.png'
+}
+
+/** Chemin de la photo d'une ville, ou null si elle n'en a pas. */
+export const getCityPhoto = (slug: string): string | null =>
+  cityPhotoMap[slug.toLowerCase()] ?? null

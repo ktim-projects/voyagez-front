@@ -79,7 +79,8 @@ Le déploiement est automatique : la CI tourne sur `main`, puis le workflow
 ```
 components/      composants UI (CarSearchResults est le cœur de la recherche)
 composables/     useCities (liste des villes), useSecureApi (appels API)
-pages/           routes ; /results/[from]/[to] est la page de résultats
+pages/           routes ; /results/[from]/[to] (résultats) et
+                 /compagnies/[slug] (page publique d'une compagnie)
 server/api/      endpoints Nitro (recherche, articles, contact, newsletter)
 server/middleware/  sécurité (clé d'API, rate limiting) et en-têtes HTTP
 stores/          état de recherche Pinia
