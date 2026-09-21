@@ -1,38 +1,55 @@
 <template>
-  <main v-if="data" class="min-h-screen bg-gray-50 dark:bg-gray-950">
-    <CompanyHero :company="data.company" :stats="data.stats" />
-    <CompanyStats :stats="data.stats" />
+  <main
+    v-if="data"
+    class="min-h-screen"
+    :style="{ ...themeVariables, background: 'var(--gy-page-bg)', color: 'var(--gy-ink)' }"
+  >
+    <CompanyHero
+      :company="data.company"
+      :stats="data.stats"
+      :next-departures="data.nextDepartures"
+    />
 
-    <div class="container mx-auto px-4 py-10 space-y-10">
-      <CompanyRoutes
-        :routes="data.routes"
-        :company-name="data.company.name"
-        :company-slug="data.company.slug"
-      />
+    <div class="container mx-auto px-4 lg:px-10 py-6 lg:py-9 grid gap-6 lg:gap-9 items-start lg:grid-cols-[1.5fr_.8fr]">
+      <div>
+        <CompanySchedule
+          :routes="data.routes"
+          :cities="data.cities"
+          :stats="data.stats"
+        />
 
-      <CompanyNetwork
-        :cities="data.cities"
+        <CompanyDestinations
+          :cities="data.cities"
+          :company-name="data.company.name"
+        />
+      </div>
+
+      <CompanySidebar
+        :company="data.company"
         :stations="data.stations"
         :comfort-categories="data.comfortCategories"
-        :services="data.company.services"
       />
-
-      <!-- Rappel honnête du périmètre : Geyavo ne vend pas de billets -->
-      <section class="p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
-        <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-2">
-          Comment voyager avec {{ data.company.name }} ?
-        </h2>
-        <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed max-w-3xl">
-          Geyavo référence les horaires et les prix de {{ data.company.name }} pour vous aider à
-          comparer. Les réservations se font directement auprès de la compagnie, par téléphone
-          ou à la gare : utilisez les coordonnées en haut de cette page.
-        </p>
-      </section>
     </div>
+
+    <div
+      class="px-4 lg:px-10 py-4 flex flex-wrap items-center justify-between gap-2"
+      :style="{ background: 'var(--gy-surface)', borderTop: '1px solid var(--gy-line)' }"
+    >
+      <p class="text-[11px]" :style="{ color: 'var(--gy-muted)' }">
+        Horaires {{ data.company.name }}<span v-if="citiesLine"> · {{ citiesLine }}</span>
+      </p>
+      <NuxtLink to="/compagnies" class="text-[11px] hover:underline" :style="{ color: 'var(--gy-muted)' }">
+        Toutes les compagnies
+      </NuxtLink>
+    </div>
+
+    <CompanyCallBar :phone="primaryPhone" :company-name="data.company.name" />
   </main>
 </template>
 
 <script setup lang="ts">
+import { parseCompanyPhones } from '~/utils/companies';
+import { buildCompanyTheme, toThemeVariables } from '~/utils/company-theme';
 import type { CompanyPageResponse } from '~/types/company';
 
 const route = useRoute();
@@ -62,6 +79,17 @@ if (error.value) {
 
 const company = computed(() => data.value?.company ?? null);
 const stats = computed(() => data.value?.stats ?? null);
+
+// La page prend les couleurs de la compagnie : la palette est calculée une
+// fois ici et diffusée aux composants en variables CSS. Sans cela, les
+// classes seraient construites dynamiquement et Tailwind les purgerait.
+const themeVariables = computed(() => toThemeVariables(buildCompanyTheme(company.value?.brandColor)));
+
+const primaryPhone = computed(() => parseCompanyPhones(company.value?.contact)[0] ?? null);
+
+const citiesLine = computed(() =>
+  (data.value?.cities ?? []).map(city => city.name).join(', ')
+);
 
 const seo = computed(() => {
   const name = company.value?.name ?? 'Compagnie';

@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest'
-import { aggregateCompanyDepartures } from '~/server/utils/company-aggregate'
+import {
+  aggregateCompanyDepartures,
+  formatScheduleDuration,
+  normalizeDepartureTime
+} from '~/server/utils/company-aggregate'
 import type { AggregatableDeparture } from '~/server/utils/company-aggregate'
 
 /**
@@ -11,6 +15,9 @@ import type { AggregatableDeparture } from '~/server/utils/company-aggregate'
 const departure = (overrides: Partial<AggregatableDeparture> = {}): AggregatableDeparture => ({
   origin: 'abidjan',
   destination: 'bouake',
+  departure_time: '06:00:00',
+  arrival_time: '10:15:00',
+  duration: '255',
   price: 5000,
   station: 'Adjamé',
   comfort_info: { category: 'Ordinaire' },
@@ -148,6 +155,134 @@ describe('aggregateCompanyDepartures', () => {
     })
   })
 
+  describe('horaires', () => {
+    it('range les départs d\'une ligne du plus matinal au plus tardif', () => {
+      const result = aggregateCompanyDepartures([
+        departure({ departure_time: '22:00:00' }),
+        departure({ departure_time: '06:00:00' }),
+        departure({ departure_time: '13:00:00' })
+      ])
+
+      expect(result.routes[0]!.schedule.map(slot => slot.departureTime))
+        .toEqual(['06:00', '13:00', '22:00'])
+    })
+
+    it('retire les secondes des colonnes time de Postgres', () => {
+      const result = aggregateCompanyDepartures([
+        departure({ departure_time: '08:30:00', arrival_time: '12:30:00' })
+      ])
+
+      expect(result.routes[0]!.schedule[0]).toMatchObject({
+        departureTime: '08:30',
+        arrivalTime: '12:30'
+      })
+    })
+
+    it('met la durée en forme depuis les minutes stockées', () => {
+      const result = aggregateCompanyDepartures([departure({ duration: '255' })])
+
+      expect(result.routes[0]!.schedule[0]!.duration).toBe('4h15')
+    })
+
+    it('donne l\'amplitude des durées de la ligne', () => {
+      const result = aggregateCompanyDepartures([
+        departure({ duration: '240' }),
+        departure({ duration: '260' }),
+        departure({ duration: '250' })
+      ])
+
+      expect(result.routes[0]!.durationSpan).toBe('4h00 – 4h20')
+    })
+
+    it('réduit l\'amplitude à une valeur quand tous les départs durent autant', () => {
+      const result = aggregateCompanyDepartures([
+        departure({ duration: '270' }),
+        departure({ duration: '270' })
+      ])
+
+      expect(result.routes[0]!.durationSpan).toBe('4h30')
+    })
+
+    it('liste les gares et les conforts propres à chaque ligne', () => {
+      const result = aggregateCompanyDepartures([
+        departure({ station: 'Adjamé', comfort_info: { category: 'Ordinaire' } }),
+        departure({ station: 'Yopougon', comfort_info: { category: 'VIP' } }),
+        departure({
+          destination: 'korhogo',
+          station: 'Gare centrale',
+          comfort_info: { category: 'VVIP' }
+        })
+      ])
+
+      const abidjanBouake = result.routes.find(route => route.toSlug === 'bouake')!
+      const abidjanKorhogo = result.routes.find(route => route.toSlug === 'korhogo')!
+
+      expect(abidjanBouake.stations).toEqual(['Adjamé', 'Yopougon'])
+      expect(abidjanBouake.comfortCategories).toEqual(['Ordinaire', 'VIP'])
+      expect(abidjanKorhogo.stations).toEqual(['Gare centrale'])
+      expect(abidjanKorhogo.comfortCategories).toEqual(['VVIP'])
+    })
+  })
+
+  describe('premiers départs', () => {
+    it('retient les quatre départs les plus matinaux, toutes lignes confondues', () => {
+      const result = aggregateCompanyDepartures([
+        departure({ destination: 'bouake', departure_time: '11:00:00' }),
+        departure({ destination: 'korhogo', departure_time: '07:00:00' }),
+        departure({ destination: 'san-pedro', departure_time: '06:30:00' }),
+        departure({ destination: 'yamoussoukro', departure_time: '07:15:00' }),
+        departure({ destination: 'bouake', departure_time: '06:00:00' })
+      ])
+
+      expect(result.nextDepartures.map(slot => slot.departureTime))
+        .toEqual(['06:00', '06:30', '07:00', '07:15'])
+    })
+
+    it('porte la ligne de chaque départ mis en avant', () => {
+      const result = aggregateCompanyDepartures([
+        departure({ origin: 'abidjan', destination: 'san-pedro' })
+      ])
+
+      expect(result.nextDepartures[0]).toMatchObject({ from: 'Abidjan', to: 'San-Pédro' })
+    })
+  })
+
+  describe('normalizeDepartureTime', () => {
+    it('normalise les heures exploitables', () => {
+      expect(normalizeDepartureTime('06:00:00')).toBe('06:00')
+      expect(normalizeDepartureTime('6:05')).toBe('06:05')
+      expect(normalizeDepartureTime('23:59:59')).toBe('23:59')
+    })
+
+    it('rejette ce qui n\'est pas une heure', () => {
+      expect(normalizeDepartureTime(null)).toBeNull()
+      expect(normalizeDepartureTime('')).toBeNull()
+      expect(normalizeDepartureTime('matin')).toBeNull()
+      expect(normalizeDepartureTime('24:00')).toBeNull()
+      expect(normalizeDepartureTime('12:60')).toBeNull()
+    })
+  })
+
+  describe('formatScheduleDuration', () => {
+    it('met les minutes en heures alignables', () => {
+      expect(formatScheduleDuration('255')).toBe('4h15')
+      expect(formatScheduleDuration(240)).toBe('4h00')
+      expect(formatScheduleDuration('540')).toBe('9h00')
+    })
+
+    it('garde les minutes seules en dessous de l\'heure', () => {
+      expect(formatScheduleDuration('45')).toBe('45min')
+    })
+
+    it('rejette une durée absente ou incohérente', () => {
+      expect(formatScheduleDuration(null)).toBeNull()
+      expect(formatScheduleDuration(undefined)).toBeNull()
+      expect(formatScheduleDuration('')).toBeNull()
+      expect(formatScheduleDuration('0')).toBeNull()
+      expect(formatScheduleDuration('environ 4h')).toBeNull()
+    })
+  })
+
   describe('données incomplètes', () => {
     it('écarte les départs sans origine ou sans destination', () => {
       const result = aggregateCompanyDepartures([
@@ -163,6 +298,33 @@ describe('aggregateCompanyDepartures', () => {
       expect(result.routes).toHaveLength(1)
     })
 
+    // departure_time est NOT NULL en base : ce cas est défensif, mais un
+    // départ sans heure n'a sa place ni dans l'accordéon ni dans le compteur.
+    it('écarte les départs sans heure de départ exploitable', () => {
+      const result = aggregateCompanyDepartures([
+        departure(),
+        departure({ departure_time: null }),
+        departure({ departure_time: '' }),
+        departure({ departure_time: '25:00:00' })
+      ])
+
+      expect(result.stats.departures).toBe(1)
+      expect(result.routes[0]!.schedule).toHaveLength(1)
+    })
+
+    it('tolère une heure d\'arrivée ou une durée manquante', () => {
+      const result = aggregateCompanyDepartures([
+        departure({ arrival_time: null, duration: null })
+      ])
+
+      expect(result.routes[0]!.schedule[0]).toMatchObject({
+        departureTime: '06:00',
+        arrivalTime: null,
+        duration: null
+      })
+      expect(result.routes[0]!.durationSpan).toBeNull()
+    })
+
     it('renvoie un agrégat vide sans départ', () => {
       const result = aggregateCompanyDepartures([])
 
@@ -170,6 +332,7 @@ describe('aggregateCompanyDepartures', () => {
       expect(result.cities).toEqual([])
       expect(result.stations).toEqual([])
       expect(result.comfortCategories).toEqual([])
+      expect(result.nextDepartures).toEqual([])
       expect(result.stats).toEqual({
         cities: 0,
         routes: 0,

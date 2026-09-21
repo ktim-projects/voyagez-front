@@ -49,6 +49,15 @@ cross-site depuis un navigateur, pas un client HTTP quelconque : la vraie
 frontière sur les données est le RLS Supabase
 (`supabase/migrations/enable_rls.sql`, **à appliquer manuellement**).
 
+**La page compagnie prend les couleurs de la compagnie.** `brand_color` est
+une donnée de la base : aucune classe Tailwind ne peut en dépendre, elle
+serait purgée. `utils/company-theme.ts` en dérive une palette complète —
+l'encre est recalculée par luminance pour rester lisible sur une marque
+claire comme sur une marque sombre — et la page la pose en variables CSS
+(`--gy-*`). Les composants s'y réfèrent, jamais à une classe construite.
+Seul le thème clair existe ; le site n'a de toute façon pas d'interrupteur
+de mode sombre branché.
+
 **Les pages compagnie sont dérivées, pas saisies.** `/compagnies/:slug` ne
 montre que des données stockées (`company`) ou comptées depuis `departure`
 (`server/utils/company-aggregate.ts`) : villes, trajets, gares, fourchette de

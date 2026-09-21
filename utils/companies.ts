@@ -95,3 +95,47 @@ export const resolveCompanyFilter = (
 
   return match ? [match.id] : []
 }
+
+/**
+ * Prix affiché sur la page compagnie : `5 000 F`.
+ *
+ * `toLocaleString('fr-FR')` sépare les milliers par une espace fine
+ * insécable, qui ne se voit pas dans toutes les polices : elle est remplacée
+ * par une espace ordinaire.
+ */
+export const formatCompanyPrice = (price?: number | null): string | null => {
+  if (typeof price !== 'number' || !Number.isFinite(price)) return null
+
+  return `${price.toLocaleString('fr-FR').replace(/[\u202f\u00a0]/g, ' ')} F`
+}
+
+/**
+ * Fourchette de prix compacte affichée dans le bandeau : `3,5k – 12k`.
+ * Renvoie null quand aucun prix n'est connu, plutôt qu'une fourchette vide.
+ */
+export const formatPriceRange = (
+  minPrice?: number | null,
+  maxPrice?: number | null
+): string | null => {
+  const toCompact = (price: number): string =>
+    `${(price / 1000).toString().replace('.', ',')}k`
+
+  const hasMin = typeof minPrice === 'number' && Number.isFinite(minPrice)
+  const hasMax = typeof maxPrice === 'number' && Number.isFinite(maxPrice)
+
+  if (!hasMin || !hasMax) return null
+  if (minPrice === maxPrice) return toCompact(minPrice!)
+
+  return `${toCompact(minPrice!)} – ${toCompact(maxPrice!)}`
+}
+
+/**
+ * Moment de la journée d'un départ, pour le filtre de la page compagnie.
+ */
+export const getDepartureMoment = (time: string): 'Matin' | 'Après-midi' | 'Soir' => {
+  const hours = Number.parseInt(time.slice(0, 2), 10)
+
+  if (!Number.isFinite(hours) || hours < 12) return 'Matin'
+
+  return hours < 18 ? 'Après-midi' : 'Soir'
+}

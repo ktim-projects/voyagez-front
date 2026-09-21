@@ -1,5 +1,6 @@
 import { serverSupabaseClient } from '#supabase/server'
 import { getCompanySlug } from '~/utils/companies'
+import { isBrandColor } from '~/utils/company-theme'
 import type { CompanyListItem } from '~/types/company'
 
 /**
@@ -39,14 +40,8 @@ export default defineEventHandler(async (event) => {
       slug: getCompanySlug(row),
       logoUrl: row.logo_url ?? null,
       description: row.description?.trim() || null,
-      brandColor: normalizeBrandColor(row.brand_color)
+      brandColor: isBrandColor(row.brand_color) ? row.brand_color!.trim() : null
     }))
 
   return { companies }
 })
-
-function normalizeBrandColor(color?: string | null): string | null {
-  const value = color?.trim()
-
-  return value && /^#[0-9A-Fa-f]{6}$/.test(value) ? value : null
-}

@@ -1,5 +1,6 @@
 import { serverSupabaseClient } from '#supabase/server'
 import { getCompanySlug } from '~/utils/companies'
+import { isBrandColor } from '~/utils/company-theme'
 import { aggregateCompanyDepartures } from '../../../utils/company-aggregate'
 import type { AggregatableDeparture } from '../../../utils/company-aggregate'
 
@@ -60,7 +61,7 @@ export default defineEventHandler(async (event) => {
 
   const { data: departuresData, error: departuresError } = await client
     .from('departure')
-    .select('origin, destination, price, station, comfort_info')
+    .select('origin, destination, departure_time, arrival_time, duration, price, station, comfort_info')
     .eq('operator', company.id)
     .limit(MAX_DEPARTURES)
 
@@ -80,7 +81,7 @@ export default defineEventHandler(async (event) => {
       email: company.email ?? null,
       services: normalizeServices(company.services),
       description: company.description?.trim() || null,
-      brandColor: normalizeBrandColor(company.brand_color),
+      brandColor: isBrandColor(company.brand_color) ? company.brand_color!.trim() : null,
       whatsapp: company.whatsapp?.trim() || null,
       website: company.website?.trim() || null
     },
@@ -102,15 +103,5 @@ function normalizeServices(services: unknown): string[] {
   }
 
   return []
-}
-
-/**
- * La contrainte SQL garantit le format, mais la page peut être servie avant
- * que la migration ne soit appliquée : on revalide ici.
- */
-function normalizeBrandColor(color?: string | null): string | null {
-  const value = color?.trim()
-
-  return value && /^#[0-9A-Fa-f]{6}$/.test(value) ? value : null
 }
 
