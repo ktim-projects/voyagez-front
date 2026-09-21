@@ -231,14 +231,14 @@ import {  useDebounceFn } from '@vueuse/core';
 import { useSearchStore } from '~/stores/search';
 import { useRouter } from 'vue-router';
 import SearchFormModal from './SearchFormModal.vue';
-import { getCityFromSlug, getSlugFromCity } from '~/utils/cities';
+import { getCityFromSlug, getSlugFromCity, isCityValid } from '~/utils/cities';
 import { MAX_PRICE_FILTER } from '~/utils';
 
 const router = useRouter();
 const route = useRoute();
 
 const searchStore = useSearchStore();
-const loading = ref(true);
+const loading = ref(false);
 const departures = ref<Departure[]>([]);
 const showFiltersModal = ref(false);
 const departureSelected = ref<Departure | null>(null);
@@ -250,7 +250,6 @@ const page = ref(1);
 const limit = 25;
 
 const { searchCars } = useSecureApi()
-  const { isCityValid } = await import('~/utils/cities');
 
 const hasMoreResults = computed(() => {
   return page.value < totalPages.value;
@@ -299,6 +298,64 @@ const activeFiltersCount = computed(() => {
 
 const shouldShowFilters = computed(() => {
   return hasSearched.value && (departures.value.length > 0 || isFiltering.value);
+});
+
+/**
+ * Paramètres envoyés à /api/car/search. Les filtres inactifs ne sont pas
+ * transmis (cf. MAX_PRICE_FILTER) pour ne pas restreindre la requête.
+ */
+const buildSearchParams = (fromSlug: string, toSlug: string, pageNumber: number) => ({
+  from: fromSlug,
+  to: toSlug,
+  page: pageNumber,
+  limit,
+  maxPrice: filters.value.maxPrice < MAX_PRICE_FILTER ? filters.value.maxPrice : undefined,
+  companies: [...filters.value.companies],
+  departurePeriod: filters.value.departurePeriod,
+  comfortCategories: [...filters.value.comfortCategories],
+  commune: filters.value.commune,
+  sort: currentSort.value
+});
+
+/**
+ * Recherche initiale, exécutée pendant le rendu serveur.
+ *
+ * Avant, la recherche partait d'un watcher asynchrone que le SSR n'attendait
+ * pas : le HTML servi ne contenait qu'un loader, jamais les départs. Or c'est
+ * sur ces pages /results/:from/:to que repose tout le référencement.
+ *
+ * Les changements de filtres, de tri et la pagination restent impératifs :
+ * ils n'ont lieu qu'après interaction, donc côté client.
+ */
+const { data: initialResults, pending: initialPending } = await useAsyncData(
+  `car-search-${route.params.from}-${route.params.to}`,
+  () => {
+    const fromSlug = String(route.params.from || '');
+    const toSlug = String(route.params.to || '');
+
+    if (!fromSlug || !toSlug) {
+      return Promise.resolve({ departures: [], _meta: { total: 0, page: 1, limit } });
+    }
+
+    return searchCars(buildSearchParams(fromSlug, toSlug, 1));
+  },
+  {
+    watch: [() => route.params.from, () => route.params.to],
+    default: () => ({ departures: [], _meta: { total: 0, page: 1, limit } })
+  }
+);
+
+watch(initialResults, (results) => {
+  departures.value = results?.departures || [];
+  totalResults.value = results?._meta.total || 0;
+  totalPages.value = Math.ceil((results?._meta.total || 0) / limit);
+  page.value = 1;
+  hasSearched.value = true;
+  loading.value = false;
+}, { immediate: true });
+
+watch(initialPending, (isPending) => {
+  loading.value = isPending;
 });
 
 const debouncedFilterSearch = useDebounceFn(() => {
@@ -383,19 +440,10 @@ const performSearch = async (isFilteringParam = false) => {
   }
   
   try {
-    const response = await searchCars({
-      from: getSlugFromCity(fromCity.value),
-        to: getSlugFromCity(toCity.value),
-        page: page.value,
-        limit,
-        maxPrice: filters.value.maxPrice < MAX_PRICE_FILTER ? filters.value.maxPrice : undefined,
-        companies: [...filters.value.companies],
-        departurePeriod: filters.value.departurePeriod,
-        comfortCategories: [...filters.value.comfortCategories],
-        commune: filters.value.commune,
-        sort: currentSort.value
-    })
-    
+    const response = await searchCars(
+      buildSearchParams(getSlugFromCity(fromCity.value), getSlugFromCity(toCity.value), page.value)
+    )
+
     departures.value = response.departures || [];
     totalResults.value = response._meta.total || 0;
     totalPages.value = Math.ceil((response._meta.total || 0) / limit);
@@ -416,19 +464,10 @@ const loadMoreResults = async () => {
   page.value++;
   
   try {
-    const response = await searchCars({
-      from: getSlugFromCity(fromCity.value),
-        to: getSlugFromCity(toCity.value),
-        page: page.value,
-        limit,
-        maxPrice: filters.value.maxPrice < MAX_PRICE_FILTER ? filters.value.maxPrice : undefined,
-        companies: [...filters.value.companies],
-        departurePeriod: filters.value.departurePeriod,
-        comfortCategories: [...filters.value.comfortCategories],
-        commune: filters.value.commune,
-        sort: currentSort.value
-    })
-    
+    const response = await searchCars(
+      buildSearchParams(getSlugFromCity(fromCity.value), getSlugFromCity(toCity.value), page.value)
+    )
+
     departures.value = [...departures.value, ...(response.departures || [])];
     totalResults.value = response._meta.total || 0;
     totalPages.value = Math.ceil((response._meta.total || 0) / limit);
@@ -440,13 +479,15 @@ const loadMoreResults = async () => {
   }
 }
 
-// Watch sur les paramètres de route pour déclencher la recherche
+// Synchronise les champs du formulaire avec l'URL.
+//
+// La recherche elle-même n'est plus déclenchée ici : useAsyncData surveille
+// les mêmes paramètres de route et s'en charge, y compris côté serveur.
 watch(
   () => ({ from: route.params.from, to: route.params.to }),
-  (newParams) => {
-    const { from: newFrom, to: newTo } = newParams;
-    // Mettre à jour les villes depuis l'URL, en repassant par le mapping
-    // officiel pour restituer accents et majuscules ("bouake" -> "Bouaké").
+  ({ from: newFrom, to: newTo }) => {
+    // Repasser par le mapping officiel pour restituer accents et majuscules
+    // ("bouake" -> "Bouaké").
     if (newFrom && typeof newFrom === 'string') {
       const newFromCity = getCityFromSlug(newFrom);
       if (newFromCity && fromCity.value !== newFromCity) {
@@ -459,16 +500,11 @@ watch(
         toCity.value = newToCity;
       }
     }
-    
-    // Faire la recherche si on a les deux villes et qu'elles ont changé
-    if (fromCity.value && toCity.value) {
-      // Ne rechercher que si les villes ont vraiment changé
-      if (fromCity.value !== lastSearchFrom.value || toCity.value !== lastSearchTo.value) {
-        lastSearchFrom.value = fromCity.value;
-        lastSearchTo.value = toCity.value;
-        performSearch();
-      }
-    }
+
+    // Mémoriser la recherche courante pour que le bouton « Rechercher »
+    // reste désactivé tant que l'utilisateur n'a rien changé.
+    lastSearchFrom.value = fromCity.value;
+    lastSearchTo.value = toCity.value;
   },
   { immediate: true }
 )

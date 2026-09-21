@@ -1,21 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-    <!-- Loading -->
-    <div v-if="loading" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div class="animate-pulse">
-        <div class="h-8 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-4"/>
-        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-8"/>
-        <div class="h-96 bg-gray-200 dark:bg-gray-700 rounded mb-8"/>
-        <div class="space-y-3">
-          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded"/>
-          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded"/>
-          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"/>
-        </div>
-      </div>
-    </div>
-
     <!-- Article -->
-    <article v-else-if="article" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <article v-if="article" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <!-- Breadcrumb -->
       <nav class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-8">
         <NuxtLink to="/" class="hover:text-primary-600 dark:hover:text-primary-400">Accueil</NuxtLink>
@@ -138,8 +124,30 @@ import type { Article, ArticleDetailResponse } from '~/types/article';
 const route = useRoute();
 const { getArticleBySlug } = useSecureApi();
 
-const article = ref<Article | null>(null);
-const loading = ref(true);
+// useAsyncData : le contenu est recupere pendant le rendu serveur. Avec le
+// fetch en onMounted precedent, le HTML servi ne contenait ni le texte de
+// l'article, ni son titre, ni ses metas — les moteurs recevaient une page
+// vide.
+const { data, error } = await useAsyncData(
+  `article-${route.params.slug}`,
+  () => getArticleBySlug(route.params.slug as string) as Promise<ArticleDetailResponse>,
+  { watch: [() => route.params.slug] }
+);
+
+// useAsyncData capture l'erreur du handler au lieu de la propager : sans ce
+// relais, un slug inexistant répondait 200 avec une page « article non
+// trouvé », et les moteurs indexaient des pages fantômes.
+if (error.value) {
+  const statusCode = (error.value as { statusCode?: number }).statusCode === 404 ? 404 : 500;
+
+  throw createError({
+    statusCode,
+    statusMessage: statusCode === 404 ? 'Article not found' : 'Erreur de chargement',
+    fatal: true
+  });
+}
+
+const article = computed<Article | null>(() => data.value?.article ?? null);
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -149,25 +157,6 @@ const formatDate = (dateString: string) => {
     day: 'numeric'
   }).format(date);
 };
-
-const fetchArticle = async () => {
-  loading.value = true;
-  
-  try {
-    const slug = route.params.slug as string;
-    const response = await getArticleBySlug(slug) as ArticleDetailResponse;
-    article.value = response.article;
-  } catch (error) {
-    console.error('Erreur lors du chargement de l\'article:', error);
-    article.value = null;
-  } finally {
-    loading.value = false;
-  }
-};
-
-onMounted(() => {
-  fetchArticle();
-});
 
 // SEO dynamique
 useHead(() => {
