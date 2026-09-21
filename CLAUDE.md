@@ -59,3 +59,26 @@ impératifs, ils n'ont lieu qu'après interaction.
   Supabase non typées et les mocks de tests. Ne pas en ajouter ailleurs.
 - `achives/` (sic) contient des pages archivées hors build : ne pas s'en
   servir comme référence de code actuel.
+
+## Git
+
+**Branches.** Une branche par pull request, nommée `<type>/<description>` en
+kebab-case, avec les types de Conventional Commits : `feat`, `fix`, `chore`,
+`docs`, `refactor`, `test`, `perf`, `ci`, `build`.
+
+```
+feat/dark-mode-toggle
+fix/city-slug-mismatch
+chore/upgrade-nuxt
+```
+
+Pas de branche fourre-tout : une intention par branche, donc par PR.
+
+**Commits.** Conventional Commits : `<type>(<scope>): <sujet>`, sujet à
+l'impératif et en minuscule. Le corps explique le *pourquoi*, pas le *quoi*
+— le diff dit déjà le quoi.
+
+**Pull requests.** Titre **et** description **en anglais**, y compris quand
+les commits et les commentaires du code sont en français. Le titre suit la
+même forme que les commits. La description dit ce qui change, pourquoi, et
+ce qui a été vérifié.
