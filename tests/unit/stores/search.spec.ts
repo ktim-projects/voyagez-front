@@ -12,45 +12,28 @@ describe('useSearchStore', () => {
     it('should initialize with default values', () => {
       const store = useSearchStore()
 
-      expect(store.type).toBeNull()
       expect(store.from).toBeNull()
       expect(store.to).toBeNull()
       expect(store.date).toBeNull()
       expect(store.passengers).toBe(1)
-      expect(store.searchResults).toEqual([])
-      expect(store.ref).toBeNull()
     })
   })
 
   describe('setSearchParams', () => {
-    it('should update car search parameters', () => {
+    it('should update search parameters', () => {
       const store = useSearchStore()
 
       store.setSearchParams({
-        type: 'car',
         from: 'Abidjan',
         to: 'Bouaké',
         date: '2024-01-15',
         passengers: 2
       })
 
-      expect(store.type).toBe('car')
       expect(store.from).toBe('Abidjan')
       expect(store.to).toBe('Bouaké')
       expect(store.date).toBe('2024-01-15')
       expect(store.passengers).toBe(2)
-    })
-
-    it('should update bus search parameters', () => {
-      const store = useSearchStore()
-
-      store.setSearchParams({
-        type: 'bus',
-        ref: '81'
-      })
-
-      expect(store.type).toBe('bus')
-      expect(store.ref).toBe('81')
     })
 
     it('should partially update parameters', () => {
@@ -58,7 +41,6 @@ describe('useSearchStore', () => {
 
       // Initialiser avec des valeurs
       store.setSearchParams({
-        type: 'car',
         from: 'Abidjan',
         to: 'Bouaké'
       })
@@ -68,7 +50,6 @@ describe('useSearchStore', () => {
         passengers: 3
       })
 
-      expect(store.type).toBe('car')
       expect(store.from).toBe('Abidjan')
       expect(store.to).toBe('Bouaké')
       expect(store.passengers).toBe(3)
@@ -78,7 +59,6 @@ describe('useSearchStore', () => {
       const store = useSearchStore()
 
       store.setSearchParams({
-        type: 'car',
         from: 'Abidjan',
         to: 'Bouaké'
       })
@@ -92,87 +72,44 @@ describe('useSearchStore', () => {
     })
   })
 
-  describe('setResults', () => {
-    it('should update search results', () => {
-      const store = useSearchStore()
-      const mockResults = [
-        { id: 1, company: 'UTB' },
-        { id: 2, company: 'STB' }
-      ]
-
-      store.setResults(mockResults)
-
-      expect(store.searchResults).toEqual(mockResults)
-      expect(store.searchResults).toHaveLength(2)
-    })
-
-    it('should replace existing results', () => {
-      const store = useSearchStore()
-
-      store.setResults([{ id: 1 }])
-      expect(store.searchResults).toHaveLength(1)
-
-      store.setResults([{ id: 2 }, { id: 3 }])
-      expect(store.searchResults).toHaveLength(2)
-      expect(store.searchResults[0].id).toBe(2)
-    })
-
-    it('should accept empty array', () => {
-      const store = useSearchStore()
-
-      store.setResults([{ id: 1 }])
-      store.setResults([])
-
-      expect(store.searchResults).toEqual([])
-    })
-  })
-
   describe('reset', () => {
     it('should reset all fields to default values', () => {
       const store = useSearchStore()
 
       // Remplir le store
       store.setSearchParams({
-        type: 'car',
         from: 'Abidjan',
         to: 'Bouaké',
         date: '2024-01-15',
-        passengers: 3,
-        ref: '81'
+        passengers: 3
       })
-      store.setResults([{ id: 1 }, { id: 2 }])
 
       // Reset
       store.reset()
 
       // Vérifier que tout est réinitialisé
-      expect(store.type).toBeNull()
       expect(store.from).toBeNull()
       expect(store.to).toBeNull()
       expect(store.date).toBeNull()
       expect(store.passengers).toBe(1)
-      expect(store.searchResults).toEqual([])
-      expect(store.ref).toBeNull()
     })
 
     it('should be callable multiple times', () => {
       const store = useSearchStore()
 
-      store.setSearchParams({ type: 'car', from: 'Abidjan' })
+      store.setSearchParams({ from: 'Abidjan' })
       store.reset()
       store.reset()
 
-      expect(store.type).toBeNull()
       expect(store.from).toBeNull()
     })
   })
 
   describe('Getter: isValidSearch', () => {
-    it('should return true for valid car search', () => {
+    it('should return true for a valid search', () => {
       const store = useSearchStore()
 
       store.setSearchParams({
-        type: 'car',
         from: 'Abidjan',
         to: 'Bouaké'
       })
@@ -180,88 +117,47 @@ describe('useSearchStore', () => {
       expect(store.isValidSearch).toBe(true)
     })
 
-    it('should return false for car search without from', () => {
+    it('should return false for a search without from', () => {
       const store = useSearchStore()
 
       store.setSearchParams({
-        type: 'car',
         to: 'Bouaké'
       })
 
       expect(store.isValidSearch).toBe(false)
     })
 
-    it('should return false for car search without to', () => {
+    it('should return false for a search without to', () => {
       const store = useSearchStore()
 
       store.setSearchParams({
-        type: 'car',
         from: 'Abidjan'
       })
 
       expect(store.isValidSearch).toBe(false)
     })
 
-    it('should return false for car search without from and to', () => {
+    it('should return false for a search without from and to', () => {
       const store = useSearchStore()
-
-      store.setSearchParams({
-        type: 'car'
-      })
 
       expect(store.isValidSearch).toBe(false)
     })
 
-    it('should return true for valid bus search', () => {
+    it('should return false when from or to is an empty string', () => {
       const store = useSearchStore()
 
       store.setSearchParams({
-        type: 'bus',
-        ref: '81'
-      })
-
-      expect(store.isValidSearch).toBe(true)
-    })
-
-    it('should return false for bus search without ref', () => {
-      const store = useSearchStore()
-
-      store.setSearchParams({
-        type: 'bus'
+        from: '',
+        to: 'Bouaké'
       })
 
       expect(store.isValidSearch).toBe(false)
-    })
-
-    it('should return false for bus search with empty ref', () => {
-      const store = useSearchStore()
-
-      store.setSearchParams({
-        type: 'bus',
-        ref: ''
-      })
-
-      expect(store.isValidSearch).toBe(false)
-    })
-
-    it('should return true if from and to are defined (even without explicit car type)', () => {
-      const store = useSearchStore()
-
-      // Définir from et to mais pas de type
-      store.from = 'Abidjan'
-      store.to = 'Bouaké'
-      // Ne pas définir store.type (null par défaut)
-
-      // Le getter retourne true car from et to sont définis
-      // C'est le comportement par défaut pour les recherches car
-      expect(store.isValidSearch).toBe(true)
     })
 
     it('should not require date and passengers for validation', () => {
       const store = useSearchStore()
 
       store.setSearchParams({
-        type: 'car',
         from: 'Abidjan',
         to: 'Bouaké'
         // Pas de date ni passengers
@@ -278,7 +174,6 @@ describe('useSearchStore', () => {
       expect(store.isValidSearch).toBe(false)
 
       store.setSearchParams({
-        type: 'car',
         from: 'Abidjan',
         to: 'Bouaké'
       })
@@ -294,80 +189,49 @@ describe('useSearchStore', () => {
   })
 
   describe('Real usage scenarios', () => {
-    it('Scenario 1: Complete car search', () => {
+    it('Scenario 1: Complete search', () => {
       const store = useSearchStore()
 
-      // Utilisateur sélectionne le type
-      store.setSearchParams({ type: 'car' })
-      expect(store.isValidSearch).toBe(false)
-
-      // Utilisateur sélectionne la ville de départ
+      // Utilisateur choisit sa ville de départ
       store.setSearchParams({ from: 'Abidjan' })
       expect(store.isValidSearch).toBe(false)
 
-      // Utilisateur sélectionne la ville d'arrivée
-      store.setSearchParams({ to: 'Yamoussoukro' })
+      // Puis sa destination
+      store.setSearchParams({ to: 'Bouaké' })
       expect(store.isValidSearch).toBe(true)
 
-      // Utilisateur ajoute des passagers
-      store.setSearchParams({ passengers: 4 })
-      expect(store.isValidSearch).toBe(true)
-      expect(store.passengers).toBe(4)
+      // Puis le nombre de passagers
+      store.setSearchParams({ passengers: 2 })
+
+      expect(store.from).toBe('Abidjan')
+      expect(store.to).toBe('Bouaké')
+      expect(store.passengers).toBe(2)
     })
 
-    it('Scenario 2: Bus search', () => {
+    it('Scenario 2: Trajet inversé', () => {
       const store = useSearchStore()
 
-      // Utilisateur bascule sur bus
-      store.setSearchParams({ type: 'bus' })
-      expect(store.isValidSearch).toBe(false)
+      store.setSearchParams({ from: 'Abidjan', to: 'Bouaké' })
 
-      // Utilisateur entre le numéro de bus
-      store.setSearchParams({ ref: '81' })
-      expect(store.isValidSearch).toBe(true)
-    })
+      store.setSearchParams({ from: store.to, to: store.from })
 
-    it('Scenario 3: Search type change', () => {
-      const store = useSearchStore()
-
-      // Recherche car
-      store.setSearchParams({
-        type: 'car',
-        from: 'Abidjan',
-        to: 'Bouaké'
-      })
-      expect(store.isValidSearch).toBe(true)
-
-      // Changement vers bus
-      store.setSearchParams({ type: 'bus' })
-      expect(store.isValidSearch).toBe(false) // ref n'est pas défini
-
-      // Ajout du ref
-      store.setSearchParams({ ref: '82' })
+      expect(store.from).toBe('Bouaké')
+      expect(store.to).toBe('Abidjan')
       expect(store.isValidSearch).toBe(true)
     })
 
-    it('Scenario 4: New search after reset', () => {
+    it('Scenario 3: New search after reset', () => {
       const store = useSearchStore()
 
-      // Première recherche
-      store.setSearchParams({
-        type: 'car',
-        from: 'Abidjan',
-        to: 'Bouaké'
-      })
-      store.setResults([{ id: 1 }])
-
-      // Reset pour nouvelle recherche
+      store.setSearchParams({ from: 'Abidjan', to: 'Bouaké' })
       store.reset()
-      expect(store.isValidSearch).toBe(false)
-      expect(store.searchResults).toEqual([])
 
-      // Nouvelle recherche
-      store.setSearchParams({
-        type: 'bus',
-        ref: '81'
-      })
+      expect(store.isValidSearch).toBe(false)
+
+      store.setSearchParams({ from: 'Yamoussoukro', to: 'Korhogo' })
+
+      expect(store.from).toBe('Yamoussoukro')
+      expect(store.to).toBe('Korhogo')
       expect(store.isValidSearch).toBe(true)
     })
   })

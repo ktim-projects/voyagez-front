@@ -362,7 +362,6 @@ const performSearch = async (isFilteringParam = false) => {
   }
   
   searchStore.setSearchParams({
-    type: 'car',
     from: fromCity.value,
     to: toCity.value
   });

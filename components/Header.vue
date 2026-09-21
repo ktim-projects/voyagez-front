@@ -49,7 +49,7 @@ const route = useRoute()
 
 const logoPath = computed(() => '/logos/geyavo_full.png')
 
-const isSearchResults = computed(() => route.name === 'results-from-to___fr' || route.path.includes('results/bus') )
+const isSearchResults = computed(() => route.name === 'results-from-to___fr')
 
 const closeMenu = () => {
   isMenuOpen.value = false

@@ -105,7 +105,6 @@ const handleSearch = async () => {
   }
 
   searchStore.setSearchParams({
-    type: 'car',
     from: from.value,
     to: to.value,
     date: null
@@ -123,14 +122,12 @@ const quickSearch = async (destination: string) => {
   if (isMobile) {
     to.value = destination;
     searchStore.setSearchParams({
-      type: 'car',
       to: destination,
     });
     showSearchModal.value = true;
   } else {
     to.value = destination;
     searchStore.setSearchParams({
-      type: 'car',
       to: destination,
     });
   }
@@ -151,7 +148,6 @@ const handleModalSearch = async (data: { from: string; to: string }) => {
   }
 
   searchStore.setSearchParams({
-    type: 'car',
     from: data.from,
     to: data.to,
     date: null
