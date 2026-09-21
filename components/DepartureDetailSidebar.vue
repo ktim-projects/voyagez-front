@@ -46,7 +46,16 @@
                     class="h-10 w-10 mr-3 object-contain"
                   >
                   <div>
-                    <h4 class="font-medium text-gray-900">{{ modelValue.company?.name }}</h4>
+                    <!-- Lien vers la page compagnie : maillage interne et
+                         point d'entrée vers ses autres trajets -->
+                    <NuxtLink
+                      v-if="companySlug"
+                      :to="`/compagnies/${companySlug}`"
+                      class="font-medium text-gray-900 hover:text-corail-500 transition-colors"
+                    >
+                      {{ modelValue.company?.name }}
+                    </NuxtLink>
+                    <h4 v-else class="font-medium text-gray-900">{{ modelValue.company?.name }}</h4>
                     <p class="text-sm text-gray-500">{{ modelValue.station }}</p>
                   </div>
                 </div>
@@ -145,6 +154,7 @@
 <script setup lang="ts">
 import { XIcon, PhoneIcon, MailIcon } from 'lucide-vue-next';
 import { getComfortChipClasses, parseComfortDetails } from '~/utils/comfort';
+import { getCompanySlug } from '~/utils/companies';
 import { getCityFromSlug } from '~/utils/cities';
 import { getDaysDifference } from '~/utils/time';
 
@@ -182,6 +192,13 @@ const props = defineProps<{
 defineEmits<{
   (e: 'update:modelValue', departure: Departure | null): void;
 }>();
+
+/** Slug de la page compagnie, dérivé du nom comme côté serveur. */
+const companySlug = computed(() => {
+  const name = props.modelValue?.company?.name;
+
+  return name ? getCompanySlug({ name }) : null;
+});
 
 const displayOrigin = computed(() => {
   if (!props.modelValue) return '';

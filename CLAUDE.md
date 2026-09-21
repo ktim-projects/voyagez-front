@@ -49,6 +49,14 @@ cross-site depuis un navigateur, pas un client HTTP quelconque : la vraie
 frontière sur les données est le RLS Supabase
 (`supabase/migrations/enable_rls.sql`, **à appliquer manuellement**).
 
+**Les pages compagnie sont dérivées, pas saisies.** `/compagnies/:slug` ne
+montre que des données stockées (`company`) ou comptées depuis `departure`
+(`server/utils/company-aggregate.ts`) : villes, trajets, gares, fourchette de
+prix. Cette page est faite pour être partagée par la compagnie elle-même, une
+valeur estimée ou un avis inventé s'y verrait. Ne rien y afficher qui ne soit
+pas en base. Le slug est dérivé du nom (`utils/companies.ts`), la colonne
+`company.slug` ne sert qu'à figer une URL déjà partagée.
+
 **Les données se chargent au rendu serveur.** Résultats de recherche et
 articles passent par `useAsyncData` : le HTML servi contient les départs et
 le contenu des articles. Tout le SEO du projet en dépend — ne pas revenir à
